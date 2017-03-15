@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.push.QxPushInfoDao">
+    
+	<sql id="qxPushInfoColumns">
+		a.uid AS "uid",
+		a.account AS "account",
+		a.device_id AS "deviceId",
+		a.device_type AS "deviceType",
+		a.device_ip AS "deviceIp",
+		a.tag_type AS "tagType",
+		a.tag_address AS "tagAddress",
+		a.tag_app_version AS "tagAppVersion",
+		a.tag_churn_user AS "tagChurnUser",
+		a.tag_potential_pay AS "tagPotentialPay",
+		a.tag_potential_loss AS "tagPotentialLoss",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="qxPushInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="QxPushInfo">
+		SELECT 
+			<include refid="qxPushInfoColumns"/>
+		FROM qx_push_info a
+		<include refid="qxPushInfoJoins"/>
+		WHERE a.uid = #{uid}
+	</select>
+	
+	<!-- 如果用户有多个设备,那么久获取最新注册的一个设备  -->
+	<select id="getPushInfoByUid" resultType="QxPushInfo">
+	    SELECT
+			<include refid="qxPushInfoColumns"/>
+		FROM
+			qx_push_info AS a,
+			system_user AS su
+		WHERE
+			a.uid = su.uid
+		AND su.uid = #{uid}
+		AND su.token_local != ''
+		ORDER BY
+			a.update_time DESC
+		LIMIT 1
+	</select>
+	
+	<select id="findList" resultType="QxPushInfo">
+		SELECT 
+			<include refid="qxPushInfoColumns"/>
+		FROM qx_push_info a
+		<include refid="qxPushInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="uid != null and uid != ''">
+				AND a.uid = #{uid}
+			</if>
+			<if test="deviceId != null and deviceId != ''">
+				AND a.device_id = #{deviceId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="QxPushInfo">
+		SELECT 
+			<include refid="qxPushInfoColumns"/>
+		FROM qx_push_info a
+		<include refid="qxPushInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO qx_push_info(
+			uid,
+			account,
+			device_id,
+			device_type,
+			device_ip,
+			tag_type,
+			tag_address,
+			tag_app_version,
+			tag_churn_user,
+			tag_potential_pay,
+			tag_potential_loss,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{uid},
+			#{account},
+			#{deviceId},
+			#{deviceType},
+			#{deviceIp},
+			#{tagType},
+			#{tagAddress},
+			#{tagAppVersion},
+			#{tagChurnUser},
+			#{tagPotentialPay},
+			#{tagPotentialLoss},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!--去掉 update_time = #{updateTime},-->
+	<update id="update">
+		UPDATE qx_push_info SET 	
+			uid = #{uid},
+			account = #{account},
+			device_id = #{deviceId},
+			device_type = #{deviceType},
+			device_ip = #{deviceIp},
+			tag_type = #{tagType},
+			tag_address = #{tagAddress},
+			tag_app_version = #{tagAppVersion},
+			tag_churn_user = #{tagChurnUser},
+			tag_potential_pay = #{tagPotentialPay},
+			tag_potential_loss = #{tagPotentialLoss},
+			
+			create_time = #{createTime}
+		WHERE uid = #{uid}
+	</update>
+	
+	<update id="delete">
+		UPDATE qx_push_info SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE uid = #{uid}
+	</update>
+	
+	
+	
+	<select id="getInfoByDevID" resultType="QxPushInfo">
+		SELECT 
+			<include refid="qxPushInfoColumns"/>
+		FROM `qx_push_info` a
+		<include refid="qxPushInfoJoins"/>
+		WHERE a.device_id = #{device_id}
+	</select>
+	
+	<!--去掉 update_time = #{updateTime},-->
+	<update id="updateByDevID">
+		UPDATE `qx_push_info` SET 	
+			uid = #{uid},
+			account = #{account},
+			device_id = #{deviceId},
+			device_type = #{deviceType},
+			device_ip = #{deviceIp},
+			tag_type = #{tagType},
+			tag_address = #{tagAddress},
+			tag_app_version = #{tagAppVersion},
+			tag_churn_user = #{tagChurnUser},
+			tag_potential_pay = #{tagPotentialPay},
+			tag_potential_loss = #{tagPotentialLoss},
+			update_time = NOW(),
+			create_time = #{createTime}
+		WHERE device_id = #{deviceId}
+	</update>
+	
+</mapper>

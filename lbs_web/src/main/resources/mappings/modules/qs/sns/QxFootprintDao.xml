@@ -1,0 +1,846 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.sns.QxFootprintDao">
+
+	<sql id="QxFootprintColumns">
+		a.msid AS "msid",
+		a.to_id AS "toId",
+		a.to_name AS "toName",
+		a.from_id AS "fromId",
+		a.from_img AS "fromImg",
+		a.from_name AS
+		"fromName",
+		a.from_content AS "fromContent",
+		a.update_time AS
+		"updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<resultMap type="com.innovate.cms.modules.qs.entity.sns.QxFootprintWithPraiseAndComment"
+		id="footprintList">
+		<id property="footid" column="footid" />
+		<result property="uid" column="uid" />
+		<result property="footName" column="footName" />
+		<result property="footImg" column="footImg" />
+		<result property="footType" column="footType" />
+		<result property="footToId" column="footToId" />
+		<result property="footContent" column="footContent" />
+		<result property="footResult" column="footResult" />
+		<result property="footContentImg" column="footContentImg" />
+		<result property="footVsUid" column="footVsUid" />
+		<result property="footVsImg" column="footVsImg" />
+		<result property="footVsName" column="footVsName" />
+		<result property="footVsResult" column="footVsResult" />
+		<result property="footResultDesc" column="footResultDesc" />
+		<result property="updateTime" column="updateTime" />
+		
+ 		<collection property="praiseList" ofType="com.innovate.cms.modules.qs.entity.sns.QxFootprintPraise" resultMap="praises" />
+			
+		<collection property="commentList"
+			ofType="com.innovate.cms.modules.qs.entity.sns.QxFootprintComment">
+			<id property="fcid" column="fcid" />
+			<result property="msgType" column="msgType" />
+			<result property="fromCommentUid" column="fromCommentUid" />
+			<result property="fromCommentName" column="fromCommentName" />
+			<result property="fromCommentImg" column="fromCommentImg" />
+			<result property="toCommentUid" column="toCommentUid" />
+			<result property="toCommentName" column="toCommentName" />
+			<result property="comment" column="comment" />
+		</collection>
+	</resultMap>
+	<resultMap type="com.innovate.cms.modules.qs.entity.sns.Praise" id="praises">
+		<result property="praiseUid" column="praiseUid" />
+		<result property="praiseName" column="praiseName" />
+	</resultMap>
+	
+	<sql id="QxFootprintJoins">
+	</sql>
+
+	<select id="get" resultType="QxFootprint">
+		SELECT
+		<include refid="QxFootprintColumns" />
+		FROM qx_footprint a
+		<include refid="QxFootprintJoins" />
+		WHERE a.msid = #{msid}
+	</select>
+
+	<delete id="delRecommendedFriends" parameterType="java.util.List">
+		DELETE FROM qx_footprint where tfid in
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+
+	<select id="getFootprintByuid" resultType="QxFootprint">
+		SELECT
+		f.footid as "footid",
+		f.uid as "uid",
+		f.foot_name as "footName",
+		f.foot_img as "footImg",
+		f.foot_type as "footType",
+		f.foot_to_id as "footToId",
+		f.foot_content as "footContent",
+		f.foot_result as "footResult",
+		f.foot_content_img as "footContentImg",
+		f.foot_vs_uid as "footVsUid",
+		f.foot_vs_img as "footVsImg",
+		f.foot_vs_name as "footVsName",
+		f.foot_vs_result as "footVsResult",
+		f.foot_result_desc as "footResultDesc",
+		f.update_time as "updateTime"
+		FROM
+		qx_footprint AS f
+		WHERE
+		f.uid = #{uid} AND foot_vs_result="" AND f.visible=0
+	</select>
+	<select id="getFootprintByuidtop10" resultMap="footprintList">
+		SELECT
+			qf.footid,
+			qf.uid,
+			qf.footName,
+			qf.footImg,
+			qf.footType,
+			qf.footToId,
+			qf.footContent,
+			qf.footResult,
+			qf.footContentImg,
+			qf.footVsUid,
+			qf.footVsImg,
+			qf.footVsName,
+			qf.footVsResult,
+			qf.footResultDesc,
+			qf.updateTime,
+			qfp.praiseUid,
+			qfp.praiseName,
+			qfc.fcid,
+			qfc.msgType,
+			qfc.fromCommentUid,
+			qfc.fromCommentName,
+			qfc.fromCommentImg,
+			qfc.toCommentUid,
+			qfc.toCommentName,
+			qfc.`comment`
+		FROM
+			(
+				SELECT
+					f.footid AS "footid",
+					f.uid AS "uid",
+					f.foot_name AS "footName",
+					f.foot_img AS "footImg",
+					f.foot_type AS "footType",
+					f.foot_to_id AS "footToId",
+					f.foot_content AS "footContent",
+					f.foot_result AS "footResult",
+					f.foot_content_img AS "footContentImg",
+					f.foot_vs_uid AS "footVsUid",
+					f.foot_vs_img AS "footVsImg",
+					f.foot_vs_name AS "footVsName",
+					f.foot_vs_result AS "footVsResult",
+					f.foot_result_desc AS "footResultDesc",
+					f.update_time AS "updateTime"
+				FROM
+					qx_footprint AS f
+				WHERE
+					f.uid = #{uid}
+				AND foot_vs_result = ""
+				AND f.visible=0
+				ORDER BY
+					f.create_time DESC
+				LIMIT 10
+			) AS qf
+		LEFT JOIN (
+			SELECT
+				footid,
+				praise_uid AS "praiseUid",
+				praise_name AS "praiseName"
+			FROM
+				qx_footprint_praise
+			WHERE
+				del_flag = "0"
+		) AS qfp ON qf.footid = qfp.footid
+		LEFT JOIN (
+			SELECT
+				fcid,
+				footid,
+				msg_type AS "msgType",
+				from_comment_uid AS "fromCommentUid",
+				from_comment_name AS "fromCommentName",
+				from_comment_img AS "fromCommentImg",
+				to_comment_uid AS "toCommentUid",
+				to_comment_name AS "toCommentName",
+				`comment`
+			FROM
+				qx_footprint_comment
+			WHERE
+				del_flag = "0"
+		) AS qfc ON qf.footid = qfc.footid
+	</select>
+
+
+	<select id="getFootprintByuidup" resultMap="footprintList">
+		SELECT
+			qf.footid,
+			qf.uid,
+			qf.footName,
+			qf.footImg,
+			qf.footType,
+			qf.footToId,
+			qf.footContent,
+			qf.footResult,
+			qf.footContentImg,
+			qf.footVsUid,
+			qf.footVsImg,
+			qf.footVsName,
+			qf.footVsResult,
+			qf.footResultDesc,
+			qf.updateTime,
+			qfp.praiseUid,
+			qfp.praiseName,
+			qfc.fcid,
+			qfc.msgType,
+			qfc.fromCommentUid,
+			qfc.fromCommentName,
+			qfc.fromCommentImg,
+			qfc.toCommentUid,
+			qfc.toCommentName,
+			qfc.`comment`
+		FROM
+			(
+				SELECT
+					f.footid AS "footid",
+					f.uid AS "uid",
+					f.foot_name AS "footName",
+					f.foot_img AS "footImg",
+					f.foot_type AS "footType",
+					f.foot_to_id AS "footToId",
+					f.foot_content AS "footContent",
+					f.foot_result AS "footResult",
+					f.foot_content_img AS "footContentImg",
+					f.foot_vs_uid AS "footVsUid",
+					f.foot_vs_img AS "footVsImg",
+					f.foot_vs_name AS "footVsName",
+					f.foot_vs_result AS "footVsResult",
+					f.foot_result_desc AS "footResultDesc",
+					f.update_time AS "updateTime"
+				FROM
+					qx_footprint AS f
+				WHERE
+					f.uid = #{uid}
+				AND foot_vs_result = ""
+				AND f.footid &lt; #{footid}
+				AND f.visible=0
+				ORDER BY
+					f.create_time DESC
+				LIMIT 10
+			) AS qf
+		LEFT JOIN (
+			SELECT
+				footid,
+				praise_uid AS "praiseUid",
+				praise_name AS "praiseName"
+			FROM
+				qx_footprint_praise
+			WHERE
+				del_flag = "0"
+		) AS qfp ON qf.footid = qfp.footid
+		LEFT JOIN (
+			SELECT
+				fcid,
+				footid,
+				msg_type AS "msgType",
+				from_comment_uid AS "fromCommentUid",
+				from_comment_name AS "fromCommentName",
+				from_comment_img AS "fromCommentImg",
+				to_comment_uid AS "toCommentUid",
+				to_comment_name AS "toCommentName",
+				`comment`
+			FROM
+				qx_footprint_comment
+			WHERE
+				del_flag = "0"
+		) AS qfc ON qf.footid = qfc.footid
+		
+	</select>
+	<select id="getFootprintByuidAllnew" resultMap="footprintList">
+		SELECT
+			qf.footid,
+			qf.uid,
+			qf.footName,
+			qf.footImg,
+			qf.footType,
+			qf.footToId,
+			qf.footContent,
+			qf.footResult,
+			qf.footContentImg,
+			qf.footVsUid,
+			qf.footVsImg,
+			qf.footVsName,
+			qf.footVsResult,
+			qf.footResultDesc,
+			qf.updateTime,
+			qfp.praiseUid,
+			qfp.praiseName,
+			qfc.fcid,
+			qfc.msgType,
+			qfc.fromCommentUid,
+			qfc.fromCommentName,
+			qfc.fromCommentImg,
+			qfc.toCommentUid,
+			qfc.toCommentName,
+			qfc.`comment`
+		FROM
+			(
+				SELECT
+					f.footid AS "footid",
+					f.uid AS "uid",
+					f.foot_name AS "footName",
+					f.foot_img AS "footImg",
+					f.foot_type AS "footType",
+					f.foot_to_id AS "footToId",
+					f.foot_content AS "footContent",
+					f.foot_result AS "footResult",
+					f.foot_content_img AS "footContentImg",
+					f.foot_vs_uid AS "footVsUid",
+					f.foot_vs_img AS "footVsImg",
+					f.foot_vs_name AS "footVsName",
+					f.foot_vs_result AS "footVsResult",
+					f.foot_result_desc AS "footResultDesc",
+					f.update_time AS "updateTime"
+				FROM
+					qx_footprint AS f
+				WHERE
+					f.uid = #{uid}
+				AND foot_vs_result = ""
+				AND f.footid &gt; #{footid}
+				AND f.visible=0
+				ORDER BY
+					f.create_time DESC
+			) AS qf
+		LEFT JOIN (
+			SELECT
+				footid,
+				praise_uid AS "praiseUid",
+				praise_name AS "praiseName"
+			FROM
+				qx_footprint_praise
+			WHERE
+				del_flag = "0"
+		) AS qfp ON qf.footid = qfp.footid
+		LEFT JOIN (
+			SELECT
+				fcid,
+				footid,
+				msg_type AS "msgType",
+				from_comment_uid AS "fromCommentUid",
+				from_comment_name AS "fromCommentName",
+				from_comment_img AS "fromCommentImg",
+				to_comment_uid AS "toCommentUid",
+				to_comment_name AS "toCommentName",
+				`comment`
+			FROM
+				qx_footprint_comment
+			WHERE
+				del_flag = "0"
+		) AS qfc ON qf.footid = qfc.footid
+		
+	</select>
+
+	<select id="getFootprintByFootid" resultMap="footprintList">
+		SELECT
+			qf.footid,
+			qf.uid,
+			qf.footName,
+			qf.footImg,
+			qf.footType,
+			qf.footToId,
+			qf.footContent,
+			qf.footResult,
+			qf.footContentImg,
+			qf.footVsUid,
+			qf.footVsImg,
+			qf.footVsName,
+			qf.footVsResult,
+			qf.footResultDesc,
+			qf.updateTime,
+			qfp.praiseUid,
+			qfp.praiseName,
+			qfc.fcid,
+			qfc.msgType,
+			qfc.fromCommentUid,
+			qfc.fromCommentName,
+			qfc.fromCommentImg,
+			qfc.toCommentUid,
+			qfc.toCommentName,
+			qfc.`comment`
+		FROM
+			(
+				SELECT
+					f.footid AS "footid",
+					f.uid AS "uid",
+					f.foot_name AS "footName",
+					f.foot_img AS "footImg",
+					f.foot_type AS "footType",
+					f.foot_to_id AS "footToId",
+					f.foot_content AS "footContent",
+					f.foot_result AS "footResult",
+					f.foot_content_img AS "footContentImg",
+					f.foot_vs_uid AS "footVsUid",
+					f.foot_vs_img AS "footVsImg",
+					f.foot_vs_name AS "footVsName",
+					f.foot_vs_result AS "footVsResult",
+					f.foot_result_desc AS "footResultDesc",
+					f.update_time AS "updateTime"
+				FROM
+					qx_footprint AS f
+				WHERE
+					f.footid = #{footid}
+			) AS qf
+		LEFT JOIN (
+			SELECT
+				footid,
+				praise_uid AS "praiseUid",
+				praise_name AS "praiseName"
+			FROM
+				qx_footprint_praise
+			WHERE
+				del_flag = "0"
+		) AS qfp ON qf.footid = qfp.footid
+		LEFT JOIN (
+			SELECT
+				fcid,
+				footid,
+				msg_type AS "msgType",
+				from_comment_uid AS "fromCommentUid",
+				from_comment_name AS "fromCommentName",
+				from_comment_img AS "fromCommentImg",
+				to_comment_uid AS "toCommentUid",
+				to_comment_name AS "toCommentName",
+				`comment`
+			FROM
+				qx_footprint_comment
+			WHERE
+				del_flag = "0"
+		) AS qfc ON qf.footid = qfc.footid
+		
+	</select>
+	
+	<select id="findTemplate4Result" resultType="com.innovate.cms.modules.qs.entity.ques.Template4Result">
+		SELECT
+		qh.uid,
+		qr.text1,
+		qr.text2,
+		qr.text3,
+		qr.text4,
+		qr.results_tag as "resultsTag",
+		qg.group_name AS "groupName",
+		qg.group_description AS "groupDescription"
+		FROM
+		qx_history AS qh,
+		qx_questions_results AS qr,
+		qx_groups AS qg
+		WHERE
+		qh.gid = #{gid}
+		AND qh.gid = qg.gid
+		AND qh.uid = #{uid}
+		AND qh.results_tag = qr.results_tag
+		AND qh.gid = qr.gid
+		AND qh.del_flag = '0'
+		AND qr.del_flag = '0'
+	</select>
+
+	<select id="findTemplate5Result" resultType="com.innovate.cms.modules.qs.entity.ques.Template5Result">
+		SELECT
+		qm.gid,
+		qm.my_uid AS "myUid",
+		qm.my_img AS "myImg",
+		qm.my_name AS "myName",
+		qm.follow_uid AS "followUid",
+		qm.follow_img AS "followImg",
+		qm.follow_name AS "followName",
+		qm.match_result AS "matchResult",
+		qm.zone_content AS "zoneContent",
+		qm.title AS "title",
+		qg.group_name AS "groupName"
+		FROM
+		qx_match AS qm,
+		qx_groups AS qg
+		WHERE
+		qm.my_uid = #{myUid}
+		AND qm.gid = qg.gid
+		AND qm.follow_uid = #{followUid}
+		AND qm.gid = #{gid}
+		AND qm.del_flag = '0'
+		UNION
+		SELECT
+		qm.gid,
+		qm.my_uid AS "myUid",
+		qm.my_img AS "myImg",
+		qm.my_name AS "myName",
+		qm.follow_uid AS "followUid",
+		qm.follow_img AS "followImg",
+		qm.follow_name AS "followName",
+		qm.match_result AS "matchResult",
+		qm.zone_content AS
+		"zoneContent",
+		qm.title AS "title",
+		qg.group_name AS "groupName"
+		FROM
+		qx_match AS qm,
+		qx_groups AS qg
+		WHERE
+		qm.my_uid = #{followUid}
+		AND qm.gid = qg.gid
+		AND qm.follow_uid = #{myUid}
+		AND qm.gid = #{gid}
+		AND qm.del_flag = '0'
+	</select>
+	<select id="findTemplate5ResultStranger" resultType="com.innovate.cms.modules.qs.entity.ques.Template5Result">
+		SELECT
+		qm.gid,
+		qm.my_uid AS "myUid",
+		qm.my_img AS "myImg",
+		qm.my_name AS "myName",
+		qm.follow_uid AS "followUid",
+		qm.follow_img AS "followImg",
+		qm.follow_name AS "followName",
+		qm.match_result AS "matchResult",
+		qm.zone_content AS "zoneContent",
+		qm.title AS "title",
+		qg.group_name AS "groupName"
+		FROM
+		qx_match_stranger AS qm,
+		qx_groups AS qg
+		WHERE
+		qm.my_uid = #{myUid}
+		AND qm.gid = qg.gid
+		AND qm.follow_uid = #{followUid}
+		AND qm.gid = #{gid}
+		AND qm.del_flag = '0'
+		UNION
+		SELECT
+		qm.gid,
+		qm.my_uid AS "myUid",
+		qm.my_img AS "myImg",
+		qm.my_name AS "myName",
+		qm.follow_uid AS "followUid",
+		qm.follow_img AS "followImg",
+		qm.follow_name AS "followName",
+		qm.match_result AS "matchResult",
+		qm.zone_content AS
+		"zoneContent",
+		qm.title AS "title",
+		qg.group_name AS "groupName"
+		FROM
+		qx_match_stranger AS qm,
+		qx_groups AS qg
+		WHERE
+		qm.my_uid = #{followUid}
+		AND qm.gid = qg.gid
+		AND qm.follow_uid = #{myUid}
+		AND qm.gid = #{gid}
+		AND qm.del_flag = '0'
+	
+
+	</select>
+	<select id="findTemplate5ResultH5" resultType="com.innovate.cms.modules.qs.entity.ques.Template5Result">
+		SELECT
+		qm.gid,
+		qm.my_uid AS "myUid",
+		qm.my_img AS "myImg",
+		qm.my_name AS "myName",
+		qm.follow_uid AS "followUid",
+		qm.follow_img AS "followImg",
+		qm.follow_name AS "followName",
+		qm.match_result AS "matchResult",
+		qm.zone_content AS "zoneContent",
+		qm.title AS "title",
+		qg.group_name AS "groupName"
+		FROM
+		qx_match_h5 AS qm,
+		qx_groups AS qg
+		WHERE
+		qm.my_uid = #{myUid}
+		AND qm.gid = qg.gid
+		AND qm.follow_uid = #{followUid}
+		AND qm.gid = #{gid}
+		AND qm.del_flag = '0'
+		UNION
+		SELECT
+		qm.gid,
+		qm.my_uid AS "myUid",
+		qm.my_img AS "myImg",
+		qm.my_name AS "myName",
+		qm.follow_uid AS "followUid",
+		qm.follow_img AS "followImg",
+		qm.follow_name AS "followName",
+		qm.match_result AS "matchResult",
+		qm.zone_content AS
+		"zoneContent",
+		qm.title AS "title",
+		qg.group_name AS "groupName"
+		FROM
+		qx_match_h5 AS qm,
+		qx_groups AS qg
+		WHERE
+		qm.my_uid = #{followUid}
+		AND qm.gid = qg.gid
+		AND qm.follow_uid = #{myUid}
+		AND qm.gid = #{gid}
+		AND qm.del_flag = '0'
+	</select>
+
+	<select id="getFootidByGidAndUid" resultType="int">
+		SELECT
+			footid
+		FROM
+			qx_footprint
+		WHERE
+			uid = #{uid}
+		AND foot_to_id = #{gid}
+		AND del_flag = "0"
+	</select>
+
+	<!-- 改为插入小图g.small_icon 20160617 -->
+	<insert id="saveFootprintTemplate4">
+		INSERT INTO qx_footprint (
+		uid,
+		foot_type,
+		foot_to_id,
+		foot_result,
+		foot_name,
+		foot_img,
+		foot_content,
+		foot_content_img,
+		create_time
+		) SELECT
+		u.uid,
+		#{footType},
+		g.gid,
+		#{results},
+		u.nickname,
+		u.headimgurl,
+		g.group_name,
+		g.small_icon,
+		now()
+		FROM
+		system_user AS u,
+		qx_groups AS g WHERE u.uid=#{uid} AND g.gid=#{gid}
+
+	</insert>
+	<!-- 四期需求 改为插入结果图片，没有图片插入小图g.small_icon 20160712，增加结果描述foot_result_desc -->
+	<insert id="saveFootprintT4stage4">
+		INSERT INTO qx_footprint (
+			uid,
+			foot_type,
+			foot_to_id,
+			foot_result,
+			foot_name,
+			foot_img,
+			foot_content,
+			foot_content_img,
+			foot_result_desc,
+			create_time
+		) SELECT
+			u.uid,
+		#{footType},
+		g.gid,
+		#{results},
+			u.nickname,
+			u.headimgurl,
+			g.group_name,
+			case when LENGTH(r.text1)=0 then g.small_icon ELSE r.text1 end,
+			r.text3,
+			now()
+		FROM
+			system_user AS u,
+			qx_groups AS g,
+			qx_questions_results AS r
+		WHERE
+			u.uid = #{uid}
+		AND g.gid = #{gid}
+		AND r.gid = g.gid
+		AND r.results_tag = #{resultsTag} ON DUPLICATE KEY UPDATE foot_result = r.text2,
+		 foot_result_desc = r.text3,
+		 foot_content_img = CASE
+		WHEN LENGTH(r.text1) = 0 THEN
+			g.small_icon
+		ELSE
+			r.text1
+		END
+	</insert>
+	<insert id="saveFootprintTemplate5">
+		INSERT IGNORE INTO qx_footprint (
+		uid,
+		foot_type,
+		foot_to_id,
+		foot_vs_result,
+		foot_name,
+		foot_img,
+		foot_content,
+		foot_content_img,
+		foot_vs_uid,
+		foot_vs_name,
+		foot_vs_img,
+		create_time
+		) SELECT
+		u.uid,
+		#{footType},
+		g.gid,
+		#{results},
+		u.nickname,
+		u.headimgurl,
+		g.group_name,
+		g.icon,
+		u1.uid,
+		u1.nickname,
+		u1.headimgurl,
+		NOW()
+		FROM
+		system_user AS u,
+		system_user AS u1,
+		qx_groups AS g
+		WHERE
+		u.uid = #{uid}
+		AND g.gid = #{gid}
+		AND u1.uid = #{fuid}
+
+	</insert>
+	<insert id="saveFootprintTemplate5new" parameterType="com.innovate.cms.modules.qs.entity.sns.StoreFootPrint" useGeneratedKeys="true">
+		INSERT IGNORE INTO qx_footprint (
+		uid,
+		foot_type,
+		foot_to_id,
+		foot_vs_result,
+		foot_name,
+		foot_img,
+		foot_content,
+		foot_content_img,
+		foot_vs_uid,
+		foot_vs_name,
+		foot_vs_img,
+		create_time
+		) SELECT
+		u.uid,
+		#{footType},
+		g.gid,
+		#{results},
+		u.nickname,
+		u.headimgurl,
+		g.group_name,
+		g.icon,
+		u1.uid,
+		u1.nickname,
+		u1.headimgurl,
+		NOW()
+		FROM
+		system_user AS u,
+		system_user AS u1,
+		qx_groups AS g
+		WHERE
+		u.uid = #{uid}
+		AND g.gid = #{gid}
+		AND u1.uid = #{fuid}
+
+		<selectKey resultType="int" order="AFTER" keyProperty="footid">
+			SELECT LAST_INSERT_ID() AS footid
+		</selectKey>
+	</insert>
+	
+	<insert id="saveFootprint">
+		INSERT IGNORE INTO qx_footprint(
+		footid,
+		uid,
+		foot_name,
+		foot_img,
+		foot_type,
+		foot_to_id,
+		foot_content,
+		foot_result,
+		foot_content_img,
+		foot_vs_uid,
+		foot_vs_name,
+		foot_vs_img,
+		foot_vs_result,
+		update_time
+
+		) VALUES (
+		#{footid},
+		#{uid},
+		#{footName},
+		#{footImg},
+		#{footType},
+		#{footToId},
+		#{footContent},
+		#{footResult},
+		#{footContentImg},
+		#{footVsUid},
+		#{footVsName},
+		#{footVsImg},
+		#{footVsResult},
+		#{updateTime}
+		)
+	</insert>
+
+
+	<update id="delDuplicateFriends">
+		DELETE tf
+		FROM
+		qx_footprint AS tf,
+		qx_follow AS qf
+		WHERE
+		tf.uid=#{uid} and
+		tf.uid = qf.uid
+		AND tf.follow_uid = qf.follow_uid;
+	</update>
+
+	<update id="updateFootprint">
+		UPDATE qx_footprint
+		SET foot_name = (
+		CASE uid
+		WHEN #{uid} THEN
+		#{nickname}
+		ELSE
+		foot_name
+		END
+		),
+		foot_img = (
+		CASE uid
+		WHEN #{uid} THEN
+		#{headimgurl}
+		ELSE
+		foot_img
+		END
+		),
+		foot_vs_name = (
+		CASE foot_vs_uid
+		WHEN #{uid} THEN
+		#{nickname}
+		ELSE
+		foot_vs_name
+		END
+		),
+		foot_vs_img = (
+		CASE foot_vs_uid
+		WHEN #{uid} THEN
+		#{headimgurl}
+		ELSE
+		foot_vs_img
+		END
+		)
+		WHERE
+		del_flag = "0"
+		AND (uid = #{uid}
+		OR foot_vs_uid = #{uid})
+	</update>
+	<update id="setVisible">
+		UPDATE qx_footprint
+		SET visible = #{visible}
+		WHERE
+			uid = #{uid}
+		AND foot_to_id = #{gid}
+		
+	</update>
+
+</mapper>

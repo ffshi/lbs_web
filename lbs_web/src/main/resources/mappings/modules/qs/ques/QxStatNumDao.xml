@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.ques.QxStatNumDao">
+ 	<select id="getChannelByFsid" resultType="com.innovate.cms.modules.qs.entity.menus.Menu">
+		SELECT
+			cid
+		FROM
+			qx_features
+		WHERE
+			fsid = #{fsid}
+	</select>
+ 	<select id="getQxStatNumByUidCid" resultType="com.innovate.cms.modules.qs.entity.ques.QxStatNum">
+		SELECT
+			qsid,
+			uid,
+			cid,
+			num,
+			create_time AS "createTime",
+			update_time AS "updateTime"
+		FROM
+			qx_stat_num
+		WHERE
+			uid = #{uid}
+		AND cid = #{cid}
+	</select>
+ 	
+ 	
+ 	<insert id="saveQxStatNum" >
+		INSERT INTO qx_stat_num (
+			uid,
+			cid,
+			num,
+			create_time
+		)
+		VALUES
+			(
+				#{uid},
+				#{cid},
+				1,
+				NOW()
+			);
+	</insert>
+	
+	<update id="updateNum">
+		UPDATE qx_stat_num
+		SET num = #{num}
+		WHERE
+			uid = #{uid}
+		AND cid = #{cid}
+	</update>
+</mapper>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.sns.QxMessageDao">
+    
+	<sql id="qxMessageColumns">
+		a.msid AS "msid",
+		a.to_id AS "toId",
+		a.to_name AS "toName",
+		a.from_id AS "fromId",
+		a.from_img AS "fromImg",
+		a.from_name AS "fromName",
+		a.from_content AS "fromContent",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="qxMessageJoins">
+	</sql>
+    
+	<select id="get" resultType="QxMessage">
+		SELECT 
+			<include refid="qxMessageColumns"/>
+		FROM qx_message a
+		<include refid="qxMessageJoins"/>
+		WHERE a.msid = #{msid}
+	</select>
+	
+	<select id="findList" resultType="QxMessage">
+		SELECT 
+			<include refid="qxMessageColumns"/>
+		FROM qx_message a
+		<include refid="qxMessageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="msid != null and msid != ''">
+				AND a.msid = #{msid}
+			</if>
+			<if test="toId != null and toId != ''">
+				AND a.to_id = #{toId}
+			</if>
+			<if test="fromId != null and fromId != ''">
+				AND a.from_id = #{fromId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="QxMessage">
+		SELECT 
+			<include refid="qxMessageColumns"/>
+		FROM qx_message a
+		<include refid="qxMessageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO qx_message(
+			msid,
+			to_id,
+			to_name,
+			from_id,
+			from_img,
+			from_name,
+			from_content,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{msid},
+			#{toId},
+			#{toName},
+			#{fromId},
+			#{fromImg},
+			#{fromName},
+			#{fromContent},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+		<insert id="saveMessage">
+		INSERT INTO qx_message(
+			msid,
+			to_id,
+			to_name,
+			from_id,
+			from_img,
+			from_name,
+			from_content,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{msid},
+			#{toId},
+			#{toName},
+			#{fromId},
+			#{fromImg},
+			#{fromName},
+			#{fromContent},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE qx_message SET 	
+			msid = #{msid},
+			to_id = #{toId},
+			to_name = #{toName},
+			from_id = #{fromId},
+			from_img = #{fromImg},
+			from_name = #{fromName},
+			from_content = #{fromContent},
+			update_time = #{updateTime},
+			create_time = #{createTime}
+		WHERE msid = #{msid}
+	</update>
+	
+	<update id="delete">
+		UPDATE qx_message SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE msid = #{msid}
+	</update>
+	<update id="updateMessage">
+		UPDATE qx_message
+		SET to_name = (
+			CASE to_id
+			WHEN #{uid} THEN
+				#{nickname}
+			ELSE
+				to_name
+			END
+		),
+		 from_name = (
+			CASE from_id
+			WHEN #{uid} THEN
+				#{nickname}
+			ELSE
+				from_name
+			END
+		),
+		 from_img = (
+			CASE from_id
+			WHEN #{uid} THEN
+				#{headimgurl}
+			ELSE
+				from_img
+			END
+		)
+		WHERE
+			del_flag = "0"
+			AND (from_id = #{uid}
+			OR to_id = #{uid})
+	</update>
+	
+</mapper>

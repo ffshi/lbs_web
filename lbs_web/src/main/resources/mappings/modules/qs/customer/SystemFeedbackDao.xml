@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.customer.SystemFeedbackDao">
+    
+	<sql id="systemFeedbackColumns">
+		a.fbid AS "fbid",
+		a.uid AS "uid",
+		a.mobile AS "mobile",
+		a.content AS "content",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="systemFeedbackJoins">
+	</sql>
+    
+	<select id="get" resultType="SystemFeedback">
+		SELECT 
+			<include refid="systemFeedbackColumns"/>
+		FROM system_feedback a
+		<include refid="systemFeedbackJoins"/>
+		WHERE a.fbid = #{fbid}
+	</select>
+	
+	<select id="findList" resultType="SystemFeedback">
+		SELECT 
+			<include refid="systemFeedbackColumns"/>
+		FROM system_feedback a
+		<include refid="systemFeedbackJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="fbid != null and fbid != ''">
+				AND a.fbid = #{fbid}
+			</if>
+			<if test="uid != null and uid != ''">
+				AND a.uid = #{uid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SystemFeedback">
+		SELECT 
+			<include refid="systemFeedbackColumns"/>
+		FROM system_feedback a
+		<include refid="systemFeedbackJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO system_feedback(
+			fbid,
+			uid,
+			mobile,
+			content,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{fbid},
+			#{uid},
+			#{mobile},
+			#{content},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE system_feedback SET 	
+			fbid = #{fbid},
+			uid = #{uid},
+			mobile = #{mobile},
+			content = #{content},
+			update_time = #{updateTime},
+			create_time = #{createTime}
+		WHERE fbid = #{fbid}
+	</update>
+	
+	<update id="delete">
+		UPDATE system_feedback SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE fbid = #{fbid}
+	</update>
+	
+</mapper>

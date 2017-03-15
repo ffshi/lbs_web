@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.ques.QxQuestionsResultsDao">
+    
+	<sql id="qxQuestionsResultsColumns">
+		a.qrid AS "qrid",
+		a.create_name AS "createName",
+		a.gid AS "gid",
+		a.results_tag AS "resultsTag",
+		a.text1 AS "text1",
+		a.text2 AS "text2",
+		a.text3 AS "text3",
+		a.text4 AS "text4",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="qxQuestionsResultsJoins">
+	</sql>
+    
+    
+    <select id="findResultsBygid" resultType="com.innovate.cms.modules.qs.entity.ques.Result">
+		SELECT 
+			a.qrid AS "qrid",
+			a.gid AS "gid",
+			a.results_tag  AS "resultsTag",
+			a.text1 AS "text1",
+			a.text2 AS "text2",
+			a.text3 AS "text3",
+			a.text4 AS "text4"
+			
+		FROM qx_questions_results a
+		WHERE 
+			a.gid = #{gid} and a.del_flag = '0'
+	</select>
+    <select id="findResultsBygid5" resultType="com.innovate.cms.modules.qs.entity.ques.Result5">
+		SELECT
+			z.zone as "zone",
+			z.zone_content as "zoneContent",
+			z.title as "title"
+		FROM
+			qx_zone AS z,
+			qx_zone_answer AS a
+		WHERE
+			a.gid = #{gid}
+		AND a.zone_type = z.zone_type;
+	</select>
+    
+	<select id="get" resultType="QxQuestionsResults">
+		SELECT 
+			<include refid="qxQuestionsResultsColumns"/>
+		FROM qx_questions_results a
+		<include refid="qxQuestionsResultsJoins"/>
+		WHERE a.qrid = #{qrid}
+	</select>
+	
+	
+	
+	<select id="findList" resultType="QxQuestionsResults">
+		SELECT 
+			<include refid="qxQuestionsResultsColumns"/>
+		FROM qx_questions_results a
+		<include refid="qxQuestionsResultsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="qrid != null and qrid != ''">
+				AND a.qrid = #{qrid}
+			</if>
+			<if test="gid != null and gid != ''">
+				AND a.gid = #{gid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+
+	
+	<select id="findAllList" resultType="QxQuestionsResults">
+		SELECT 
+			<include refid="qxQuestionsResultsColumns"/>
+		FROM qx_questions_results a
+		<include refid="qxQuestionsResultsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO qx_questions_results(
+			qrid,
+			create_name,
+			gid,
+			results_tag,
+			text1,
+			text2,
+			text3,
+			text4,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{qrid},
+			#{createName},
+			#{gid},
+			#{resultsTag},
+			#{text1},
+			#{text2},
+			#{text3},
+			#{text4},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE qx_questions_results SET 	
+			qrid = #{qrid},
+			create_name = #{createName},
+			gid = #{gid},
+			results_tag = #{resultsTag},
+			text1 = #{text1},
+			text2 = #{text2},
+			text3 = #{text3},
+			text4 = #{text4},
+			update_time = #{updateTime},
+			create_time = #{createTime}
+		WHERE qrid = #{qrid}
+	</update>
+	
+	<update id="delete">
+		UPDATE qx_questions_results SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE qrid = #{qrid}
+	</update>
+	
+</mapper>

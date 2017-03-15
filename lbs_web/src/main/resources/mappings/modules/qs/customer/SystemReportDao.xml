@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.customer.SystemReportDao">
+    
+	<sql id="systemReportColumns">
+		a.rid AS "rid",
+		a.uid AS "uid",
+		a.qid AS "qid",
+		a.question AS "question",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="systemReportJoins">
+	</sql>
+    
+	<select id="get" resultType="SystemReport">
+		SELECT 
+			<include refid="systemReportColumns"/>
+		FROM system_report a
+		<include refid="systemReportJoins"/>
+		WHERE a.rid = #{rid}
+	</select>
+	
+	<select id="findList" resultType="SystemReport">
+		SELECT 
+			<include refid="systemReportColumns"/>
+		FROM system_report a
+		<include refid="systemReportJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="rid != null and rid != ''">
+				AND a.rid = #{rid}
+			</if>
+			<if test="uid != null and uid != ''">
+				AND a.uid = #{uid}
+			</if>
+			<if test="qid != null and qid != ''">
+				AND a.qid = #{qid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SystemReport">
+		SELECT 
+			<include refid="systemReportColumns"/>
+		FROM system_report a
+		<include refid="systemReportJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO system_report(
+			rid,
+			uid,
+			qid,
+			question,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{rid},
+			#{uid},
+			#{qid},
+			#{question},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE system_report SET 	
+			rid = #{rid},
+			uid = #{uid},
+			qid = #{qid},
+			question = #{question},
+			update_time = #{updateTime},
+			create_time = #{createTime}
+		WHERE rid = #{rid}
+	</update>
+	
+	<update id="delete">
+		UPDATE system_report SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE rid = #{rid}
+	</update>
+	
+</mapper>

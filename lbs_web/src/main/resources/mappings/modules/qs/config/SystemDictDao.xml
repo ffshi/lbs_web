@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.config.SystemDictDao">
+    
+	<sql id="systemDictColumns">
+		a.did AS "did",
+		a.value AS "value",
+		a.label AS "label",
+		a.type AS "type",
+		a.description AS "description",
+		a.sort AS "sort",
+		a.parent_id AS "parent.id",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="systemDictJoins">
+	</sql>
+    
+	<select id="get" resultType="SystemDict">
+		SELECT 
+			<include refid="systemDictColumns"/>
+		FROM system_dict a
+		<include refid="systemDictJoins"/>
+		WHERE a.did = #{did}
+	</select>
+	
+	<select id="findList" resultType="SystemDict">
+		SELECT 
+			<include refid="systemDictColumns"/>
+		FROM system_dict a
+		<include refid="systemDictJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="did != null and did != ''">
+				AND a.did = #{did}
+			</if>
+			<if test="value != null and value != ''">
+				AND a.value = #{value}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SystemDict">
+		SELECT 
+			<include refid="systemDictColumns"/>
+		FROM system_dict a
+		<include refid="systemDictJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findListByLabel" resultType="SystemDict">
+		SELECT 
+			<include refid="systemDictColumns"/>
+		FROM system_dict a
+		<include refid="systemDictJoins"/>
+		<where>
+			a.del_flag = '0'
+			AND a.label = #{label}
+		</where>		
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO system_dict(
+			did,
+			value,
+			label,
+			type,
+			description,
+			sort,
+			parent_id,
+			update_time,
+			create_time,
+			remarks,
+			del_flag
+		) VALUES (
+			#{did},
+			#{value},
+			#{label},
+			#{type},
+			#{description},
+			#{sort},
+			#{parent.id},
+			#{updateTime},
+			#{createTime},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE system_dict SET 	
+			did = #{did},
+			value = #{value},
+			label = #{label},
+			type = #{type},
+			description = #{description},
+			sort = #{sort},
+			parent_id = #{parent.id},
+			update_time = #{updateTime},
+			create_time = #{createTime},
+			remarks = #{remarks}
+		WHERE did = #{did}
+	</update>
+	
+	<update id="delete">
+		UPDATE system_dict SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE did = #{did}
+	</update>
+	
+	
+	
+	<insert id="openSwitch">
+		INSERT INTO `temp_follow` (
+			`uid`,
+			`follow_uid`,
+			`follow_img`,
+			`follow_name`
+		) SELECT
+			a1.uid,
+			a1.follow_uid,
+			a1.follow_img,
+			a1.follow_name
+		FROM
+			(
+				SELECT
+					#{uid} AS "uid",
+					su.uid AS "follow_uid",
+					su.headimgurl AS "follow_img",
+					su.nickname AS "follow_name"
+				FROM
+					system_dict AS a,
+					system_user AS su
+				WHERE
+					a.label = 'switch'
+				AND a.`value` = su.uid
+				AND a.del_flag = '0'
+				AND su.del_flag = '0'
+				AND su.uid != #{uid}
+			) a1
+		WHERE
+			NOT EXISTS (
+				SELECT
+					'x'
+				FROM
+					temp_follow AS a2
+				WHERE
+					a1.follow_uid = a2.follow_uid
+				AND a1.uid = a2.uid
+			)
+	</insert>
+	
+	<update id="closeSwitch">
+		UPDATE `qx_follow` AS a1,
+		 system_dict AS a2
+		SET a1.`del_flag` = '1'
+		WHERE
+			a1.uid = #{uid}
+		AND a1.del_flag = '0'
+		AND a2.label = 'switch'
+		AND a1.follow_uid = a2.`value`
+	</update>
+	
+</mapper>

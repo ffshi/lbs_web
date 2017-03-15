@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.sns.QxUserMsgDao">
+
+	<insert id="saveUserMsg">
+		INSERT INTO qx_user_msg(
+		umid,
+		uid ,
+		msg_name,
+		msg_img ,
+		msg_type ,
+		msg_type_name,
+		msg_jump_id ,
+		msg_content1 ,
+		msg_content2 ,
+		msg_content3 ,
+		create_time
+
+
+		) VALUES (
+		#{umid },
+		#{uid },
+		#{msgName },
+		#{msgImg },
+		#{msgType },
+		#{msgTypeName },
+		#{msgJumpId },
+		#{msgContent1 },
+		#{msgContent2 },
+		#{msgContent3 },
+		#{createTime }
+		)
+	</insert>
+
+	<update id="delUserMsg">
+		UPDATE qx_user_msg SET
+		del_flag = '1'
+		WHERE umid = #{umid}
+	</update>
+
+	<select id="getCount" resultType="int">
+		SELECT
+		COUNT(1)
+		FROM
+		qx_user_msg
+		um
+		WHERE
+		um.uid = #{uid}
+		OR um.uid = 'official'
+		AND um.del_flag = '0'
+	</select>
+
+	<select id="getFollowMsgCount" resultType="int">
+		SELECT
+		COUNT(1)
+		FROM
+		(
+		SELECT
+		qum.uid
+		FROM
+		(
+		SELECT
+		uid,
+		msg_jump_id,
+		create_time
+		FROM
+		qx_user_msg
+		WHERE
+		msg_type = 3
+		AND del_flag = '0'
+		AND uid = #{uid}
+		ORDER BY
+		create_time DESC
+		) AS qum
+		LEFT JOIN qx_follow qf ON qum.uid = qf.uid
+		AND qum.msg_jump_id = qf.follow_uid
+		AND qf.del_flag = '0'
+		GROUP BY
+		qum.uid,
+		qum.msg_jump_id
+		) a
+	</select>
+	
+	<select id="lastestFollowMsg" resultType="com.innovate.cms.modules.data.entity.FollowMsgToJson">
+		SELECT
+			umid,
+			qum.msg_name AS msgName,
+			qum.msg_img AS msgImg,
+			qum.msg_jump_id AS msgJumpId,
+			qum.msg_content1 AS msgContent1,
+			qum.create_time AS createTime,
+		IF (qf.uid IS NULL, '0', '1') AS isFriend
+		FROM
+			(
+				SELECT
+					umid,
+					uid,
+					msg_name,
+					msg_img,
+					msg_jump_id,
+					msg_content1,
+					create_time
+				FROM
+					qx_user_msg
+				WHERE
+					msg_type = '3'
+				AND del_flag = '0'
+				AND uid = #{uid}
+				ORDER BY
+					create_time DESC
+			) AS qum
+		LEFT JOIN qx_follow qf ON qum.uid = qf.uid
+		AND qum.msg_jump_id = qf.follow_uid
+		AND qf.del_flag = '0'
+		GROUP BY
+			qum.uid,
+			qum.msg_jump_id
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pullupFollowMsg" resultType="com.innovate.cms.modules.data.entity.FollowMsgToJson">
+	SELECT
+			umid,
+			qum.msg_name AS msgName,
+			qum.msg_img AS msgImg,
+			qum.msg_jump_id AS msgJumpId,
+			qum.msg_content1 AS msgContent1,
+			qum.create_time AS createTime,
+		IF (qf.uid IS NULL, '0', '1') AS isFriend
+		FROM
+			(
+				SELECT
+					umid,
+					uid,
+					msg_name,
+					msg_img,
+					msg_jump_id,
+					msg_content1,
+					create_time
+				FROM
+					qx_user_msg
+				WHERE
+					msg_type = '3'
+				AND del_flag = '0'
+				AND uid = #{uid}
+				AND umid &lt; #{umid}
+				ORDER BY
+					create_time DESC
+			) AS qum
+		LEFT JOIN qx_follow qf ON qum.uid = qf.uid
+		AND qum.msg_jump_id = qf.follow_uid
+		AND qf.del_flag = '0'
+		GROUP BY
+			qum.uid,
+			qum.msg_jump_id
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pulldownFollowMsg" resultType="com.innovate.cms.modules.data.entity.FollowMsgToJson">
+	SELECT
+			umid,
+			qum.msg_name AS msgName,
+			qum.msg_img AS msgImg,
+			qum.msg_jump_id AS msgJumpId,
+			qum.msg_content1 AS msgContent1,
+			qum.create_time AS createTime,
+		IF (qf.uid IS NULL, '0', '1') AS isFriend
+		FROM
+			(
+				SELECT
+					umid,
+					uid,
+					msg_name,
+					msg_img,
+					msg_jump_id,
+					msg_content1,
+					create_time
+				FROM
+					qx_user_msg
+				WHERE
+					msg_type = '3'
+				AND del_flag = '0'
+				AND uid = #{uid}
+				AND umid &gt; #{umid}
+				ORDER BY
+					create_time DESC
+			) AS qum
+		LEFT JOIN qx_follow qf ON qum.uid = qf.uid
+		AND qum.msg_jump_id = qf.follow_uid
+		AND qf.del_flag = '0'
+		GROUP BY
+			qum.uid,
+			qum.msg_jump_id
+		LIMIT #{pageSize}
+	</select>
+
+	<select id="getFollowMsgList" resultType="com.innovate.cms.modules.data.entity.FollowMsgToJson">
+		SELECT
+		umid,
+		qum.msg_name AS msgName,
+		qum.msg_img AS msgImg,
+		qum.msg_jump_id AS msgJumpId,
+		qum.msg_content1 AS msgContent1,
+		qum.create_time AS createTime,
+
+		IF (qf.uid IS NULL, '0', '1') AS isFriend
+		FROM
+		(
+		SELECT
+		umid,
+		uid,
+		msg_name,
+		msg_img,
+		msg_jump_id,
+		msg_content1,
+		create_time
+		FROM
+		qx_user_msg
+		WHERE
+		msg_type = '3'
+		AND del_flag = '0'
+		AND uid = #{uid}
+		ORDER BY
+		create_time DESC
+		) AS qum
+		LEFT JOIN qx_follow qf ON qum.uid = qf.uid
+		AND qum.msg_jump_id = qf.follow_uid
+		AND qf.del_flag = '0'
+		GROUP BY
+		qum.uid,
+		qum.msg_jump_id
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<select id="getCommentPraiseMsgCount" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			qx_user_msg
+		WHERE
+		del_flag = "0"
+		AND	uid = #{uid}
+		AND msg_type IN 
+	    <foreach item="item" index="index" collection="msgTypes" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+	</select>
+	
+	<select id="getCommentPraiseMsgList" resultType="com.innovate.cms.modules.qs.entity.sns.QxUserMsg">
+		SELECT
+			umid,
+			msg_name AS msgName,
+			msg_img AS msgImg,
+			msg_jump_id AS msgJumpId,
+			msg_content1 AS msgContent1,
+			create_time AS createTime,
+			msg_type AS msgType,
+			msg_type_name AS msgTypeName
+		FROM
+			qx_user_msg
+		WHERE
+		del_flag = "0"
+		AND	uid = #{uid}
+		AND msg_type IN
+	    <foreach item="item" index="index" collection="msgTypes" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		ORDER BY create_time DESC
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<select id="getSystemMsgCount" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			qx_user_msg
+		WHERE
+		del_flag = "0"
+		AND msg_type IN 
+	    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+	</select>
+	
+	<select id="getSystemMsgList" resultType="com.innovate.cms.modules.qs.entity.sns.QxUserMsg">
+		SELECT
+			umid,
+			msg_name AS msgName,
+			msg_img AS msgImg,
+			msg_jump_id AS msgJumpId,
+			msg_content1 AS msgContent1,
+			create_time AS createTime,
+			msg_type AS msgType
+		FROM
+			qx_user_msg
+		WHERE
+		del_flag = "0"
+		AND msg_type IN
+	    <foreach item="item" index="index" collection="msgTypes" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		ORDER BY create_time DESC
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<select id="getMsgCountByType" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			qx_user_msg
+		WHERE
+			del_flag = "0"
+		AND uid = #{uid}
+		AND msg_type = #{msgType}
+	</select>
+	
+	<select id="getMsgListByType" resultType="com.innovate.cms.modules.qs.entity.sns.QxUserMsg">
+		SELECT
+			umid,
+			msg_name AS msgName,
+			msg_img AS msgImg,
+			msg_jump_id AS msgJumpId,
+			msg_content1 AS msgContent1,
+			create_time AS createTime
+		FROM
+			qx_user_msg
+		WHERE
+			del_flag = "0"
+		AND uid = #{uid}
+		AND msg_type = #{msgType}
+		ORDER BY create_time DESC
+		LIMIT #{offset}, #{limit}
+	</select>
+
+	<select id="get1LevelMsgList" resultType="com.innovate.cms.modules.data.entity.OneLevelMsgToJson">
+		SELECT
+			m.umid AS "umid",
+			g.msg_group_id AS "msgGroupId",
+			m.msg_content1 AS "msgContent1",
+			g.msg_group_img AS "msgGroupImg",
+			g.msg_group_name AS "msgGroupName",
+			m.msg_name AS "msgName",
+			m.msg_type AS "msgType",
+			m.create_time AS "createTime"
+		FROM
+			qx_user_msg m,
+			qx_user_msg_group g
+		WHERE
+			umid IN (
+				SELECT
+					max(umid)
+				FROM
+					(
+						SELECT
+							m.umid AS umid,
+							m.msg_type AS msg_type,
+							g.msg_group_id AS msg_group_id
+						FROM
+							qx_user_msg m,
+							qx_user_msg_group g
+						WHERE
+						uid in(#{uid},'official')
+						AND	m.del_flag = '0'
+						AND m.msg_type = g.msg_type
+						AND m.umid > #{umid}
+					) t
+				GROUP BY
+					msg_group_id
+			)
+		AND m.msg_type = g.msg_type
+		ORDER BY
+			m.umid
+	</select>
+
+	<select id="countMsgByMsgType" resultType="com.innovate.cms.modules.data.entity.OneLevelMsgCountToJson">
+		SELECT
+			msg_group_id AS "msgGroupId",
+			count(1) AS "count"
+		FROM
+			(
+				SELECT
+					m.umid AS umid,
+					m.msg_type AS msg_type,
+					g.msg_group_id AS msg_group_id
+				FROM
+					qx_user_msg m,
+					qx_user_msg_group g
+				WHERE
+				uid in(#{uid},'official')
+				AND	m.del_flag = '0'
+				AND m.msg_type = g.msg_type
+				AND m.umid > #{umid}
+			) t
+		GROUP BY
+			msg_group_id;
+	</select>
+	
+	
+	<select id="lastestRecommendFriendMsg" resultType="com.innovate.cms.modules.data.entity.RecommendFriendMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.del_flag = '0'
+		AND msg_type in ('5')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="lastestCommentAndPraiseMsg" resultType="com.innovate.cms.modules.data.entity.CommentAndPraiseMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.del_flag = '0'
+		AND msg_type in('1','2','8','9','10')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="lastestOfficialInfoMsg" resultType="com.innovate.cms.modules.data.entity.OfficialInfoMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid in(#{uid},'official')
+		AND m.del_flag = '0'
+		AND msg_type in('6','7')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="lastestInteractionInfoMsg" resultType="com.innovate.cms.modules.data.entity.InteractionInfoMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.del_flag = '0'
+		AND msg_type in('4')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	
+	<!-- 上拉获取历史信息 -->
+	<select id="pullupRecommendFriendMsg" resultType="com.innovate.cms.modules.data.entity.RecommendFriendMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.umid  &lt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in ('5')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pullupCommentAndPraiseMsg" resultType="com.innovate.cms.modules.data.entity.CommentAndPraiseMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.umid  &lt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in('1','2','8','9','10')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pullupOfficialInfoMsg" resultType="com.innovate.cms.modules.data.entity.OfficialInfoMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid in(#{uid},'official')
+		AND m.umid  &lt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in('6','7')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pullupInteractionInfoMsg" resultType="com.innovate.cms.modules.data.entity.InteractionInfoMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.umid  &lt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in('4')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	
+	
+	<!-- 下拉信息 -->
+	<select id="pulldownRecommendFriendMsg" resultType="com.innovate.cms.modules.data.entity.RecommendFriendMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.umid  &gt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in ('5')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pulldownCommentAndPraiseMsg" resultType="com.innovate.cms.modules.data.entity.CommentAndPraiseMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.umid  &gt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in('1','2','8','9','10')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pulldownOfficialInfoMsg" resultType="com.innovate.cms.modules.data.entity.OfficialInfoMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid in(#{uid},'official')
+		AND m.umid  &gt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in('6','7')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	<select id="pulldownInteractionInfoMsg" resultType="com.innovate.cms.modules.data.entity.InteractionInfoMsgToJSon">
+		SELECT
+			m.msg_type AS "msgTpye",
+			msg_img AS "msgImg",
+			m.msg_type AS "msgType",
+			m.msg_jump_id AS "msgJumpId",
+			m.create_time AS "createTime",
+			m.umid AS "umid",
+			m.msg_content1 AS "msgContent1"
+		FROM
+			qx_user_msg m
+		WHERE
+			uid = #{uid}
+		AND m.umid  &gt; #{umid}
+		AND m.del_flag = '0'
+		AND msg_type in('4')
+		ORDER BY
+			m.create_time DESC
+		LIMIT #{pageSize}
+	</select>
+	
+	
+
+
+	<update id="updateUserMessage">
+		UPDATE qx_user_msg
+		SET msg_name = #{nickname}, msg_img = #{headimgurl}
+		WHERE
+		del_flag = "0"
+		AND msg_jump_id = #{uid}
+		AND (msg_type = "1" OR msg_type = "3")
+	</update>
+</mapper>

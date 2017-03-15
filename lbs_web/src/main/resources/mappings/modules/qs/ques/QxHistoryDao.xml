@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.ques.QxHistoryDao">
+
+	<sql id="qxHistoryColumns">
+		a.htid AS "htid",
+		a.uid AS "uid",
+		a.fsid AS "fsid",
+		a.gid AS
+		"gid",
+		a.results AS "results",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+
+	<sql id="qxHistoryJoins">
+	</sql>
+
+	<select id="get" resultType="QxHistory">
+		SELECT
+		<include refid="qxHistoryColumns" />
+		FROM qx_history a
+		<include refid="qxHistoryJoins" />
+		WHERE a.htid = #{htid}
+	</select>
+
+	<select id="isExist" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			qx_history a
+		WHERE
+			a.gid = #{gid} AND a.uid=#{uid} AND a.qid=#{qid}
+	</select>
+	
+	<select id="getT4result" resultType="com.innovate.cms.modules.qs.entity.ques.T4result">
+		SELECT
+		    g.gid as gid,
+			u.uid AS uid,
+			u.nickname AS nickname,
+			u.headimgurl AS headimgurl,
+			g.group_name AS groupName,
+			r.text1 AS rPic,
+			r.text2 AS rTtitle,
+			r.text3 AS rDescription
+		FROM
+			qx_history h,
+			qx_questions_results r,
+			qx_groups g,
+			system_user u
+		WHERE
+			h.uid = #{uid}
+		AND h.gid = #{gid}
+		AND h.gid = g.gid
+		AND h.results_tag = r.results_tag
+		AND h.gid = r.gid
+		AND h.uid = u.uid
+	</select>
+	<select id="doneGroup" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			qx_history a
+		WHERE
+			a.uid=#{uid} AND a.gid = #{gid}
+	</select>
+	
+	<select id="getDoneQuestionGid" resultType="com.innovate.cms.modules.qs.entity.ques.T0History">		
+		SELECT
+			gid,results as "selected",create_time
+		FROM
+			qx_history
+		WHERE
+			uid = #{uid}
+		AND template_tag = #{templateTag}
+		ORDER BY
+			create_time DESC LIMIT 1000
+	</select>
+	
+	
+	<select id="totalByuidgid" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			qx_follow AS qf
+		LEFT JOIN qx_history AS qh ON qf.uid = #{uid}
+		AND qf.follow_uid = qh.uid
+		AND qh.gid = #{gid}
+	</select>
+	
+
+	
+	<select id="totalByuid" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			qx_history a
+		WHERE
+			a.uid=#{uid} AND a.del_flag='0'
+	</select>
+	
+	<select id="userShare" resultType="com.innovate.cms.modules.data.entity.UserSelect">
+		SELECT
+			u.uid,
+			u.nickname,
+			u.headimgurl,
+			h.results as "seqId"
+		FROM
+			system_user u,
+			qx_history h
+		WHERE
+		h.gid=#{gid} AND h.uid=#{uid} and h.uid=u.uid
+	</select>
+	<select id="userSelects" resultType="com.innovate.cms.modules.data.entity.UserSelect">
+		SELECT
+			u.uid,
+			u.nickname,
+			u.headimgurl,
+			h.results as "seqId"
+		FROM
+			system_user u,
+			qx_history h
+		WHERE
+		h.gid=#{gid} AND h.results=#{seqId} and h.uid=u.uid limit 20
+	</select>
+	
+	<select id="findList" resultType="QxHistory">
+		SELECT
+		<include refid="qxHistoryColumns" />
+		FROM qx_history a
+		<include refid="qxHistoryJoins" />
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="htid != null and htid != ''">
+				AND a.htid = #{htid}
+			</if>
+			<if test="uid != null and uid != ''">
+				AND a.uid = #{uid}
+			</if>
+			<if test="fsid != null and fsid != ''">
+				AND a.fsid = #{fsid}
+			</if>
+			<if test="gid != null and gid != ''">
+				AND a.gid = #{gid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findAllList" resultType="QxHistory">
+		SELECT
+		<include refid="qxHistoryColumns" />
+		FROM qx_history a
+		<include refid="qxHistoryJoins" />
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="getVisible" resultType="com.innovate.cms.modules.data.entity.VisibleToJson">
+		SELECT
+			visible
+		FROM
+			qx_history
+		WHERE
+			uid = #{uid}
+		AND gid = #{gid}
+	</select>
+	
+	<select id="findUsersWithSameResult" resultType="com.innovate.cms.modules.data.entity.RegUserInfoToJson">
+		SELECT
+			qh.uid,
+			su.nickname,
+			su.headimgurl
+		FROM
+			qx_history qh,
+			system_user su
+		WHERE
+			qh.uid = su.uid
+		AND qh.uid != #{uid}
+		AND qh.gid = #{gid}
+		AND qh.results_tag = #{resultsTag}
+		AND su.del_flag = "0"
+		ORDER BY
+			qh.create_time DESC
+		LIMIT 20
+	</select>
+	
+	<insert id="saveHistory">
+		INSERT ignore INTO qx_history(
+			htid,
+			uid,
+			fsid,
+			gid,
+			qid,
+			results,
+			results_tag,
+			template_tag,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{htid},
+			#{uid},
+			#{fsid},
+			#{gid},
+			#{qid},
+			#{results},
+			#{resultsTag},
+			#{templateTag},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		) ON DUPLICATE KEY UPDATE results=#{results},results_tag=#{resultsTag}
+	</insert>
+	
+	<insert id="insert">
+		INSERT INTO qx_history(
+		htid,
+		uid,
+		fsid,
+		gid,
+		results,
+		update_time,
+		create_time,
+		del_flag
+		) VALUES (
+		#{htid},
+		#{uid},
+		#{fsid},
+		#{gid},
+		#{results},
+		#{updateTime},
+		#{createTime},
+		#{delFlag}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE qx_history SET
+		htid = #{htid},
+		uid = #{uid},
+		fsid = #{fsid},
+		gid = #{gid},
+		results = #{results},
+		update_time =
+		#{updateTime},
+		create_time = #{createTime}
+		WHERE htid = #{htid}
+	</update>
+	
+
+
+	<update id="updateHistory">
+		UPDATE qx_history SET 	
+			results = #{results},
+			results_tag = #{resultsTag}
+		WHERE uid=#{uid} AND gid = #{gid}
+	</update>
+	
+	
+	<update id="delete">
+		UPDATE qx_history SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE htid = #{htid}
+	</update>
+	<update id="setVisible">
+		UPDATE qx_history
+		SET visible = #{visible}
+		WHERE
+			uid = #{uid}
+		AND gid = #{gid}
+	</update>
+</mapper>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.tag.QxTagDao">
+
+	<select id="get" resultType="QxTag">
+
+	</select>
+
+	<select id="findList" resultType="QxTag">
+
+	</select>
+
+
+	<insert id="insert">
+
+
+	</insert>
+
+	<insert id="saveQxTagGroup">
+		INSERT IGNORE INTO `qx_tag_group` (
+		`gid`,
+		`tagId`,
+		`tagName`
+		)
+		VALUES
+		(
+		#{gid},
+		#{tagId},
+		#{tagName}
+		)
+	</insert>
+	<insert id="saveQxTagUser">
+		INSERT IGNORE INTO `qx_tag_user` (
+		`uid`,
+		`tagId`,
+		`tagName`
+		)
+		VALUES
+		(
+		#{uid},
+		#{tagId},
+		#{tagName}
+		) ON DUPLICATE KEY UPDATE nums=nums+1
+
+	</insert>
+	<insert id="saveQxTagUserByuidgid">
+		INSERT IGNORE INTO qx_tag_user (uid, tagId, tagName) SELECT
+			#{uid} AS "uid",
+			g.tagId AS "tagId",
+			g.tagName AS "tagName"
+		FROM
+			qx_tag_group g
+		WHERE
+			g.gid = #{gid} ON DUPLICATE KEY UPDATE nums = nums + 1;
+
+	</insert>
+
+	<select id="findBygid" resultType="com.innovate.cms.modules.qs.entity.tag.QxTagToJson">
+		SELECT
+		q.tagId AS 'tagId',
+		q.tagName AS "tagName"
+		FROM
+		qx_tag_group q
+		WHERE
+		gid = #{gid}
+	</select>
+
+	<select id="findByUid" resultType="com.innovate.cms.modules.qs.entity.tag.QxTagToJson">
+		SELECT
+		q.tagId AS 'tagId',
+		q.tagName AS "tagName"
+		FROM
+		qx_tag_user q
+		WHERE
+		uid = #{uid}
+	</select>
+
+
+</mapper>

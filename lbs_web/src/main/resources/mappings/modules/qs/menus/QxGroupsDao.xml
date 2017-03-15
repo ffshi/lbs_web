@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.menus.QxGroupsDao">
+    
+	<sql id="qxGroupsColumns">
+		a.gid AS "gid",
+		a.fsid AS "fsid",
+		a.group_name AS "groupName",
+		a.icon AS "icon",
+		a.sort AS "sort",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="qxGroupsJoins">
+	</sql>
+    
+	<select id="get" resultType="QxGroups">
+		SELECT 
+			<include refid="qxGroupsColumns"/>
+		FROM qx_groups a
+		<include refid="qxGroupsJoins"/>
+		WHERE a.gid = #{gid}
+	</select>
+	
+	<select id="getGroupByfsid" resultType="com.innovate.cms.modules.qs.entity.menus.Group">
+		SELECT
+			g.gid AS "gid",
+			g.fsid AS "fsid",
+			g.group_name AS "groupName",
+			g.group_description AS "groupDescription",
+			g.template_tag AS "templateTag",
+			g.small_icon AS "smallIcon",
+			g.icon AS "icon"
+		FROM
+			qx_groups g
+		WHERE
+			g.fsid = #{fsid} AND
+			g.del_flag = '0'
+		ORDER BY
+			g.sort 
+	</select>
+	
+	<select id="getCidByGid" resultType="int">
+		SELECT
+			qf.cid 
+		FROM
+			qx_groups qg,
+			qx_features qf
+		WHERE
+			qg.fsid = qf.fsid
+		AND	qg.gid = #{gid}
+		AND qg.del_flag = '0'
+		AND qf.del_flag = '0'
+	</select>
+	<select id="getGroupBygid" resultType="com.innovate.cms.modules.qs.entity.menus.Group">
+		SELECT
+			gid,
+			group_name as "groupName",
+			icon,
+			rank_title as "rankTitle",
+			res_decription as "resDecription"
+		FROM
+			qx_groups qg
+		WHERE
+			qg.gid = #{gid}
+		AND qg.del_flag = '0'
+	</select>
+	
+
+	
+	<select id="getHotGroup" resultType="com.innovate.cms.modules.qs.entity.menus.GroupRecommend">
+		SELECT
+			qg.gid AS "gid",
+			qg.group_name AS "groupName",
+			qg.small_icon AS "icon",
+			qh.template_tag AS "templateTag",
+			count(qh.gid) AS "num"
+		FROM
+			qx_groups qg,
+			qx_history qh,
+			qx_features qf
+		WHERE
+			qg.gid = qh.gid
+		AND qg.fsid = qf.fsid
+		AND qf.cid = #{cid}
+		AND qg.gid != #{gid}
+		AND qg.del_flag = '0'
+		GROUP BY
+			qg.gid
+		ORDER BY
+			num DESC
+		LIMIT 0,4
+	</select>
+	
+	<select id="getHotGroupWithUid" resultType="com.innovate.cms.modules.qs.entity.menus.GroupRecommend">
+		SELECT
+			qg.gid AS "gid",
+			qg.group_name AS "groupName",
+			qg.small_icon AS "icon",
+			qh.template_tag AS "templateTag",
+			count(qh.gid) AS "num"
+		FROM
+			qx_groups qg,
+			qx_history qh,
+			qx_features qf
+		WHERE
+			qg.gid = qh.gid
+		AND qg.fsid = qf.fsid
+		AND qf.cid = #{cid}
+		AND qg.gid != #{gid}
+		AND qg.del_flag = '0'
+		AND qg.gid NOT IN (
+			SELECT DISTINCT
+				gid
+			FROM
+				qx_history
+			WHERE
+				uid = #{uid}
+		)
+		GROUP BY
+			qg.gid
+		ORDER BY
+			num DESC
+		LIMIT 0,4
+	</select>
+	
+	<select id="getRandomGroup" resultType="com.innovate.cms.modules.qs.entity.menus.GroupRecommend">
+		SELECT
+			c1.gid AS "gid",
+			c1.group_name AS "groupName",
+			c1.small_icon AS "icon",
+			"1" AS "templateTag"
+		FROM
+			(
+				SELECT
+					@rownum :=@rownum + 1 AS "rownum",
+					t1.gid,
+					t1.fsid,
+					t1.group_name,
+					t1.group_description,
+					t1.small_icon
+				FROM
+					(
+						SELECT
+							@rownum := 0,
+							qg.gid,
+							qg.fsid,
+							qg.group_name,
+							qg.group_description,
+							qg.small_icon,
+							qg.create_time
+						FROM
+							qx_groups AS qg
+						WHERE
+							qg.gid != #{gid}
+							AND qg.del_flag = '0'
+						ORDER BY
+							qg.create_time DESC
+						LIMIT 100
+					) t1
+			) c1,
+			(
+				SELECT DISTINCT
+					round(RAND() *(1 - b1.num) + b1.num) AS "rands"
+				FROM
+					(
+						SELECT
+							COUNT(qg.gid) AS "num"
+						FROM
+							qx_groups AS qg
+						WHERE
+							qg.gid != #{gid}
+							AND qg.del_flag = '0'
+						LIMIT 100
+					) b1,
+					(
+						SELECT
+							ct.ctid
+						FROM
+							crosstab AS ct
+						WHERE
+							ct.ctid &lt; 10
+					) b2
+			) c2
+		WHERE
+			c1.rownum = c2.rands
+		ORDER BY c1.gid DESC
+		LIMIT 4
+	</select>
+	
+	<select id="findList" resultType="QxGroups">
+		SELECT 
+			<include refid="qxGroupsColumns"/>
+		FROM qx_groups a
+		<include refid="qxGroupsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="gid != null and gid != ''">
+				AND a.gid = #{gid}
+			</if>
+			<if test="fsid != null and fsid != ''">
+				AND a.fsid = #{fsid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="QxGroups">
+		SELECT 
+			<include refid="qxGroupsColumns"/>
+		FROM qx_groups a
+		<include refid="qxGroupsJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getGroupsListByFsid" resultType="com.innovate.cms.modules.qs.entity.menus.Groups">
+		SELECT
+			qg.gid,
+			qg.group_name AS "groupName",
+			qg.group_description AS "groupDescription",
+			qg.small_icon AS "smallIcon",
+			qg.template_tag AS "templateTag"
+		FROM
+			qx_groups qg
+		WHERE
+				qg.del_flag = "0"
+		AND qg.fsid = #{fsid}
+		ORDER BY
+			qg.gid DESC
+		LIMIT 10
+	</select>
+	
+	<select id="showMoreGroupsByFsid" resultType="com.innovate.cms.modules.qs.entity.menus.Groups">
+		SELECT
+			qg.gid,
+			qg.group_name AS "groupName",
+			qg.group_description AS "groupDescription",
+			qg.small_icon AS "smallIcon",
+			qg.template_tag AS "templateTag"
+		FROM
+			qx_groups qg
+		WHERE
+			qg.del_flag = "0"
+		AND qg.fsid = #{fsid}
+		AND qg.gid &lt; #{gid}
+		ORDER BY
+			qg.gid DESC
+		LIMIT 10
+	</select>
+	
+	<select id="refreshGroupsByFsid" resultType="com.innovate.cms.modules.qs.entity.menus.Groups">
+		SELECT
+			qg.gid,
+			qg.group_name AS "groupName",
+			qg.group_description AS "groupDescription",
+			qg.small_icon AS "smallIcon",
+			qg.template_tag AS "templateTag"
+		FROM
+			qx_groups qg
+		WHERE
+			qg.del_flag = "0"
+		AND qg.fsid = #{fsid}
+		AND qg.gid &gt; #{gid}
+		ORDER BY
+			qg.gid DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO qx_groups(
+			gid,
+			fsid,
+			group_name,
+			icon,
+			sort,
+			update_time,
+			create_time,
+			del_flag
+		) VALUES (
+			#{gid},
+			#{fsid},
+			#{groupName},
+			#{icon},
+			#{sort},
+			#{updateTime},
+			#{createTime},
+			#{delFlag}
+		)
+	</insert>
+	
+	<insert id="saveGroup" useGeneratedKeys="true" keyProperty="gid">
+		INSERT INTO qx_groups(
+			fsid,
+			group_name,
+			template_tag,
+			uid,
+			create_time
+		) VALUES (
+			#{fsid},
+			#{groupName},
+			#{templateTag},
+			#{uid},
+			#{createTime}
+		)
+	</insert>
+	
+	<insert id="saveQuestion" useGeneratedKeys="true" keyProperty="qid">
+		INSERT INTO qx_questions(
+			gid,
+			template_tag,
+			subject1_type,
+			subject1,
+			create_time
+		) VALUES (
+			#{gid},
+			#{templateTag},
+			#{subject1Type},
+			#{subject1},
+			#{createTime}
+		)
+	</insert>
+	
+	<insert id="saveOptions" parameterType="java.util.List">
+		INSERT INTO qx_questions_option(
+			qid,
+			seq_id,
+			option_type,
+			`option`,
+			ranks_to_results,
+			create_time
+		) VALUES
+		<foreach collection="list" item="questionOption" index="index"
+			separator=",">
+			(
+			#{questionOption.qid},
+			#{questionOption.seqId},
+			#{questionOption.optionType},
+			#{questionOption.option},
+			#{questionOption.ranksToResults},
+			#{questionOption.createTime}
+			)
+		</foreach>
+	</insert>
+	
+	<update id="updatePraiseNumForAdding">
+		UPDATE qx_group_statistic 
+		SET praiseNum = praiseNum + 1
+		WHERE gid = #{gid}
+	</update>
+	
+	<update id="updatePraiseNumForSubtraction">
+		UPDATE qx_group_statistic 
+		SET praiseNum = praiseNum - 1
+		WHERE gid = #{gid}
+		AND praiseNum &gt; 0
+	</update>
+	
+	<update id="update">
+		UPDATE qx_groups SET 	
+			gid = #{gid},
+			fsid = #{fsid},
+			group_name = #{groupName},
+			icon = #{icon},
+			sort = #{sort},
+			update_time = #{updateTime},
+			create_time = #{createTime}
+		WHERE gid = #{gid}
+	</update>
+	
+	<update id="delete">
+		UPDATE qx_groups SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE gid = #{gid}
+	</update>
+
+</mapper>

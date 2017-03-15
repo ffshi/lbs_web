@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.ads.QxPageHomeDao">
+
+	<resultMap type="com.innovate.cms.modules.data.entity.HomePageToJson" id="homePageList">
+		<result property="rowType" column="rowType" />
+		<result property="title" column="title" />
+		<collection property="lists" ofType="com.innovate.cms.modules.qs.entity.ads.PageHome">
+			<result property="refType" column="refType" />
+			<result property="templateTag" column="templateTag" />
+			<result property="ref" column="ref" />
+			<result property="refTitle" column="refTitle" />
+			<result property="img" column="img" />
+			<result property="num" column="num" />
+		</collection>
+	</resultMap>
+
+
+	<sql id="qxPageHomeColumns">
+		a.hid AS "hid",
+		a.row_type AS "rowType",
+		a.title AS "title",
+		a.ref_type AS "refType",
+		a.ref AS "ref",
+		a.img AS "img",
+		a.row_sort AS
+		"rowSort",
+		a.ref_sort AS "refSort",
+		a.update_time AS "updateTime",
+		a.create_time AS "createTime",
+		a.del_flag AS "delFlag"
+	</sql>
+
+	<sql id="qxPageHomeJoins">
+	</sql>
+	<insert id="setRotationGroup">
+		INSERT INTO qx_rotation_groups (
+		gid,
+		group_name,
+		group_description,
+		small_icon,
+		template_tag,
+		show_date
+		) SELECT
+		gid,
+		group_name,
+		group_description,
+		small_icon,
+		template_tag,
+		#{showDate} AS "show_date"
+		FROM
+		qx_groups
+		WHERE
+		gid=#{gid}
+	</insert>
+	<select id="get" resultType="QxPageHome">
+		SELECT
+		<include refid="qxPageHomeColumns" />
+		FROM qx_page_home a
+		<include refid="qxPageHomeJoins" />
+		WHERE a.hid = #{hid}
+	</select>
+	
+	<select id="getRotationGroup" resultType="com.innovate.cms.modules.qs.entity.ads.RotationGroup">
+		SELECT
+			r.gid AS gid,
+			r.group_description AS groupDescription,
+			r.group_name AS groupName,
+			r.small_icon AS smallIcon,
+			r.template_tag AS templateTag
+		FROM
+			qx_rotation_groups r
+		WHERE
+			r.show_date=#{currentDay}
+	</select>
+
+	<select id="getScreenAd" resultType="com.innovate.cms.modules.qs.entity.ads.QxScreenAd">
+		SELECT
+		id AS id,
+		pic AS pic,
+		screen_type AS screenType,
+		destination AS destination,
+		template_tag AS templateTag
+		FROM
+		qx_screen_ad
+		WHERE
+		del_flag = 0
+		ORDER BY
+		create_time DESC
+		LIMIT 1
+	</select>
+
+
+	<select id="findList" resultType="QxPageHome">
+		SELECT
+		<include refid="qxPageHomeColumns" />
+		FROM qx_page_home a
+		<include refid="qxPageHomeJoins" />
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="hid != null and hid != ''">
+				AND a.hid = #{hid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findAllList" resultType="QxPageHome">
+		SELECT
+		<include refid="qxPageHomeColumns" />
+		FROM qx_page_home a
+		<include refid="qxPageHomeJoins" />
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<insert id="insert">
+		INSERT INTO qx_page_home(
+		hid,
+		row_type,
+		title,
+		ref_type,
+		ref,
+		img,
+		row_sort,
+		ref_sort,
+		update_time,
+		create_time,
+		del_flag
+		)
+		VALUES (
+		#{hid},
+		#{rowType},
+		#{title},
+		#{refType},
+		#{ref},
+		#{img},
+		#{rowSort},
+		#{refSort},
+		#{updateTime},
+		#{createTime},
+		#{delFlag}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE qx_page_home SET
+		hid = #{hid},
+		row_type =
+		#{rowType},
+		title = #{title},
+		ref_type = #{refType},
+		ref = #{ref},
+		img =
+		#{img},
+		row_sort = #{rowSort},
+		ref_sort = #{refSort},
+		update_time =
+		#{updateTime},
+		create_time = #{createTime}
+		WHERE hid = #{hid}
+	</update>
+
+	<update id="delete">
+		UPDATE qx_page_home SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE hid = #{hid}
+	</update>
+	<select id="findAll" resultMap="homePageList">
+		SELECT
+		qxph.row_type AS 'rowType',
+		qxph.title AS 'title',
+		qxph.ref_type AS 'refType',
+		qxph.template_tag AS 'templateTag',
+		qxph.ref AS 'ref',
+		qxph.img AS 'img',
+		qxph.ref_title AS 'refTitle',
+		(qxph.num+1)*53 AS 'num'
+		FROM
+		(
+		SELECT
+		a.row_type AS 'row_type',
+		a.title AS 'title',
+		a.ref_type AS 'ref_type',
+		a.template_tag,
+		a.gid AS 'ref',
+		a.img AS 'img',
+		a.ref_title AS 'ref_title',
+		a.row_sort AS 'row_sort',
+		a.ref_sort AS 'ref_sort',
+		count(qh.gid)AS 'num'
+		FROM
+		(
+		SELECT
+		qp.row_type AS 'row_type',
+		qp.title AS 'title',
+		qp.ref_type AS 'ref_type',
+		qp.template_tag,
+		qp.ref AS 'gid',
+		qp.img AS 'img',
+		qp.ref_title AS 'ref_title',
+		qp.row_sort AS 'row_sort',
+		qp.ref_sort AS 'ref_sort'
+		FROM
+		qx_page_home AS qp
+		WHERE
+		qp.row_type = '2'
+		AND qp.ref_type = '1'
+		AND qp.del_flag = '0'
+		AND DATE(qp.create_time) &lt;= DATE(NOW())
+		)a
+		LEFT OUTER JOIN qx_history AS qh ON a.gid = qh.gid
+		GROUP BY
+		qh.gid,
+		a.gid
+		UNION ALL
+		SELECT
+		a.row_type AS 'row_type',
+		a.title AS 'title',
+		a.ref_type AS 'ref_type',
+		a.template_tag,
+		a.fsid AS 'ref',
+		a.img AS 'img',
+		a.ref_title AS 'ref_title',
+		a.row_sort AS 'row_sort',
+		a.ref_sort AS 'ref_sort',
+		count(qh.fsid)AS 'num'
+		FROM
+		(
+		SELECT
+		qp.row_type AS 'row_type',
+		qp.title AS 'title',
+		qp.ref_type AS 'ref_type',
+		qp.template_tag,
+		qp.ref AS 'fsid',
+		qp.img AS 'img',
+		qp.ref_title AS 'ref_title',
+		qp.row_sort AS 'row_sort',
+		qp.ref_sort AS 'ref_sort'
+		FROM
+		qx_page_home AS qp
+		WHERE
+		qp.row_type = '2'
+		AND qp.ref_type = '2'
+		AND qp.del_flag = '0'
+		AND DATE(qp.create_time) &lt;= DATE(NOW())
+		)a
+		LEFT OUTER JOIN qx_history AS qh ON a.fsid = qh.fsid
+		GROUP BY
+		qh.fsid,
+		a.fsid
+		UNION ALL
+		SELECT
+		qp.row_type AS 'row_type',
+		qp.title AS 'title',
+		qp.ref_type AS 'ref_type',
+		qp.template_tag,
+		qp.ref AS 'ref',
+		qp.img AS 'img',
+		qp.ref_title AS 'ref_title',
+		qp.row_sort AS 'row_sort',
+		qp.ref_sort AS 'ref_sort',
+		0 AS 'num'
+		FROM
+		qx_page_home AS qp
+		WHERE
+		qp.row_type = '1'
+		AND qp.del_flag = '0'
+		AND DATE(qp.create_time) &lt;= DATE(NOW())
+		UNION ALL
+		SELECT
+		qp.row_type AS 'row_type',
+		qp.title AS 'title',
+		qp.ref_type AS 'ref_type',
+		qp.template_tag,
+		qp.ref AS 'ref',
+		qp.img AS 'img',
+		qp.ref_title AS 'ref_title',
+		qp.row_sort AS 'row_sort',
+		qp.ref_sort AS 'ref_sort',
+		0 AS 'num'
+		FROM
+		qx_page_home AS qp
+		WHERE
+		qp.row_type = '3'
+		AND qp.del_flag = '0'
+		AND DATE(qp.create_time) &lt;= DATE(NOW())
+		UNION ALL
+		SELECT
+		qp.row_type AS 'row_type',
+		qp.title AS 'title',
+		qp.ref_type AS 'ref_type',
+		qp.template_tag,
+		qp.ref AS 'ref',
+		qp.img AS 'img',
+		qp.ref_title AS 'ref_title',
+		qp.row_sort AS 'row_sort',
+		qp.ref_sort AS 'ref_sort',
+		0 AS 'num'
+		FROM
+		qx_page_home AS qp
+		WHERE
+		qp.row_type = '2'
+		AND qp.ref_type = '3'
+		AND qp.del_flag = '0'
+		AND DATE(qp.create_time) &lt;= DATE(NOW())
+		)qxph
+		ORDER BY
+		qxph.row_sort,
+		qxph.ref_sort
+	</select>
+
+</mapper>
