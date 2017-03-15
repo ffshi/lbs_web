@@ -195,6 +195,7 @@ public class QxFollowController extends BaseController {
 	 * 
 	 * 应该向followUid推送一条被加好友的信息
 	 * 
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
