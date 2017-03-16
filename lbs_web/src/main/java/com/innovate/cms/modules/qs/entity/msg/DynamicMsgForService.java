@@ -1,25 +1,27 @@
-package com.innovate.cms.modules.data.entity;
+package com.innovate.cms.modules.qs.entity.msg;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
- * 用户动态消息存储bean
+ * 首页动态消息接口输出格式
  * 
  * @author shifangfang
- * @date 2017年3月15日 下午5:54:56
+ * @date 2017年3月16日 下午4:46:39
  */
-public class DynamicMsgToJson implements Serializable {
+public class DynamicMsgForService implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	private int mid;
 	private String uid;
 	private String userName = "";
+	private String headimgurl = "";
 	private int msgType;
 	private int anonymity;
-	private String title = "";
+	private String title;
 	private String description = "";
 	private String businessAddress = "";
 	private String businessName = "";
@@ -28,29 +30,38 @@ public class DynamicMsgToJson implements Serializable {
 	private String requirements = "";
 	private String geoId = "";
 	private String pics = "";
+	private Date publishTime;
 
-	public DynamicMsgToJson() {
+	private int prise_num;// 点赞次数
+	private int comment_num;// 评论次数
+
+	public DynamicMsgForService() {
 		super();
 	}
 
-	public DynamicMsgToJson(String uid, String userName, int msgType, int anonymity, String title, String description, String businessAddress, String businessName, float price, float reward, String requirements, String geoId, String pics) {
-		super();
-		this.uid = uid;
-		this.userName = userName;
-		this.msgType = msgType;
-		this.anonymity = anonymity;
-		this.title = title;
-		this.description = description;
-		this.businessAddress = businessAddress;
-		this.businessName = businessName;
-		this.price = price;
-		this.reward = reward;
-		this.requirements = requirements;
-		this.geoId = geoId;
-		this.pics = pics;
+	public int getMid() {
+		return mid;
 	}
 
+	public void setMid(int mid) {
+		this.mid = mid;
+	}
 
+	public int getPrise_num() {
+		return prise_num;
+	}
+
+	public void setPrise_num(int prise_num) {
+		this.prise_num = prise_num;
+	}
+
+	public int getComment_num() {
+		return comment_num;
+	}
+
+	public void setComment_num(int comment_num) {
+		this.comment_num = comment_num;
+	}
 
 	public String getUid() {
 		return uid;
@@ -66,6 +77,14 @@ public class DynamicMsgToJson implements Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getHeadimgurl() {
+		return headimgurl;
+	}
+
+	public void setHeadimgurl(String headimgurl) {
+		this.headimgurl = headimgurl;
 	}
 
 	public int getMsgType() {
@@ -154,6 +173,14 @@ public class DynamicMsgToJson implements Serializable {
 
 	public void setPics(String pics) {
 		this.pics = pics;
+	}
+
+	public Date getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
 	}
 
 }

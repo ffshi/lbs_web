@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.msg.DynamicMsgDao">
+
+	<select id="get" resultType="DynamicMsg">
+
+	</select>
+
+	<select id="findList" resultType="DynamicMsg">
+
+	</select>
+
+
+	<insert id="insert">
+
+
+	</insert>
+
+	<insert id="save">
+		INSERT INTO dynamic_msg (
+		uid,
+		user_name,
+		headimgurl,
+		msg_type,
+		anonymity,
+		title,
+		description,
+		business_address,
+		business_name,
+		price,
+		reward,
+		requirements,
+		pics,
+		geo_id
+		) SELECT
+		u.uid,
+		u.nickname,
+		u.headimgurl,
+		#{msgType},
+		#{anonymity},
+		#{title},
+		#{description},
+		#{businessAddress},
+		#{businessName},
+		#{price},
+		#{reward},
+		#{requirements},
+		#{pics},
+		#{geoId}
+		FROM
+		system_user AS u
+		WHERE
+		u.uid = #{uid}
+	</insert>
+	
+	<select id="lastesMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.geo_id,
+			m.pics,
+			m.publish_time,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.mid = s.mid
+		ORDER BY
+			m.mid desc
+		LIMIT 10
+
+	</select>
+	
+	<insert id="saveQxTagUser">
+		INSERT IGNORE INTO `qx_tag_user` (
+		`uid`,
+		`tagId`,
+		`tagName`
+		)
+		VALUES
+		(
+		#{uid},
+		#{tagId},
+		#{tagName}
+		) ON DUPLICATE KEY UPDATE nums=nums+1
+
+	</insert>
+	<insert id="saveQxTagUserByuidgid">
+		INSERT IGNORE INTO qx_tag_user (uid, tagId, tagName) SELECT
+		#{uid} AS "uid",
+		g.tagId AS "tagId",
+		g.tagName AS "tagName"
+		FROM
+		qx_tag_group g
+		WHERE
+		g.gid = #{gid} ON DUPLICATE KEY UPDATE nums = nums + 1;
+
+	</insert>
+
+
+
+	<select id="findByUid" resultType="com.innovate.cms.modules.qs.entity.tag.QxTagToJson">
+		SELECT
+		q.tagId AS 'tagId',
+		q.tagName AS "tagName"
+		FROM
+		qx_tag_user q
+		WHERE
+		uid = #{uid}
+	</select>
+
+
+</mapper>

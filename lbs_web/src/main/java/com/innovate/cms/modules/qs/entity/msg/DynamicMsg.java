@@ -1,25 +1,45 @@
-package com.innovate.cms.modules.data.entity;
+package com.innovate.cms.modules.qs.entity.msg;
 
-import java.io.Serializable;
+import java.sql.Date;
+
+import com.innovate.cms.common.persistence.DataEntity;
 
 /**
- * 用户动态消息存储bean
+ * 用户动态消息
  * 
  * @author shifangfang
- * @date 2017年3月15日 下午5:54:56
+ * @date 2017年3月16日 上午11:30:36
  */
-public class DynamicMsgToJson implements Serializable {
+public class DynamicMsg extends DataEntity<DynamicMsg> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+	// `mid` int(11) NOT NULL AUTO_INCREMENT COMMENT '用户发布消息id',
+	// `uid` varchar(32) NOT NULL COMMENT '消息发布者id',
+	// `user_name` varchar(128) NOT NULL COMMENT '消息发布者名字',
+	// `publish_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE
+	// CURRENT_TIMESTAMP COMMENT '消息发布时间',
+	// `msg_type` tinyint(4) DEFAULT NULL COMMENT
+	// '消息类型0-个人动态1-求帮助2-个人活动3-公告4-出租售5-技能服务6-商家活动',
+	// `anonymity` tinyint(4) DEFAULT '0' COMMENT '是否匿名发布0-非匿名1-匿名',
+	// `title` varchar(255) DEFAULT '' COMMENT '消息标题',
+	// `description` varchar(2048) DEFAULT '' COMMENT '消息描述',
+	// `business_address` varchar(255) DEFAULT '' COMMENT '商家地址',
+	// `business_name` varchar(128) DEFAULT '' COMMENT '商家名',
+	// `price` decimal(10,2) DEFAULT NULL,
+	// `reward` decimal(10,2) DEFAULT NULL COMMENT '报酬',
+	// `requirements` varchar(1024) DEFAULT '' COMMENT '要求,条件',
+	// `pics` varchar(2048) DEFAULT '' COMMENT '消息图片地址/尺寸客户端计算',
+	// `geo_id` int(64) DEFAULT NULL COMMENT '消息发布位置数据id',
+	private int mid;
 	private String uid;
 	private String userName = "";
 	private int msgType;
 	private int anonymity;
-	private String title = "";
+	private String title;
 	private String description = "";
 	private String businessAddress = "";
 	private String businessName = "";
@@ -28,29 +48,23 @@ public class DynamicMsgToJson implements Serializable {
 	private String requirements = "";
 	private String geoId = "";
 	private String pics = "";
+	private Date publishTime;
 
-	public DynamicMsgToJson() {
+	public DynamicMsg() {
 		super();
 	}
 
-	public DynamicMsgToJson(String uid, String userName, int msgType, int anonymity, String title, String description, String businessAddress, String businessName, float price, float reward, String requirements, String geoId, String pics) {
-		super();
-		this.uid = uid;
-		this.userName = userName;
-		this.msgType = msgType;
-		this.anonymity = anonymity;
-		this.title = title;
-		this.description = description;
-		this.businessAddress = businessAddress;
-		this.businessName = businessName;
-		this.price = price;
-		this.reward = reward;
-		this.requirements = requirements;
-		this.geoId = geoId;
-		this.pics = pics;
+	public DynamicMsg(String id) {
+		super(id);
 	}
 
+	public int getMid() {
+		return mid;
+	}
 
+	public void setMid(int mid) {
+		this.mid = mid;
+	}
 
 	public String getUid() {
 		return uid;
@@ -154,6 +168,14 @@ public class DynamicMsgToJson implements Serializable {
 
 	public void setPics(String pics) {
 		this.pics = pics;
+	}
+
+	public Date getPublishTime() {
+		return publishTime;
+	}
+
+	public void setPublishTime(Date publishTime) {
+		this.publishTime = publishTime;
 	}
 
 }
