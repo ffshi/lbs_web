@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.msg.DynamicMsgPriseDao">
+
+	<select id="get" resultType="DynamicMsgPrise">
+
+	</select>
+
+	<select id="findList" resultType="DynamicMsgPrise">
+
+	</select>
+
+
+	<insert id="insert">
+
+
+	</insert>
+
+	<insert id="savePrise">
+		INSERT INTO dynamic_msg_prise (mid, uid, headimgurl) SELECT
+			#{mid},
+			s.uid,
+			s.headimgurl
+		FROM
+			system_user AS s
+		WHERE
+			s.uid = #{uid} ON DUPLICATE KEY UPDATE del_flag = 0;
+		
+	</insert>
+	
+	<update id="cancelPrise">
+		UPDATE dynamic_msg_prise
+		SET del_flag = 1
+		WHERE
+			mid = #{mid}
+		AND uid = #{uid}
+	</update>
+	
+	
+	<select id="priseList" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService">
+		SELECT
+			p.prise_id as priseId,
+			p.uid as uid,
+			p.headimgurl as headimgurl,
+			p.create_time as createTime
+		FROM
+			dynamic_msg_prise p
+		WHERE
+			mid = #{mid} 
+		ORDER BY
+			p.prise_id desc
+		LIMIT 20
+	</select>
+	<select id="upPriseList" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService">
+		SELECT
+			p.prise_id as priseId,
+			p.uid as uid,
+			p.headimgurl as headimgurl,
+			p.create_time as createTime
+		FROM
+			dynamic_msg_prise p
+		WHERE
+			mid = #{mid} and prise_id  &lt; #{pid}
+		ORDER BY
+			p.prise_id desc
+		LIMIT 20
+	</select>
+	<select id="downPriseList" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService">
+		SELECT
+			p.prise_id as priseId,
+			p.uid as uid,
+			p.headimgurl as headimgurl,
+			p.create_time as createTime
+		FROM
+			dynamic_msg_prise p
+		WHERE
+			mid = #{mid} and prise_id  &gt; #{pid}
+		ORDER BY
+			p.prise_id desc
+		LIMIT 20
+	</select>
+	
+	<insert id="saveQxTagUser">
+		INSERT IGNORE INTO `qx_tag_user` (
+		`uid`,
+		`tagId`,
+		`tagName`
+		)
+		VALUES
+		(
+		#{uid},
+		#{tagId},
+		#{tagName}
+		) ON DUPLICATE KEY UPDATE nums=nums+1
+
+	</insert>
+	<insert id="saveQxTagUserByuidgid">
+		INSERT IGNORE INTO qx_tag_user (uid, tagId, tagName) SELECT
+		#{uid} AS "uid",
+		g.tagId AS "tagId",
+		g.tagName AS "tagName"
+		FROM
+		qx_tag_group g
+		WHERE
+		g.gid = #{gid} ON DUPLICATE KEY UPDATE nums = nums + 1;
+
+	</insert>
+
+
+
+	<select id="findByUid" resultType="com.innovate.cms.modules.qs.entity.tag.QxTagToJson">
+		SELECT
+		q.tagId AS 'tagId',
+		q.tagName AS "tagName"
+		FROM
+		qx_tag_user q
+		WHERE
+		uid = #{uid}
+	</select>
+
+
+</mapper>
