@@ -2,6 +2,8 @@ package com.innovate.cms.modules.qs.dao.msg;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.innovate.cms.common.persistence.CrudDao;
 import com.innovate.cms.common.persistence.annotation.MyBatisDao;
 import com.innovate.cms.modules.data.entity.DynamicMsgToJson;
@@ -28,5 +30,25 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @return
 	 */
 	List<DynamicMsgForService> lastesMsg();
+
+	void addPriseNum(@Param("mid")int mid);
+
+	void subPriseNum(@Param("mid")int mid);
+
+	void addCommentNum(@Param("mid")int mid);
+
+	/**
+	 * 根据指定的消息mid获取一批消息
+	 * @param mids
+	 * @return
+	 */
+	List<DynamicMsgForService> nearMsg(int[] mids);
+
+	/**
+	 * 获取用户点赞消息列表
+	 * @param uid
+	 * @return
+	 */
+	List<Integer> userPriseList(String uid);
 
 }

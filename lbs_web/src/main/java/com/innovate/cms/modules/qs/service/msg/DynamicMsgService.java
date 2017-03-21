@@ -36,4 +36,48 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 		return super.dao.lastesMsg();
 	}
 
+	/**
+	 *自增点赞数
+	 */
+	@Transactional(readOnly = false)
+	public void addPriseNum(int mid) {
+		super.dao.addPriseNum(mid);
+	}
+	/**
+	 * 自减点赞数
+	 */
+	@Transactional(readOnly = false)
+	public void subPriseNum(int mid) {
+		super.dao.subPriseNum(mid);
+	}
+	/**
+	 * 自增评论数
+	 */
+	@Transactional(readOnly = false)
+	public void addCommentNum(int mid) {
+		super.dao.addCommentNum(mid);
+	}
+
+	/**
+	 * 根据指定的消息mid获取一批消息
+	 * @param mids
+	 * @return
+	 */
+	public List<DynamicMsgForService> nearMsg(int[] mids) {
+		return super.dao.nearMsg(mids);
+	}
+
+	/**
+	 * 获取用户点赞消息列表
+	 * @param uid
+	 * @return
+	 */
+	public List<Integer> userPriseList(String uid) {
+		return super.dao.userPriseList(uid);
+	}
+
+	
+
+	
+
 }

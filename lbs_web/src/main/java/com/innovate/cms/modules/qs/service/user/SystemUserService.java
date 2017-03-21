@@ -156,6 +156,15 @@ public class SystemUserService extends CrudService<SystemUserDao, SystemUser> {
 		return super.dao.getUserByMobile(mobile,_password);
 	}
 	/**
+	 *	根据手机号获取用户
+	 * @param mobile
+	 * @return
+	 */
+	public SystemUser getUserOnlyByMobile(String mobile)
+	{
+		return super.dao.getUserOnlyByMobile(mobile);
+	}
+	/**
 	 * 
 	 * @Title: getUserInfoByUid
 	 * @Description: 根据UID获取用户资料)

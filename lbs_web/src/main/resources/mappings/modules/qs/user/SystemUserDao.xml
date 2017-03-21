@@ -231,6 +231,14 @@
 		AND a.`password` = #{password}
 		AND a.del_flag = '0'
 	</select>
+	<select id="getUserOnlyByMobile" resultType="SystemUser">
+		SELECT 
+			<include refid="systemUserColumns"/>
+		FROM system_user a
+		<include refid="systemUserJoins"/>
+		WHERE a.mobile = #{mobile}
+		AND a.del_flag = '0'
+	</select>
 	
 	<select id="getUserCount" resultType="int">
 		SELECT

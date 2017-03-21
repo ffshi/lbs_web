@@ -36,10 +36,10 @@ public class Global {
 	 */
 	private static Global global = new Global();
 	//test123.56.215.22测服或者 online60.205.13.131线上
-//	public static final String DOMAIN 	= "f839f85d740d4347.m.cnbjalicm12pub001.ocs.aliyuncs.com:11211";
+	public static final String DOMAIN 	= "f839f85d740d4347.m.cnbjalicm12pub001.ocs.aliyuncs.com:11211";
 	
 	//本地开发
-	public static final String DOMAIN 	= "101.200.193.70:11211";
+//	public static final String DOMAIN 	= "101.200.193.70:11211";
 	public static final String USERNAME = "f839f85d740d4347";  // 与H5推广线上一致
 	public static final String PASSWORD = "b63sH2CsD";
 	/**
@@ -167,9 +167,14 @@ public class Global {
 	public static final String IV = "2016050100000000";	
 	
 	/**
+	 * 百度LBS
+	 */
+	public static final String BAIDU_LBS_APPID="9418299";
+	public static final String BAIDU_LBS_AK="7aTTP02Too2IRpxB832oQqjjruF5A7ZP";
+	
+	/**
 	 * 微信二次分享
 	 */
-	
 	//正式环境
 	public static final String WX_APPID ="wxce02a5a1db507f44";
 	public static final String WX_SECRET ="2849eb922f7ce0248fe7ae5f7d1c57eb";
@@ -306,6 +311,12 @@ public class Global {
 	 */
 	public static final int int300204 = 300204;
 	public static final String str300204 = "User does not exist.";
+	
+	/**
+	 * 用户密码错误
+	 */
+	public static final int int3002042 = 3002042;
+	public static final String str3002042 = "name or pwd error";
 	/**
 	 * 账号或密码不正确
 	 */

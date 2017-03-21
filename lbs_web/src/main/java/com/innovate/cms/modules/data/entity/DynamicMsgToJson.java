@@ -15,6 +15,7 @@ public class DynamicMsgToJson implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private int mid;
 	private String uid;
 	private String userName = "";
 	private int msgType;
@@ -28,6 +29,10 @@ public class DynamicMsgToJson implements Serializable {
 	private String requirements = "";
 	private String geoId = "";
 	private String pics = "";
+	//格式为：[经度,纬度]或[墨卡托坐标]
+	private String location = "";
+	//1（GPS经纬度坐标）、2（国测局加密经纬度坐标）、3（百度加密经纬度坐标）、4（百度加密墨卡托坐标）
+	private int coord_type;
 
 	public DynamicMsgToJson() {
 		super();
@@ -49,8 +54,31 @@ public class DynamicMsgToJson implements Serializable {
 		this.geoId = geoId;
 		this.pics = pics;
 	}
+	
 
+	public int getMid() {
+		return mid;
+	}
 
+	public void setMid(int mid) {
+		this.mid = mid;
+	}
+
+	public int getCoord_type() {
+		return coord_type;
+	}
+
+	public void setCoord_type(int coord_type) {
+		this.coord_type = coord_type;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
 
 	public String getUid() {
 		return uid;

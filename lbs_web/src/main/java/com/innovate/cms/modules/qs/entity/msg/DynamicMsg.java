@@ -1,7 +1,9 @@
 package com.innovate.cms.modules.qs.entity.msg;
 
-import java.sql.Date;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.innovate.cms.common.persistence.DataEntity;
 
 /**
@@ -48,6 +50,7 @@ public class DynamicMsg extends DataEntity<DynamicMsg> {
 	private String requirements = "";
 	private String geoId = "";
 	private String pics = "";
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date publishTime;
 
 	public DynamicMsg() {
@@ -169,11 +172,11 @@ public class DynamicMsg extends DataEntity<DynamicMsg> {
 	public void setPics(String pics) {
 		this.pics = pics;
 	}
-
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getPublishTime() {
 		return publishTime;
 	}
-
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setPublishTime(Date publishTime) {
 		this.publishTime = publishTime;
 	}

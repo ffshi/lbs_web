@@ -1,7 +1,11 @@
 package com.innovate.cms.modules.qs.entity.msg;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 首页动态消息接口输出格式
@@ -30,10 +34,15 @@ public class DynamicMsgForService implements Serializable {
 	private String requirements = "";
 	private String geoId = "";
 	private String pics = "";
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date publishTime;
+	private String location = "";
+	private int coordType;
+	@JsonIgnore
+	private int isPrise;
 
-	private int prise_num;// 点赞次数
-	private int comment_num;// 评论次数
+	private int priseNum;// 点赞次数
+	private int commentNum;// 评论次数
 
 	public DynamicMsgForService() {
 		super();
@@ -47,20 +56,44 @@ public class DynamicMsgForService implements Serializable {
 		this.mid = mid;
 	}
 
-	public int getPrise_num() {
-		return prise_num;
+	public String getLocation() {
+		return location;
 	}
 
-	public void setPrise_num(int prise_num) {
-		this.prise_num = prise_num;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
-	public int getComment_num() {
-		return comment_num;
+	public int getCoordType() {
+		return coordType;
 	}
 
-	public void setComment_num(int comment_num) {
-		this.comment_num = comment_num;
+	public void setCoordType(int coordType) {
+		this.coordType = coordType;
+	}
+
+	public int getIsPrise() {
+		return isPrise;
+	}
+
+	public void setIsPrise(int isPrise) {
+		this.isPrise = isPrise;
+	}
+
+	public int getPriseNum() {
+		return priseNum;
+	}
+
+	public void setPriseNum(int priseNum) {
+		this.priseNum = priseNum;
+	}
+
+	public int getCommentNum() {
+		return commentNum;
+	}
+
+	public void setCommentNum(int commentNum) {
+		this.commentNum = commentNum;
 	}
 
 	public String getUid() {
@@ -175,10 +208,12 @@ public class DynamicMsgForService implements Serializable {
 		this.pics = pics;
 	}
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getPublishTime() {
 		return publishTime;
 	}
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public void setPublishTime(Date publishTime) {
 		this.publishTime = publishTime;
 	}

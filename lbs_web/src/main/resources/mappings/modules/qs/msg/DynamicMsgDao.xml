@@ -16,7 +16,7 @@
 
 	</insert>
 
-	<insert id="save">
+	<insert id="save" useGeneratedKeys="true" keyProperty="mid">
 		INSERT INTO dynamic_msg (
 		uid,
 		user_name,
@@ -31,6 +31,7 @@
 		reward,
 		requirements,
 		pics,
+		location,
 		geo_id
 		) SELECT
 		u.uid,
@@ -46,44 +47,107 @@
 		#{reward},
 		#{requirements},
 		#{pics},
+		#{location},
 		#{geoId}
 		FROM
 		system_user AS u
 		WHERE
 		u.uid = #{uid}
 	</insert>
-	
+
 	<select id="lastesMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
-			m.mid,
-			m.uid,
-			m.user_name,
-			m.headimgurl,
-			m.msg_type,
-			m.anonymity,
-			m.title,
-			m.description,
-			m.business_address,
-			m.business_name,
-			m.price,
-			m.reward,
-			m.requirements,
-			m.geo_id,
-			m.pics,
-			m.publish_time,
-			s.prise_num,
-			s.comment_num
+		m.mid,
+		m.uid,
+		m.user_name as "userName",
+		m.headimgurl,
+		m.msg_type as "msgType",
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address as "business_address",
+		m.business_name as "businessName",
+		m.price,
+		m.reward,
+		m.requirements,
+		m.geo_id as "geoId",
+		m.pics,
+		m.publish_time as "publishTime",
+		m.location,
+		m.coord_type as "coordType",
+		s.prise_num as "priseNum",
+		s.comment_num as "commentNum"
 		FROM
-			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
 		WHERE
-			m.mid = s.mid
+		m.mid = s.mid
 		ORDER BY
-			m.mid desc
+		m.mid desc
 		LIMIT 10
 
 	</select>
+	<select id="nearMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name as "userName",
+		m.headimgurl,
+		m.msg_type as "msgType",
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address as "business_address",
+		m.business_name as "businessName",
+		m.price,
+		m.reward,
+		m.requirements,
+		m.geo_id as "geoId",
+		m.pics,
+		m.publish_time as "publishTime",
+		m.location,
+		m.coord_type as "coordType",
+		s.prise_num as "priseNum",
+		s.comment_num as "commentNum"
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
+		WHERE
+		m.mid = s.mid and
+		m.mid in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		ORDER BY
+		m.mid desc
+	</select>
 	
+	<select id="userPriseList" resultType="int">
+		SELECT
+			mid
+		FROM
+			dynamic_msg_prise
+		WHERE
+			uid = #{uid}
+	</select>
+
+
+	<update id="addPriseNum">
+		UPDATE dynamic_msg_statistic
+		SET prise_num = prise_num + 1
+		WHERE
+		mid = #{mid}
+	</update>
+	<update id="subPriseNum">
+		UPDATE dynamic_msg_statistic
+		SET prise_num = prise_num - 1
+		WHERE
+		mid = #{mid}
+	</update>
+	<update id="addCommentNum">
+		
+	</update>
+
 	<insert id="saveQxTagUser">
 		INSERT IGNORE INTO `qx_tag_user` (
 		`uid`,

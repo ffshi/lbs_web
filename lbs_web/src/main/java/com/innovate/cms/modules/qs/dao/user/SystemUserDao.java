@@ -177,4 +177,12 @@ public interface SystemUserDao extends CrudDao<SystemUser> {
 	
 	public int getUgcNum(@Param("uid")String uid);
 	
+	/**
+	 * 	/**
+	 *	根据手机号获取用户
+	 * @param mobile
+	 * @return
+	 */
+	public SystemUser getUserOnlyByMobile(@Param("mobile")String mobile);
+	
 }

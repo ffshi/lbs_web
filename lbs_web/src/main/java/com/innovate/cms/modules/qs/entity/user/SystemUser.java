@@ -51,6 +51,28 @@ public class SystemUser extends DataEntity<SystemUser> {
 
 	public SystemUser(String unionid, String openid, String nickname, String sex, String constellation, Date birthday,
 			String province, String city, String country, String headimgurl, String lang, String os, String userType,
+			Date createTime,String mobile,String password)
+	{
+		super();
+		this.unionid = unionid;
+		this.openid = openid;
+		this.nickname = nickname;
+		this.sex = sex;
+		this.constellation = constellation;
+		this.birthday = birthday;
+		this.province = province;
+		this.city = city;
+		this.country = country;
+		this.headimgurl = headimgurl;
+		this.lang = lang;
+		this.os = os;
+		this.userType = userType;
+		this.createTime = createTime;
+		this.mobile = mobile;
+		this.password = password;
+	}
+	public SystemUser(String unionid, String openid, String nickname, String sex, String constellation, Date birthday,
+			String province, String city, String country, String headimgurl, String lang, String os, String userType,
 			Date createTime)
 	{
 		super();
@@ -83,7 +105,7 @@ public class SystemUser extends DataEntity<SystemUser> {
 		this.uid = uid;
 	}
 	
-	@Length(min=1, max=64, message="获取用户个人信息（UnionID机制）长度必须介于 1 和 64 之间")
+	//@Length(min=1, max=64, message="获取用户个人信息（UnionID机制）长度必须介于 1 和 64 之间")
 	public String getUnionid() {
 		return unionid;
 	}
@@ -92,7 +114,7 @@ public class SystemUser extends DataEntity<SystemUser> {
 		this.unionid = unionid;
 	}
 	
-	@Length(min=1, max=64, message="当前来源渠道唯一标识长度必须介于 1 和 64 之间")
+	//@Length(min=1, max=64, message="当前来源渠道唯一标识长度必须介于 1 和 64 之间")
 	public String getOpenid() {
 		return openid;
 	}
@@ -101,7 +123,7 @@ public class SystemUser extends DataEntity<SystemUser> {
 		this.openid = openid;
 	}
 	
-	@Length(min=0, max=100, message="昵称长度必须介于 0 和 100 之间")
+	//@Length(min=0, max=100, message="昵称长度必须介于 0 和 100 之间")
 	public String getNickname() {
 		return nickname;
 	}

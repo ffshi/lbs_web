@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
@@ -55,7 +57,7 @@ import com.innovate.cms.modules.qs.service.user.SystemUserService;
 @Controller
 @RequestMapping(value = "/api")
 public class SystemUserController extends BaseController {
-
+	private static Logger logger = LoggerFactory.getLogger(SystemUserController.class);
 	@Autowired
 	private SystemUserService systemUserService;
 
@@ -128,7 +130,9 @@ public class SystemUserController extends BaseController {
 		String mobile = postLoginJson.getMobile(); // 手机-可为账号
 		String version = postLoginJson.getVersion();
 		// 简单校验 后期用 bean 校验
-		if (StringUtils.isBlank(unionid) || StringUtils.isBlank(accessToken) || StringUtils.isBlank(userType) || StringUtils.isBlank(os) || !"1".equals(version)) {
+
+		// || !"1".equals(version)
+		if ((StringUtils.isBlank(unionid) || StringUtils.isBlank(accessToken) || StringUtils.isBlank(userType) || StringUtils.isBlank(os) || !"1".equals(version)) && !"1".equals(userType)) {
 			logger.debug("SystemUserController - 参数错误：getUnionid()={}/getAccessToken()={}/getUserType()={}/getOs()={}/version={}", unionid, accessToken, userType, os, version);
 			backInfo.setStateCode(Global.int300209);
 			backInfo.setRetMsg(Global.str300209);
@@ -174,8 +178,10 @@ public class SystemUserController extends BaseController {
 
 			// 如果校验成功
 			if (isAccountValid) {
+
 				LoginToJson loginToJson = new LoginToJson();
-				// 生成用户本地token= md5（account + userType+ os + Global.TOKEN_KEY +
+				// 生成用户本地token= md5（account + userType+ os +
+				// Global.TOKEN_KEY +
 				// DateUtils.getDateTime()） 不管用户是否存在都要先生成 token
 				String tokenLocal = Digests.md5(unionid + userType + os + Global.TOKEN_KEY + DateUtils.getDateTime());
 				logger.debug("为用户生成了新token={}", tokenLocal);
@@ -199,9 +205,19 @@ public class SystemUserController extends BaseController {
 					// 其他情况在外层已经过滤
 					break;
 				}
+				if (userType.charAt(0) == '1') {
+					SystemUser temsystemUser = systemUserService.getUserOnlyByMobile(mobile);
+					if (null != temsystemUser && null == systemUser) {
+						logger.debug("用户名或者密码错误");
+						backInfo.setStateCode(Global.int3002042);
+						backInfo.setRetMsg(Global.str3002042);
+						return JsonMapper.toJsonString(backInfo);
+					}
+				}
 
 				List<LoginToJson> data = Lists.newArrayList();
-				// 如果用户 存在----则重新生成token 带上 accessToken,os 更新用户信息 并返回用户带新token数据
+				// 如果用户 存在----则重新生成token 带上 accessToken,os 更新用户信息
+				// 并返回用户带新token数据
 				if (systemUser != null) {
 					// 主对象
 					systemUser.setTokenLocal(tokenLocal);
@@ -246,7 +262,7 @@ public class SystemUserController extends BaseController {
 					body = Cryptos.aesEncryptToBase64(body, secretKey, Global.IV.getBytes());
 				} else {
 					// 主对象-----如果不存在 ---new一个新对象 -新增一个用户
-					systemUser = new SystemUser(unionid, openid, nickname, sex, constellation, birthday, province, city, country, headimgurl, lang, os, userType, new Date());
+					systemUser = new SystemUser(unionid, openid, nickname, sex, constellation, birthday, province, city, country, headimgurl, lang, os, userType, new Date(), mobile, Digests.md5(password));
 					systemUser.setTokenLocal(tokenLocal);// 给新对象赋值token
 
 					if (userType.charAt(0) == '3') {
@@ -285,6 +301,7 @@ public class SystemUserController extends BaseController {
 				body = JsonMapper.toJsonString(backInfo);
 				body = Cryptos.aesEncryptToBase64(body, secretKey, Global.IV.getBytes());
 			}
+
 		}
 		logger.debug("加密后字符串 = {}", body);
 		return body;
