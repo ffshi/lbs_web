@@ -30,6 +30,7 @@ public class DynamicMsgComment extends DataEntity<DynamicMsgComment>{
 	private int cid;
 	private int mid;
 	private String uid;
+	private String cname;
 	private String headimgurl;
 	private String content;
 	private int commentType;//评论类型0-评论1-回复
@@ -61,6 +62,13 @@ public class DynamicMsgComment extends DataEntity<DynamicMsgComment>{
 	}
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+	
+	public String getCname() {
+		return cname;
+	}
+	public void setCname(String cname) {
+		this.cname = cname;
 	}
 	public String getHeadimgurl() {
 		return headimgurl;

@@ -21,6 +21,7 @@
 		SELECT
 			c.cid,
 			c.uid,
+			c.cname,
 			c.headimgurl,
 			c.content,
 			c.comment_type AS "commentType",
@@ -39,6 +40,7 @@
 		SELECT
 			c.cid,
 			c.uid,
+			c.cname,
 			c.headimgurl,
 			c.content,
 			c.comment_type AS "commentType",
@@ -60,6 +62,7 @@
 		INSERT INTO dynamic_msg_comment (
 			mid,
 			uid,
+			cname,
 			headimgurl,
 			content,
 			comment_type,
@@ -68,6 +71,7 @@
 		) SELECT
 			#{mid},
 			u.uid,
+			u.nickname,
 			u.headimgurl,
 			#{content},
 			#{commentType},

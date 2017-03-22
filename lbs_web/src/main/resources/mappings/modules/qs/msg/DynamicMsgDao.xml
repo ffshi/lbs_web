@@ -59,24 +59,23 @@
 		SELECT
 		m.mid,
 		m.uid,
-		m.user_name as "userName",
+		m.user_name ,
 		m.headimgurl,
-		m.msg_type as "msgType",
+		m.msg_type ,
 		m.anonymity,
 		m.title,
 		m.description,
-		m.business_address as "business_address",
-		m.business_name as "businessName",
+		m.business_address ,
+		m.business_name ,
 		m.price,
 		m.reward,
 		m.requirements,
-		m.geo_id as "geoId",
 		m.pics,
-		m.publish_time as "publishTime",
+		m.publish_time,
 		m.location,
-		m.coord_type as "coordType",
-		s.prise_num as "priseNum",
-		s.comment_num as "commentNum"
+		m.coord_type ,
+		s.prise_num ,
+		s.comment_num 
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -85,30 +84,28 @@
 		ORDER BY
 		m.mid desc
 		LIMIT 10
-
 	</select>
 	<select id="nearMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
 		m.mid,
 		m.uid,
-		m.user_name as "userName",
+		m.user_name ,
 		m.headimgurl,
-		m.msg_type as "msgType",
+		m.msg_type ,
 		m.anonymity,
 		m.title,
 		m.description,
-		m.business_address as "business_address",
-		m.business_name as "businessName",
+		m.business_address,
+		m.business_name ,
 		m.price,
 		m.reward,
 		m.requirements,
-		m.geo_id as "geoId",
 		m.pics,
-		m.publish_time as "publishTime",
+		m.publish_time ,
 		m.location,
-		m.coord_type as "coordType",
-		s.prise_num as "priseNum",
-		s.comment_num as "commentNum"
+		m.coord_type ,
+		s.prise_num ,
+		s.comment_num 
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
