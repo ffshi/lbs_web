@@ -48,7 +48,7 @@
 		FROM
 			dynamic_msg_prise p
 		WHERE
-			mid = #{mid} 
+			mid = #{mid} and del_flag=0
 		ORDER BY
 			p.prise_id desc
 		LIMIT 20
@@ -63,7 +63,7 @@
 		FROM
 			dynamic_msg_prise p
 		WHERE
-			mid = #{mid} and prise_id  &lt; #{pid}
+			mid = #{mid} and prise_id  &lt; #{pid}  and del_flag=0
 		ORDER BY
 			p.prise_id desc
 		LIMIT 20
@@ -78,7 +78,7 @@
 		FROM
 			dynamic_msg_prise p
 		WHERE
-			mid = #{mid} and prise_id  &gt; #{pid}
+			mid = #{mid} and prise_id  &gt; #{pid} and del_flag=0
 		ORDER BY
 			p.prise_id desc
 		LIMIT 20
