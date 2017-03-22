@@ -17,9 +17,10 @@
 	</insert>
 
 	<insert id="savePrise">
-		INSERT INTO dynamic_msg_prise (mid, uid, headimgurl) SELECT
+		INSERT INTO dynamic_msg_prise (mid, uid, cname, headimgurl) SELECT
 			#{mid},
 			s.uid,
+			s.nickname,
 			s.headimgurl
 		FROM
 			system_user AS s
@@ -41,6 +42,7 @@
 		SELECT
 			p.prise_id as priseId,
 			p.uid as uid,
+			p.cname,
 			p.headimgurl as headimgurl,
 			p.create_time as createTime
 		FROM
@@ -55,6 +57,7 @@
 		SELECT
 			p.prise_id as priseId,
 			p.uid as uid,
+			p.cname,
 			p.headimgurl as headimgurl,
 			p.create_time as createTime
 		FROM
@@ -69,6 +72,7 @@
 		SELECT
 			p.prise_id as priseId,
 			p.uid as uid,
+			p.cname,
 			p.headimgurl as headimgurl,
 			p.create_time as createTime
 		FROM

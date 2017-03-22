@@ -19,6 +19,7 @@ public class DynamicMsgPriseForService implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int priseId;
 	private String uid;
+	private String cname;
 	private String headimgurl;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
@@ -45,6 +46,14 @@ public class DynamicMsgPriseForService implements Serializable {
 
 	public String getUid() {
 		return uid;
+	}
+
+	public String getCname() {
+		return cname;
+	}
+
+	public void setCname(String cname) {
+		this.cname = cname;
 	}
 
 	public void setUid(String uid) {
