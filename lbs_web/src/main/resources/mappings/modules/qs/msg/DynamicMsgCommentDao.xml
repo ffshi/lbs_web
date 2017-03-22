@@ -50,7 +50,7 @@
 		FROM
 			dynamic_msg_comment c
 		WHERE
-			c.mid=1 AND
+			c.mid=#{mid} AND
 			c.cid &lt; #{cid}
 		ORDER BY
 			c.cid DESC
