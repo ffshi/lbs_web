@@ -3,7 +3,6 @@
  */
 package com.innovate.cms.modules.qs.service.sns;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
