@@ -35,46 +35,7 @@
 			uid = #{uid}
 	</insert>
 	
-	<select id="getRecommendUser" resultType="com.innovate.cms.modules.qs.entity.sns.RecommendUser">
-		SELECT
-			uid,
-			nickname,
-			headimgurl,
-			result
-		FROM
-			qx_recommend_user
-		WHERE
-			done_date = #{currentDay}
-	
-	</select>
 
-	<select id="findHistorybyuidgidPage" resultType="com.innovate.cms.modules.qs.entity.sns.FriendHistory">
-		SELECT
-		qf.uid as "uid",
-		qf.follow_uid as "followUid",
-		qf.follow_name as "followName",
-		qf.follow_img as "followImg",
-		qh.results as "results"
-		FROM
-		qx_follow AS qf
-		LEFT JOIN qx_history AS qh ON qf.uid = #{uid}
-		AND qf.follow_uid = qh.uid
-		AND qh.gid = #{gid} ORDER BY qh.update_time DESC limit #{start},#{num}
-	</select>
-
-	<select id="findHistorybyuidgid" resultType="com.innovate.cms.modules.qs.entity.sns.FriendHistory">
-		SELECT
-		qf.uid as "uid",
-		qf.follow_uid as "followUid",
-		qf.follow_name as "followName",
-		qf.follow_img as "followImg",
-		qh.results as "results"
-		FROM
-		qx_follow AS qf
-		LEFT JOIN qx_history AS qh ON qf.uid = #{uid}
-		AND qf.follow_uid = qh.uid
-		AND qh.gid = #{gid} ORDER BY qh.update_time DESC LIMIT 10
-	</select>
 
 
 	<select id="get" resultType="QxFollow">
@@ -163,108 +124,10 @@
 
 
 
-	<select id="findUserHistory1" resultType="com.innovate.cms.modules.qs.entity.sns.UserHistory">
-		SELECT
-		g.gid as "gid",
-		g.group_name as "groupName",
-		g.icon as "icon",
-		h.results as "results",
-		h.update_time as "updateTime"
-		FROM
-		qx_groups AS g,
-		qx_history AS h
-		WHERE
-		h.uid = #{uid}
-		AND h.gid = g.gid
-	</select>
 
 
-	<resultMap type="com.innovate.cms.modules.qs.entity.ques.Questions" id="questionid">
-		<id column="qid" property="qid" />
-		<result column="icon" property="icon" />
-		<result column="templateTag" property="templateTag" />
-		<result column="subject1Type" property="subject1Type" />
-		<result column="subject1" property="subject1" />
-		<result column="subject2Type" property="subject2Type" />
-		<result column="subject2" property="subject2" />
-		<result column="tag" property="tag" />
-		<result column="createTime" property="createTime" />
-		<result column="field" property="field" />
-		<collection property="options" ofType="com.innovate.cms.modules.qs.entity.ques.Options">
-			<result property="option" column="option" />
-			<result property="optionType" column="optionType" />
-			<result property="ranksToResults" column="ranksToResults" />
-			<result property="goTag" column="goTag" />
-		</collection>
-	</resultMap>
 
-	<resultMap type="com.innovate.cms.modules.qs.entity.sns.UserHistory" id="historylist">
-		<id column="gid" property="gid" />
-		<result column="groupName" property="groupName" />
-		<result column="icon" property="icon" />
-		<result column="results" property="results" />
-		<result column="updateTime" property="updateTime" />
-		<association property="question" select="selectq" column="{qid=qid}" javaType="com.innovate.cms.modules.qs.entity.ques.Questions" />
-	</resultMap>
 	
-	<resultMap type="com.innovate.cms.modules.data.entity.FriendsTopicToJson" id="friendsTopicList">
-		<result property="gid" column="gid" />
-		<result property="groupName" column="groupName" />
-		<result property="icon" column="icon" />
-		<result property="templateTag" column="templateTag" />
-		<result property="num" column="num" />
-		<collection property="lists" ofType="com.innovate.cms.modules.qs.entity.sns.QxFriend">
-			<result property="followUid" column="followUid" />
-			<result property="followImg" column="followImg" />
-		</collection>
-	</resultMap>
-	
-	<select id="selectq" resultMap="questionid">
-		SELECT
-		ques.gid AS "gid",
-		ques.qid AS "qid",
-		ques.template_tag AS "templateTag",
-		ques.subject1 AS "subject1",
-		ques.subject1_type AS "subject1Type",
-		ques.subject2 AS "subject2",
-		ques.subject2_type AS "subject2Type",
-		ques.tag AS "tag",
-		ques.create_time AS "createTime",
-		opt.seq_id AS "seqId",
-		opt.`option` AS "option",
-		opt.option_type AS "optionType",
-		opt.ranks_to_results AS "ranksToResults",
-		opt.go_tag AS "goTag"
-		FROM
-		qx_questions ques,
-		qx_questions_option opt
-		WHERE
-		ques.del_flag = '0'
-		AND opt.del_flag = '0'
-		AND ques.qid = opt.qid
-		AND opt.qid=#{qid}
-	</select>
-
-
-	<select id="findUserHistory" resultMap="historylist">
-		SELECT
-		g.gid AS "gid",
-		g.group_name AS "groupName",
-		g.icon AS "icon",
-		h.results AS "results",
-		h.update_time AS "updateTime",
-		h.qid AS 'qid'
-		FROM
-		qx_groups AS g,
-		qx_history AS h
-		WHERE
-		h.uid = #{uid}
-		AND h.gid = g.gid
-		AND h.del_flag = '0'
-		AND g.del_flag = '0'
-		ORDER BY h.update_time DESC
-		LIMIT #{start},#{num}
-	</select>
 
 	<select id="getFriendsNum" resultType ="int">
 		SELECT
@@ -276,71 +139,7 @@
 		AND qf.del_flag = '0'
 	</select>
 	
-	<select id="findFriendsTopic" resultMap="friendsTopicList">
-		SELECT
-			a.gid AS 'gid',
-			b.groupName AS 'groupName',
-			b.icon AS 'icon',
-			b.templateTag AS 'templateTag',
-			b.num AS 'num',
-			a.followUid AS 'followUid',
-			a.followImg AS 'followImg'
-		FROM
-			(
-				SELECT
-					qh.gid AS 'gid',
-					qf.follow_uid AS 'followUid',
-					qf.follow_img AS 'followImg'
-				FROM
-					qx_follow qf,
-					qx_history qh
-				WHERE
-					qf.follow_uid = qh.uid
-				AND qf.uid = #{uid}
-				AND qh.uid &lt;&gt; #{uid}
-				AND qf.del_flag = '0'
-				AND qh.del_flag = '0'
-			) a
-		INNER JOIN (
-			SELECT
-				c.gid,
-				c.groupName,
-				c.icon,
-				c.templateTag,
-				COUNT(DISTINCT c.followUid) AS 'num'
-			FROM
-				(
-					SELECT
-						qh.gid AS 'gid',
-						qf.follow_uid AS 'followUid',
-						qg.group_name AS 'groupName',
-						qg.small_icon AS 'icon',
-						qh.template_tag AS 'templateTag',
-						qg.create_time AS 'createTime'
-					FROM
-						qx_follow qf,
-						qx_history qh,
-						qx_groups qg
-					WHERE
-						qf.follow_uid = qh.uid
-					AND qh.gid = qg.gid
-					AND qf.uid = #{uid}
-					AND qh.uid &lt;&gt; #{uid}
-					AND qf.del_flag = '0'
-					AND qh.del_flag = '0'
-					AND qg.del_flag = '0'
-				) c
-			GROUP BY
-				c.gid,
-				c.groupName,
-				c.icon,
-				c.templateTag
-			ORDER BY
-				COUNT(DISTINCT c.followUid) DESC,
-				c.createTime DESC
-			LIMIT 0,7
-		) b ON a.gid = b.gid
-	</select>
+
 
 	<insert id="insert">
 		INSERT INTO qx_follow(

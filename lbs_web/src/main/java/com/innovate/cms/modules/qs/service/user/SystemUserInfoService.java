@@ -15,7 +15,6 @@ import com.innovate.cms.common.utils.RandomUtil;
 import com.innovate.cms.common.utils.ReUtil;
 import com.innovate.cms.common.utils.StringUtils;
 import com.innovate.cms.modules.data.entity.BubbleInfoToJson;
-import com.innovate.cms.modules.data.entity.RandomTwoUserToJson;
 import com.innovate.cms.modules.qs.dao.user.SystemUserInfoDao;
 import com.innovate.cms.modules.qs.entity.user.RandomUser;
 import com.innovate.cms.modules.qs.entity.user.SystemUserInfo;
@@ -116,25 +115,6 @@ public class SystemUserInfoService extends CrudService<SystemUserInfoDao, System
 		return list;
 	}
 
-	/**  
-	 * 模板五结果页随机推荐2人接口
-	 * @param uid
-	 * @param gid
-	 * @return  
-	 */    
-	public List<RandomTwoUserToJson> getRandomTwoUser(String uid, String gid) {
-		return super.dao.getRandomTwoUser(uid, gid);
-	}
-	/**
-	 * 获取更多推荐人，最多推荐20
-	 * 模板五结果页随机推荐20人接口
-	 * @param uid
-	 * @param gid
-	 * @return
-	 */
-	public List<RandomTwoUserToJson> getRandomTwentyUser(String uid, String gid) {
-		return super.dao.getRandomTwentyUser(uid, gid);
-	}
 
 
 }

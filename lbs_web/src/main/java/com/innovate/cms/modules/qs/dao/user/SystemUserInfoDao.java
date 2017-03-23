@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Param;
 import com.innovate.cms.common.persistence.CrudDao;
 import com.innovate.cms.common.persistence.annotation.MyBatisDao;
 import com.innovate.cms.modules.data.entity.BubbleInfoToJson;
-import com.innovate.cms.modules.data.entity.RandomTwoUserToJson;
 import com.innovate.cms.modules.qs.entity.user.SystemUserInfo;
 
 /**
@@ -51,16 +50,6 @@ public interface SystemUserInfoDao extends CrudDao<SystemUserInfo> {
 	 * @return  
 	 */    
 	
-	public List<RandomTwoUserToJson> getRandomTwoUser(@Param("uid")String uid, @Param("gid")String gid);
-
-	/**
-	 * 获取更多推荐人，最多推荐20
-	 * 模板五结果页随机推荐20人接口
-	 * @param uid
-	 * @param gid
-	 * @return
-	 */
-	public List<RandomTwoUserToJson> getRandomTwentyUser(@Param("uid")String uid, @Param("gid")String gid);
 
 	
 }

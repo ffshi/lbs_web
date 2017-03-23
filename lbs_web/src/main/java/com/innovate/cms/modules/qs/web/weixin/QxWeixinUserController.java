@@ -36,7 +36,6 @@ import com.innovate.cms.common.service.WeiXinService;
 import com.innovate.cms.common.utils.AES;
 import com.innovate.cms.common.utils.DateUtils;
 import com.innovate.cms.common.utils.Encodes;
-import com.innovate.cms.common.utils.HttpClientUtil;
 import com.innovate.cms.common.utils.ReUtil;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.utils.StringUtils;
@@ -47,11 +46,8 @@ import com.innovate.cms.modules.common.entity.DataBackInfo;
 import com.innovate.cms.modules.data.entity.LoginToJson;
 import com.innovate.cms.modules.data.entity.PostLoginJson;
 import com.innovate.cms.modules.data.entity.WXConfigToJson;
-import com.innovate.cms.modules.data.entity.WXWebLoginToJson;
-import com.innovate.cms.modules.qs.entity.sns.TempFollow;
 import com.innovate.cms.modules.qs.entity.user.SystemUser;
 import com.innovate.cms.modules.qs.entity.user.SystemUserInfo;
-import com.innovate.cms.modules.qs.service.sns.TempFollowService;
 import com.innovate.cms.modules.qs.service.user.SystemUserService;
 
 /**
@@ -70,8 +66,6 @@ public class QxWeixinUserController extends BaseController {
 	@Autowired
 	private SystemUserService systemUserService;
 
-	@Autowired
-	private TempFollowService tempFollowService;
 
 	/**
 	 * 小程序用户登录
@@ -433,178 +427,7 @@ public class QxWeixinUserController extends BaseController {
 		return JsonMapper.getInstance().toJsonP(callback, backInfo);
 	}
 
-	/**
-	 * 
-	 * @Title: getOauth2ByWeiXin
-	 * @Description: 网页微信授权登陆
-	 * @param request
-	 * @param response
-	 * @return 返回类型 String
-	 *
-	 */
-	@RequestMapping(value = "/v2/oauth2/weixin", method = RequestMethod.GET)
-	public @ResponseBody String getOauth2ByWeiXin(HttpServletRequest request, HttpServletResponse response) {
-		// String callback = request.getParameter("callback");
-		String callback = request.getParameter("callback");
-		String code = request.getParameter(Global.WX_CODE);
-		String state = request.getParameter(Global.WX_STATE);
-		String fxuid = request.getParameter("fxuid"); // 分享人UID
-		String ip = StringUtils.getRemoteAddr(request);
 
-		BaseBackInfo wxBackInfo = new BaseBackInfo();
-		// systemUserService.saveUserAndInfo(systemUser,systemUserInfo);
-		if (StrUtil.isBlank(callback)) {
-			wxBackInfo.setStateCode(Global.intNO);
-			wxBackInfo.setRetMsg("缺少callback参数");
-			return JsonMapper.getInstance().toJsonP(callback, wxBackInfo);
-		} else if (StrUtil.isBlank(code) || StrUtil.isBlank(state)) {
-			wxBackInfo.setStateCode(Global.intNO);
-			wxBackInfo.setRetMsg("缺少code 或  state 参数");
-			return JsonMapper.getInstance().toJsonP(callback, wxBackInfo);
-		} else {
-			// 初始化获取access_token的链接
-			String get_access_token_url = Global.getAccessTokenUrl(Global.WX_APPID, Global.WX_SECRET, code);
-
-			// 第二步：通过code换取网页授权access_token
-			String jsonStr = HttpClientUtil.doGet(get_access_token_url); // 发送get请求
-			JSONObject jsObj = JSONObject.parseObject(jsonStr); // 对象转换
-
-			String errcode = jsObj.getString(Global.WX_ERRCODE);
-			if (StrUtil.isNotBlank(errcode)) {
-				// 如果有错误打印出来
-				logger.debug("错误代码：{}", jsonStr);
-				return JsonMapper.getInstance().toJsonP(callback, jsObj);
-			} else {
-				// 如果没有错误 把所有值取出来
-				String access_token = jsObj.getString(Global.WX_ACCESS_TOKEN);
-				String expires_in = jsObj.getString(Global.WX_EXPIRES_IN);
-				String refresh_token = jsObj.getString(Global.WX_REFRESH_TOKEN);
-				String openid = jsObj.getString(Global.WX_OPENID);
-				String lang = Global.WX_ZH_CN; // 默认
-				// ------------------------------------------------------
-				String user_openid = "";
-				String user_nickname = "";
-				String user_sex = "";
-				String user_province = "";
-				String user_city = "";
-				String user_country = "";
-				String user_headimgurl = "";
-				String unionid = "";
-				// 初始化获取userinfo的链接
-				String get_userinfo_url = Global.getUserinfo(access_token, openid, lang);
-				String jsonStr2 = HttpClientUtil.doGet(get_userinfo_url); // 发送get请求
-				JSONObject jsObj2 = JSONObject.parseObject(jsonStr2); // 对象转换
-				String errcode2 = jsObj2.getString(Global.WX_ERRCODE);
-				if (StrUtil.isNotBlank(errcode2)) {
-					// 如果有错误打印出来
-					logger.debug("错误代码：{}", jsonStr2);
-					return JsonMapper.getInstance().toJsonP(callback, jsObj2);
-				} else {
-					// 如果没有错误 把所有值取出来
-					user_nickname = jsObj2.getString(Global.WX_NICKNAME);
-					user_sex = jsObj2.getString(Global.WX_SEX);
-					user_province = jsObj2.getString(Global.WX_PROVINCE);
-					user_city = jsObj2.getString(Global.WX_CITY);
-					user_country = jsObj2.getString(Global.WX_COUNTRY);
-					user_headimgurl = jsObj2.getString(Global.WX_HEADIMGURL);
-					unionid = jsObj2.getString(Global.WX_UNIONID);
-					user_openid = jsObj2.getString(Global.WX_OPENID);
-					logger.debug("user_country微信获取={}", user_country);
-					user_country = Global.WX_ZH_CN;
-				}
-
-				// WeixinUser weixinUser = null;
-				// 查询用户是否存在 如果不存在创建一个用户
-				SystemUser weixinUser = new SystemUser();
-				try {
-					weixinUser = systemUserService.getUserByThreeUnionid(unionid);
-				} catch (Exception e) {
-					// 查询用户必须处理，否则可能存在多添加重复的用户
-					wxBackInfo.setStateCode(Global.int300301);
-					wxBackInfo.setRetMsg(Global.str300301 + "[" + e.getMessage() + "]");
-					return JsonMapper.getInstance().toJsonP(callback, wxBackInfo);
-				}
-				SystemUserInfo systemUserInfo = new SystemUserInfo();
-				String uid = "";
-				// weixinUser = weixinUserService.getByOpenid(openid);
-				if (null == weixinUser) {
-					// 如果不存在则新增用户
-					weixinUser = new SystemUser(unionid, //
-							user_openid, //
-							user_nickname, //
-							user_sex, //
-							"", // 星座
-							null, // 生日
-							user_province, //
-							user_city, //
-							user_country, //
-							user_headimgurl, //
-							lang, //
-							"web", // 用户客户端ios或者android
-							"4", // 用户类型0、官方1、普通2、微信3、web微信4、QQ5、微博
-							new Date());
-					systemUserInfo = new SystemUserInfo(unionid, //
-							user_openid, //
-							access_token, //
-							refresh_token, //
-							Integer.parseInt(expires_in), //
-							ip, //
-							new Date(), //
-							new Date()); // 有俩Date() // 的即是web微信登陆的构造
-					try {
-						uid = systemUserService.saveUserAndInfo(weixinUser, systemUserInfo);
-						// #趣选新用户是否立刻同步到aliIM 0:不同步 1：立即同步
-						try {
-
-							weixinUser.setUid(uid);
-							IMUtils.addUser(weixinUser); // 阿里IM名用戶同步
-
-						} catch (Exception e1) {
-							logger.debug("IMUtils.addUser(weixinUser),更新接口报错：[{}]", e1.getMessage());
-						}
-					} catch (Exception e) {
-						// 新增用户必须处理，用户都没有新增成功 返回信息没有任何意义
-						wxBackInfo.setStateCode(Global.int300301);
-						wxBackInfo.setRetMsg(Global.str300301 + "[" + e.getMessage() + "]");
-						return JsonMapper.getInstance().toJsonP(callback, wxBackInfo);
-					}
-
-				} else {
-					// 如果存在 则更新用户 ，web登陆情况下的主对象，暂时没有token（session）的概念所以不需要更新s
-					systemUserInfo.setUid(weixinUser.getUid());
-					systemUserInfo.setWebAccessToken(access_token);
-					systemUserInfo.setWebExpiresIn(Integer.parseInt(expires_in));
-					systemUserInfo.setWebRefreshToken(refresh_token);
-					try {
-						uid = systemUserService.saveUserAndInfo(weixinUser, systemUserInfo);
-						// #趣选新用户是否立刻同步到aliIM 0:不同步 1：立即同步
-						try {
-							weixinUser.setUid(uid);
-							IMUtils.updateUser(weixinUser); // 阿里IM名用戶更新
-						} catch (Exception e1) {
-							logger.debug("IMUtils.updateUser(weixinUser),更新接口报错：[{}]", e1.getMessage());
-						}
-					} catch (Exception e) {
-						// 更新报错可以不做处理,最多用户信息更新不成功，不要影响正常返回，但是需要记录日志
-						logger.debug("systemUserService.saveUserAndInfo,更新接口报错：[{}]", e.getMessage());
-					}
-				}
-				WXWebLoginToJson webLogin = new WXWebLoginToJson(uid, unionid, user_openid, user_nickname, user_headimgurl, user_sex, user_province, user_country, user_city);
-				// 同一个用户可能进多个人的分享，由于unionid一致，所以每次都要添加一条记录，由接口判断非好友推荐
-				if (StringUtils.isNotBlank(fxuid)) {
-					TempFollow entity = new TempFollow(fxuid, uid, user_headimgurl, user_nickname);
-					try {
-						tempFollowService.saveTempFollow(entity);
-					} catch (Exception e) {
-						logger.debug("tempFollowService.saveTempFollow(entity)添加临时好友出错，数据主动丢失：[{}]，fxuid={}, uid={}, user_nickname={}", e.getMessage(), fxuid, uid, user_nickname);
-						// 不做处理，可以丢失
-					}
-				}
-				logger.debug("用户数据：{}", weixinUser.toString());
-				return JsonMapper.getInstance().toJsonP(callback, webLogin);
-			}
-		}
-	}
 
 	@ExceptionHandler(value = { HttpMessageNotReadableException.class })
 	public @ResponseBody BaseBackInfo exp(HttpMessageNotReadableException ex) {

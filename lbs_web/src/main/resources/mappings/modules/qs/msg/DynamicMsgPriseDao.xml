@@ -98,29 +98,10 @@
 		) ON DUPLICATE KEY UPDATE nums=nums+1
 
 	</insert>
-	<insert id="saveQxTagUserByuidgid">
-		INSERT IGNORE INTO qx_tag_user (uid, tagId, tagName) SELECT
-		#{uid} AS "uid",
-		g.tagId AS "tagId",
-		g.tagName AS "tagName"
-		FROM
-		qx_tag_group g
-		WHERE
-		g.gid = #{gid} ON DUPLICATE KEY UPDATE nums = nums + 1;
-
-	</insert>
 
 
 
-	<select id="findByUid" resultType="com.innovate.cms.modules.qs.entity.tag.QxTagToJson">
-		SELECT
-		q.tagId AS 'tagId',
-		q.tagName AS "tagName"
-		FROM
-		qx_tag_user q
-		WHERE
-		uid = #{uid}
-	</select>
+
 
 
 </mapper>

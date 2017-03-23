@@ -9,12 +9,8 @@ import org.apache.ibatis.annotations.Param;
 
 import com.innovate.cms.common.persistence.CrudDao;
 import com.innovate.cms.common.persistence.annotation.MyBatisDao;
-import com.innovate.cms.modules.data.entity.FriendsTopicToJson;
-import com.innovate.cms.modules.qs.entity.sns.FriendHistory;
 import com.innovate.cms.modules.qs.entity.sns.QxFollow;
 import com.innovate.cms.modules.qs.entity.sns.QxFriend;
-import com.innovate.cms.modules.qs.entity.sns.RecommendUser;
-import com.innovate.cms.modules.qs.entity.sns.UserHistory;
 
 /**
  * 关注表DAO接口
@@ -64,19 +60,6 @@ public interface QxFollowDao extends CrudDao<QxFollow> {
 	 */
 	public List<QxFriend> findFrindList(@Param("uid") String uid);
 
-	/**
-	 * 分页获取足迹
-	 * 
-	 * @param uid
-	 * @param start
-	 * @param num
-	 * @return
-	 */
-	public List<UserHistory> findUserHistory(@Param("uid") String uid, @Param("start") int start, @Param("num") int num);
-
-	public List<FriendHistory> findHistorybyuidgidPage(@Param("uid") String uid, @Param("gid") String gid, @Param("start") int start, @Param("num") int num);
-
-	public List<FriendHistory> findHistorybyuidgid(@Param("uid") String uid, @Param("gid") String gid);
 
 	/**
 	 * 批量添加好友
@@ -94,14 +77,6 @@ public interface QxFollowDao extends CrudDao<QxFollow> {
 	 */
 	public int getFriendsNum(String uid);
 
-	/**
-	 * 获取好友参与的专题：最新的自己未做过的好友参与数排名前七位的专题
-	 * 
-	 * @param uid
-	 * @return
-	 */
-
-	public List<FriendsTopicToJson> findFriendsTopic(String uid);
 
 	/**  
 	 * 根据uid更新好友的昵称和头像
@@ -120,11 +95,5 @@ public interface QxFollowDao extends CrudDao<QxFollow> {
 	 */
 	public void storeT0results(@Param("uid")String uid, @Param("result")String result, @Param("currentDay")int currentDay);
 
-	/**
-	 * 获取当天做完专题的用户
-	 * @param currentDay
-	 * @return
-	 */
-	public List<RecommendUser> getRecommendUser(@Param("currentDay")int currentDay);
 
 }

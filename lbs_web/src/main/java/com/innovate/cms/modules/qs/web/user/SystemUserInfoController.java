@@ -33,17 +33,12 @@ import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.aliIM.IMUtils;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
-import com.innovate.cms.modules.common.entity.MainPageBackInfo;
 import com.innovate.cms.modules.data.entity.BaseUserPropertyToJson;
 import com.innovate.cms.modules.data.entity.BubbleInfoToJson;
-import com.innovate.cms.modules.data.entity.RandomTwoUserToJson;
 import com.innovate.cms.modules.data.entity.RegUserInfoToJson;
-import com.innovate.cms.modules.data.entity.UgcGroupToJson;
-import com.innovate.cms.modules.data.entity.UgcHistoryGroupToJson;
 import com.innovate.cms.modules.data.entity.UserInfoToJson;
 import com.innovate.cms.modules.qs.entity.user.FollowerUser;
 import com.innovate.cms.modules.qs.entity.user.SystemUser;
-import com.innovate.cms.modules.qs.service.ques.QxQuestionsService;
 import com.innovate.cms.modules.qs.service.sns.QxFollowService;
 import com.innovate.cms.modules.qs.service.user.SystemUserInfoService;
 import com.innovate.cms.modules.qs.service.user.SystemUserService;
@@ -64,8 +59,6 @@ public class SystemUserInfoController extends BaseController {
 	private SystemUserService systemUserService;
 	@Autowired
 	private QxFollowService qxFollowService;
-	@Autowired
-	private QxQuestionsService qxQuestionsService;
 
 	/*
 	 * @Autowired private QxUserMsgService qxUserMsgService;
@@ -78,189 +71,11 @@ public class SystemUserInfoController extends BaseController {
 	 * 
 	 * @Autowired private QxMatchService qxMatchService;
 	 */
-	/**
-	 * 用户足迹
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/user/userHistory", method = RequestMethod.POST)
-	public @ResponseBody BaseBackInfo userHistory(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-
-		String uid = map.get("uid");
-
-		DataBackInfo<UgcHistoryGroupToJson> backInfo = new DataBackInfo<UgcHistoryGroupToJson>();
-		if (StrUtil.isBlank(uid)) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg(Global.str300209);
-			return info;
-		}
-		try {
-			// 获取用户做过的站边专题(模板0类型的)历史记录
-			List<UgcHistoryGroupToJson> groups = qxQuestionsService.getHistoryGroups(uid);
-			// if (groups.size()>0) {
-			backInfo.setData(groups);
-			// }
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-			backInfo.setRetMsg(Global.ERROR);
-			backInfo.setStateCode(Global.intNO);
-		}
-		return backInfo;
-	}
-
-	/**
-	 * 用户主页
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/user/userMainPage", method = RequestMethod.POST)
-	public @ResponseBody BaseBackInfo userMainPage(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		String uid = map.get("uid");
-		MainPageBackInfo<UgcGroupToJson> backInfo = new MainPageBackInfo<UgcGroupToJson>();
-		if (StrUtil.isBlank(uid)) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg(Global.str300209);
-			return info;
-		}
-		try {
-			// 获取用户UGC专题/用户上传专题
-			List<UgcGroupToJson> groups = qxQuestionsService.getUgcGroups(uid);
-			if (groups.size() > 0) {
-				backInfo.setData(groups);
-				backInfo.setHeadimgurl(groups.get(0).getHeadimgurl());
-				backInfo.setNickname(groups.get(0).getNickname());
-				backInfo.setUgcCount(groups.size());
-			} else {
-				SystemUser user = systemUserService.findByUid(uid);
-				backInfo.setHeadimgurl(user.getHeadimgurl());
-				backInfo.setNickname(user.getNickname());
-				backInfo.setData(groups);
-			}
-			// 获取用户关注数
-			backInfo.setFollowsNum(systemUserService.followsNum(uid));
-			// 获取获取粉丝数
-			backInfo.setFollowersNum(systemUserService.followersNum(uid));
-			// 获取用户足迹数
-			backInfo.setHistoryNum(systemUserService.historyNum(uid));
-			backInfo.setUid(uid);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-			backInfo.setRetMsg(Global.ERROR);
-			backInfo.setStateCode(Global.intNO);
-		}
-		return backInfo;
-	}
-
-	/**
-	 * 小程序-用户主页
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/user/userXcxMainPage", method = RequestMethod.POST)
-	public @ResponseBody BaseBackInfo userXcxMainPage(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		String uid = map.get("uid");
-		MainPageBackInfo<UgcHistoryGroupToJson> backInfo = new MainPageBackInfo<UgcHistoryGroupToJson>();
-		if (StrUtil.isBlank(uid)) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg(Global.str300209);
-			return info;
-		}
-		try {
-			// 小程序-获取用户UGC专题/用户上传专题
-			List<UgcHistoryGroupToJson> groups = qxQuestionsService.getXcxUgcGroups(uid);
-			if (groups.size() > 0) {
-				backInfo.setData(groups);
-				backInfo.setHeadimgurl(groups.get(0).getHeadimgurl());
-				backInfo.setNickname(groups.get(0).getNickname());
-				backInfo.setUgcCount(groups.size());
-			} else {
-				SystemUser user = systemUserService.findByUid(uid);
-				backInfo.setHeadimgurl(user.getHeadimgurl());
-				backInfo.setNickname(user.getNickname());
-				backInfo.setData(groups);
-			}
-			// 获取用户关注数
-			backInfo.setFollowsNum(systemUserService.followsNum(uid));
-			// 获取获取粉丝数
-			backInfo.setFollowersNum(systemUserService.followersNum(uid));
-			// 获取用户足迹数
-			backInfo.setHistoryNum(systemUserService.historyNum(uid));
-			backInfo.setUid(uid);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-			backInfo.setRetMsg(Global.ERROR);
-			backInfo.setStateCode(Global.intNO);
-		}
-		return backInfo;
-	}
 	
-	/**
-	 * 小程序-用户主页
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/user/userXcxfMainPage", method = RequestMethod.POST)
-	public @ResponseBody BaseBackInfo userXcxfMainPage(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		String uid = map.get("uid");
-		String fuid = map.get("fuid");
-		MainPageBackInfo<UgcHistoryGroupToJson> backInfo = new MainPageBackInfo<UgcHistoryGroupToJson>();
-		if (StrUtil.isBlank(uid)||StrUtil.isBlank(fuid)) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg(Global.str300209);
-			return info;
-		}
-		try {
-			// 小程序-获取好友用户UGC专题/用户上传专题
-			List<UgcHistoryGroupToJson> groups = qxQuestionsService.getXcxfUgcGroups(uid,fuid);
-			if (groups.size() > 0) {
-				backInfo.setData(groups);
-				backInfo.setHeadimgurl(groups.get(0).getHeadimgurl());
-				backInfo.setNickname(groups.get(0).getNickname());
-				backInfo.setUgcCount(groups.size());
-			} else {
-				SystemUser user = systemUserService.findByUid(uid);
-				backInfo.setHeadimgurl(user.getHeadimgurl());
-				backInfo.setNickname(user.getNickname());
-				backInfo.setData(groups);
-			}
-			// 获取用户关注数
-			backInfo.setFollowsNum(systemUserService.followsNum(fuid));
-			// 获取获取粉丝数
-			backInfo.setFollowersNum(systemUserService.followersNum(fuid));
-			// 获取用户足迹数
-			backInfo.setHistoryNum(systemUserService.historyNum(fuid));
-			backInfo.setUid(fuid);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-			backInfo.setRetMsg(Global.ERROR);
-			backInfo.setStateCode(Global.intNO);
-		}
-		return backInfo;
-	}
+
+
+
+	
 
 	/**
 	 * 获取用户关注的好友
@@ -654,79 +469,8 @@ public class SystemUserInfoController extends BaseController {
 		return backInfo;
 	}
 
-	/**
-	 * 模板五结果页随机推荐2人接口
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/user/getRandomTwoUser", method = RequestMethod.POST)
-	public @ResponseBody DataBackInfo<RandomTwoUserToJson> getRandomTwoUser(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-
-		DataBackInfo<RandomTwoUserToJson> backInfo = new DataBackInfo<RandomTwoUserToJson>();
-		String uid = map.get("uid");
-		String gid = map.get("gid");
-		List<RandomTwoUserToJson> randomTwoUserList = Lists.newArrayList();
-		// 简单参数校验
-		if (Strings.isNullOrEmpty(gid) || Strings.isNullOrEmpty(uid)) {
-			backInfo.setData(randomTwoUserList);
-			backInfo.setStateCode(Global.int300209);
-			backInfo.setRetMsg(Global.str300209);
-			return backInfo;
-		}
-
-		try {
-			randomTwoUserList = systemUserInfoService.getRandomTwoUser(uid, gid);
-			backInfo.setData(randomTwoUserList);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[SystemUserInfoController - getRandomTwoUser()接口报错：{}]", e.getMessage());
-			backInfo.setStateCode(Global.int300302);
-			backInfo.setRetMsg(Global.str300302);
-		}
-		return backInfo;
-	}
-
-	/**
-	 * 获取更多推荐人，最多推荐20 模板五结果页随机推荐20人接口
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/user/getRandomTwentyUser", method = RequestMethod.POST)
-	public @ResponseBody DataBackInfo<RandomTwoUserToJson> getRandomTwentyUser(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-
-		DataBackInfo<RandomTwoUserToJson> backInfo = new DataBackInfo<RandomTwoUserToJson>();
-		String uid = map.get("uid");
-		String gid = map.get("gid");
-		List<RandomTwoUserToJson> randomTwoUserList = Lists.newArrayList();
-		// 简单参数校验
-		if (Strings.isNullOrEmpty(gid) || Strings.isNullOrEmpty(uid)) {
-			backInfo.setData(randomTwoUserList);
-			backInfo.setStateCode(Global.int300209);
-			backInfo.setRetMsg(Global.str300209);
-			return backInfo;
-		}
-
-		try {
-			randomTwoUserList = systemUserInfoService.getRandomTwentyUser(uid, gid);
-			backInfo.setData(randomTwoUserList);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-
-			backInfo.setStateCode(Global.int300302);
-			backInfo.setRetMsg(Global.str300302);
-		}
-		return backInfo;
-	}
-
+	
+	
 	/**
 	 * 获取用户基本属性---性别、年龄、星座、地区
 	 * 

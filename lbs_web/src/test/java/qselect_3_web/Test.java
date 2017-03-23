@@ -1,19 +1,13 @@
 package qselect_3_web;
 
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Random;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import com.google.common.collect.Lists;
-import com.innovate.cms.common.utils.DateUtils;
 import com.innovate.cms.common.utils.HttpClientUtil;
-import com.innovate.cms.common.utils.ListSortUtil;
-import com.innovate.cms.modules.qs.entity.sns.RecommendUser;
 
 public class Test {
 
@@ -29,21 +23,6 @@ public class Test {
 		// for (int i=0;i<100;i++) {
 		// System.out.println(new Random().nextInt(10));
 		// }
-//		List<RecommendUser> temp = Lists.newArrayList();
-//		RecommendUser u1 = new RecommendUser(40, "fdsfdsfds", "1111122222");
-//		RecommendUser u2 = new RecommendUser(30, "fdsfdsfds", "1111122222");
-//		RecommendUser u3 = new RecommendUser(80, "fdsfdsfds", "1111122222");
-//		temp.add(u1);
-//		temp.add(u2);
-//		temp.add(u3);
-//
-//		ListSortUtil<RecommendUser> sortList = new ListSortUtil<RecommendUser>();
-//
-//		sortList.sort(temp, "match", "desc");
-//
-//		System.out.println("");
-		
-//		System.out.println(DateUtils.getIntDate());
 		System.out.println(HttpClientUtil.doGet("http://m.image.so.com/j?ie=utf-8&pn=60&sn=60&src=hao_360so&q=4"));
 	}
 
@@ -73,15 +52,6 @@ public class Test {
 		return decryptedData;
 	}
 
-	private static int compareRes(String r1, String r2) {
-		int count = 0;
-		for (int i = 0; i < r1.length(); i++) {
-			if (r1.charAt(i) == r2.charAt(i)) {
-				count++;
-			}
-		}
-		return 10 * count + new Random().nextInt(10);
-	}
 
 	public static int testFor() {
 		int i = 0;

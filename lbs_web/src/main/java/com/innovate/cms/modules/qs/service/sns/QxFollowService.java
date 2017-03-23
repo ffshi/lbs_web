@@ -11,13 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.innovate.cms.common.service.CrudService;
 import com.innovate.cms.common.utils.StringUtils;
-import com.innovate.cms.modules.data.entity.FriendsTopicToJson;
 import com.innovate.cms.modules.qs.dao.sns.QxFollowDao;
-import com.innovate.cms.modules.qs.entity.sns.FriendHistory;
 import com.innovate.cms.modules.qs.entity.sns.QxFollow;
 import com.innovate.cms.modules.qs.entity.sns.QxFriend;
-import com.innovate.cms.modules.qs.entity.sns.RecommendUser;
-import com.innovate.cms.modules.qs.entity.sns.UserHistory;
 
 /**
  * 关注表Service
@@ -98,28 +94,6 @@ public class QxFollowService extends CrudService<QxFollowDao, QxFollow> {
 		return super.dao.findFrindList(uid);
 	}
 
-	/**
-	 * 分页获取足迹
-	 * 
-	 * @param uid
-	 * @param start
-	 * @param num
-	 * @return
-	 */
-	public List<UserHistory> findUserHistory(String uid, int start, int num) {
-		// TODO Auto-generated method stub
-		return super.dao.findUserHistory(uid, start, num);
-	}
-
-	public List<FriendHistory> findHistorybyuidgidPage(String uid, String gid, int start, int num) {
-		// TODO Auto-generated method stub
-		return super.dao.findHistorybyuidgidPage(uid, gid, start, num);
-	}
-
-	public List<FriendHistory> findHistorybyuidgid(String uid, String gid) {
-		// TODO Auto-generated method stub
-		return super.dao.findHistorybyuidgid(uid, gid);
-	}
 
 	/**
 	 * 批量关注存储
@@ -132,20 +106,6 @@ public class QxFollowService extends CrudService<QxFollowDao, QxFollow> {
 		super.dao.saveFollows(flid, addid);
 	}
 
-	/**  
-	 * 获取好友参与的专题：最新的自己未做过的好友参与数排名前七位的专题
-	 * @param uid
-	 * @return  
-	 */    
-	
-	public List<FriendsTopicToJson> findFriendsTopic(String uid) {
-		//判断好友数量是否超过10个(大于等于10)，小于10的话直接返回空
-		int num = super.dao.getFriendsNum(uid);
-		if(num < 10) {
-			return new ArrayList<FriendsTopicToJson>();
-		}
-		return super.dao.findFriendsTopic(uid);
-	}
 
 	/**  
 	 * 根据uid更新好友的昵称和头像
@@ -169,13 +129,5 @@ public class QxFollowService extends CrudService<QxFollowDao, QxFollow> {
 		super.dao.storeT0results(uid,result,currentDay);
 	}
 
-	/**
-	 * 获取当天做完专题的用户
-	 * @param currentDay
-	 * @return
-	 */
-	public List<RecommendUser> getRecommendUser(int currentDay) {
-		return super.dao.getRecommendUser(currentDay);
-	}
 
 }
