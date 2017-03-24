@@ -318,6 +318,11 @@ public class Global {
 	public static final int int3002042 = 3002042;
 	public static final String str3002042 = "name or pwd error";
 	/**
+	 * 未注册用户登录
+	 */
+	public static final int int3002043 = 3002043;
+	public static final String str3002043 = "Please register first";
+	/**
 	 * 账号或密码不正确
 	 */
 	public static final int int3002041 = 3002041;

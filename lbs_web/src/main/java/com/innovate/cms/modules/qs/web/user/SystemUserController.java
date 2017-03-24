@@ -207,6 +207,13 @@ public class SystemUserController extends BaseController {
 				}
 				if (userType.charAt(0) == '1') {
 					SystemUser temsystemUser = systemUserService.getUserOnlyByMobile(mobile);
+					// 登录用户必须已经注册的用户
+					if (postLoginJson.getIsLogin() == 1 && null == temsystemUser) {
+						logger.debug("未注册用户登录...");
+						backInfo.setStateCode(Global.int3002043);
+						backInfo.setRetMsg(Global.str3002043);
+						return JsonMapper.toJsonString(backInfo);
+					}
 					if (null != temsystemUser && null == systemUser) {
 						logger.debug("用户名或者密码错误");
 						backInfo.setStateCode(Global.int3002042);

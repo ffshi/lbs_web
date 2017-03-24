@@ -27,7 +27,8 @@ public class PostLoginJson implements Serializable
 	private String password; // 登录密码
 	private String mobile; // 手机-可为账号
 	private String version; // 临时参数
-	
+	//用户手机号调用登录接口时候需要告知是登录还是注册 0:注册 1:登录
+	private int isLogin;
 
 
 	public PostLoginJson()
@@ -99,6 +100,14 @@ public class PostLoginJson implements Serializable
 		this.loginName = loginName;
 		this.password = password;
 		this.mobile = mobile;
+	}
+
+	public int getIsLogin() {
+		return isLogin;
+	}
+
+	public void setIsLogin(int isLogin) {
+		this.isLogin = isLogin;
 	}
 
 	public String getUnionid()
