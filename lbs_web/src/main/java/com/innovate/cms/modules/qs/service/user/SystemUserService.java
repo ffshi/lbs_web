@@ -116,6 +116,10 @@ public class SystemUserService extends CrudService<SystemUserDao, SystemUser> {
 			String _uuid = IdGen.uuid();
 			systemUser.setUid(_uuid);//插入主键
 			systemUserInfo.setUid(_uuid);
+			//如果用户名为空,设置为空字符串(手机号注册默认没有用户名)
+			if (systemUser.getNickname()==null) {
+				systemUser.setNickname("");
+			}
 			super.dao.insertUser(systemUser);
 			systemUserInfoService.insertInfo(systemUserInfo);
 			return _uuid;
