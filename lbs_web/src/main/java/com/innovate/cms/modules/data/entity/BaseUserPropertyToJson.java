@@ -28,6 +28,7 @@ public class BaseUserPropertyToJson implements Serializable {
 	private String province; // 归属省会
 	private String city; // 归属市级城市
 
+	private int uNum;//本平台用户号,类似QQ
 	public BaseUserPropertyToJson() {
 		super();
 	}
@@ -42,6 +43,14 @@ public class BaseUserPropertyToJson implements Serializable {
 		this.constellation = constellation;
 		this.province = province;
 		this.city = city;
+	}
+
+	public int getuNum() {
+		return uNum;
+	}
+
+	public void setuNum(int uNum) {
+		this.uNum = uNum;
 	}
 
 	public String getUid() {

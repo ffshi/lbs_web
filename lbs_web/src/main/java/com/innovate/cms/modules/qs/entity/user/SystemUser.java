@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.validation.constraints.NotNull;
@@ -44,7 +45,8 @@ public class SystemUser extends DataEntity<SystemUser> {
 	private String loginFlag;		// 是否可登录0可登陆1不可登陆
 	private Date updateTime;		// 数据更新时间
 	private Date createTime;		// 数据创建时间
-	
+	@JSONField(name="u_num")
+	private int uNum;//用户数字账号,类似qq号
 	public SystemUser() {
 		super();
 	}
@@ -94,6 +96,15 @@ public class SystemUser extends DataEntity<SystemUser> {
 
 	public SystemUser(String id){
 		super(id);
+	}
+
+	
+	public int getuNum() {
+		return uNum;
+	}
+
+	public void setuNum(int uNum) {
+		this.uNum = uNum;
 	}
 
 	@Length(min=1, max=64, message="本地用户编号长度必须介于 1 和 64 之间")

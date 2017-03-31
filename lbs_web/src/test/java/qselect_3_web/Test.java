@@ -23,7 +23,9 @@ public class Test {
 		// for (int i=0;i<100;i++) {
 		// System.out.println(new Random().nextInt(10));
 		// }
-		System.out.println(HttpClientUtil.doGet("http://m.image.so.com/j?ie=utf-8&pn=60&sn=60&src=hao_360so&q=4"));
+//		System.out.println(HttpClientUtil.doGet("http://m.image.so.com/j?ie=utf-8&pn=60&sn=60&src=hao_360so&q=4"));
+		String ss = "13552843964";
+		System.out.println(ss.substring(0, 3)+"****"+ss.substring(7));
 	}
 
 	/**

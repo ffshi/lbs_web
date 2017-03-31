@@ -25,6 +25,9 @@ public class UserInfoToJson implements Serializable {
 	private String userGroups; // 用户分组、预留
 	private String userType; // 用户类型0、官方1、普通2、微信3、web微信4、QQ5、微博
 
+	// 本平台用户号,类似QQ号
+	private int uNum;
+
 	public UserInfoToJson() {
 		super();
 	}
@@ -43,6 +46,14 @@ public class UserInfoToJson implements Serializable {
 		this.headimgurl = headimgurl;
 		this.userGroups = userGroups;
 		this.userType = userType;
+	}
+
+	public int getuNum() {
+		return uNum;
+	}
+
+	public void setuNum(int uNum) {
+		this.uNum = uNum;
 	}
 
 	public String getUid() {
