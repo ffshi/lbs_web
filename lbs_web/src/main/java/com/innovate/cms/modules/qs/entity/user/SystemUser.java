@@ -47,6 +47,9 @@ public class SystemUser extends DataEntity<SystemUser> {
 	private Date createTime;		// 数据创建时间
 	@JSONField(name="u_num")
 	private int uNum;//用户数字账号,类似qq号
+	//个人签名
+	@JSONField(name="personal_signature")
+	private String personalSignature;
 	public SystemUser() {
 		super();
 	}
@@ -97,8 +100,16 @@ public class SystemUser extends DataEntity<SystemUser> {
 	public SystemUser(String id){
 		super(id);
 	}
-
 	
+	
+	public String getPersonalSignature() {
+		return personalSignature;
+	}
+
+	public void setPersonalSignature(String personalSignature) {
+		this.personalSignature = personalSignature;
+	}
+
 	public int getuNum() {
 		return uNum;
 	}

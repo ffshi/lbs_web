@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.innovate.cms.modules.qs.dao.user.SystemUserDao">
-    
+
 	<sql id="systemUserColumns">
 		a.uid AS "uid",
 		a.unionid AS "unionid",
@@ -27,25 +27,26 @@
 		a.update_time AS "updateTime",
 		a.create_time AS "createTime",
 		a.del_flag AS "delFlag",
-		a.u_num AS "uNum"
+		a.u_num AS "uNum",
+		a.personal_signature as "personalSignature"
 	</sql>
-	
+
 	<sql id="systemUserJoins">
 	</sql>
-    
+
 	<select id="get" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		WHERE a.uid = #{uid}
 	</select>
-	
+
 	<select id="findList" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		<where>
 			a.del_flag = '0'
 			<if test="uid != null and uid != ''">
@@ -67,33 +68,33 @@
 		</choose>
 	</select>
 	<select id="findLastest1000" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
-		<where>
-			a.del_flag = '0' 
-			<if test="uid != null and uid != ''">
-				AND a.uid = #{uid} 
-			</if>
-			<if test="unionid != null and unionid != ''">
-				AND a.unionid = #{unionid} 
-			</if>
-			<if test="openid != null and openid != ''">
-				AND a.openid = #{openid} 
-			</if>
-		</where>
-		 ORDER BY create_time LIMIT 1000
-	</select>
-	
-	<select id="findAllList" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
-		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		<where>
 			a.del_flag = '0'
-		</where>		
+			<if test="uid != null and uid != ''">
+				AND a.uid = #{uid}
+			</if>
+			<if test="unionid != null and unionid != ''">
+				AND a.unionid = #{unionid}
+			</if>
+			<if test="openid != null and openid != ''">
+				AND a.openid = #{openid}
+			</if>
+		</where>
+		ORDER BY create_time LIMIT 1000
+	</select>
+
+	<select id="findAllList" resultType="SystemUser">
+		SELECT
+		<include refid="systemUserColumns" />
+		FROM system_user a
+		<include refid="systemUserJoins" />
+		<where>
+			a.del_flag = '0'
+		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
@@ -102,363 +103,394 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+
 	<select id="findByUid" resultType="SystemUser">
-		SELECT 
-			a.uid AS "uid",
-			a.nickname AS "nickname",
-			a.headimgurl AS "headimgurl",
-			a.unionid AS "unionid",
-			a.u_num AS "uNum"
-			
+		SELECT
+		a.uid AS "uid",
+		a.nickname AS "nickname",
+		a.headimgurl AS "headimgurl",
+		a.unionid AS "unionid",
+		a.u_num AS "uNum",
+		a.personal_signature as "personalSignature"
+
 		FROM system_user a
 		WHERE a.uid = #{uid}
 	</select>
-	<select id="findFollows" resultType="SystemUser">		
+	<select id="findFollows" resultType="SystemUser">
 		SELECT
-			follow_uid AS "uid",
-			follow_name AS "nickname",
-			follow_img AS "headimgurl",
-			follow_unionid AS "unionid"
+		follow_uid AS "uid",
+		follow_name AS "nickname",
+		follow_img AS "headimgurl",
+		follow_unionid AS "unionid"
 		FROM
-			qx_follow
+		qx_follow
 		WHERE
-			uid = #{uid}
+		uid = #{uid}
 		AND del_flag = 0;
 	</select>
-	<select id="followsNum" resultType="int">		
+	<select id="followsNum" resultType="int">
 		SELECT
-			count(1)
+		count(1)
 		FROM
-			qx_follow
+		qx_follow
 		WHERE
-			uid = #{uid}
+		uid = #{uid}
 		AND del_flag = 0;
 	</select>
-	<select id="historyNum" resultType="int">		
+	<select id="historyNum" resultType="int">
 		SELECT
-			count(1)
+		count(1)
 		FROM
-			qx_history
+		qx_history
 		WHERE
-			uid = #{uid} 
+		uid = #{uid}
 		AND template_tag='0'
 		AND del_flag = '0';
 	</select>
-	
-	<select id="getUgcNum" resultType="int">		
+
+	<select id="getUgcNum" resultType="int">
 		SELECT
-			COUNT(1)
+		COUNT(1)
 		FROM
-			qx_groups
+		qx_groups
 		WHERE
-			uid = #{uid}
+		uid = #{uid}
 		AND del_flag = "0"
 	</select>
-	
+
 	<select id="findFollowers" resultType="com.innovate.cms.modules.qs.entity.user.FollowerUser">
 		SELECT
-			uid AS "uid",
-			`name` AS "nickname",
-			img AS "headimgurl",
-			unionid  AS "unionid"
+		uid AS "uid",
+		`name` AS "nickname",
+		img AS "headimgurl",
+		unionid AS "unionid"
 		FROM
-			qx_follow
+		qx_follow
 		WHERE
-			follow_uid = #{uid}
+		follow_uid = #{uid}
 		AND del_flag = 0;
+	</select>
+	<select id="userPics" resultType="com.innovate.cms.modules.common.entity.UserPic">
+		SELECT
+			pic_id AS "picId",
+			url
+		FROM
+			system_user_pic
+		WHERE
+			uid = #{uid}  AND del_flag=0
 	</select>
 	<select id="followersNum" resultType="int">
 		SELECT
-			count(1)
+		count(1)
 		FROM
-			qx_follow
+		qx_follow
 		WHERE
-			follow_uid = #{uid}
+		follow_uid = #{uid}
 		AND del_flag = 0;
 	</select>
-	
+
 	<select id="getUserInfoByUid" resultType="SystemUser">
 		SELECT
-			a.uid AS "uid",
-			a.unionid AS "unionid",
-			a.nickname AS "nickname",
-			a.sex AS "sex",
-			a.constellation AS "constellation",
-			a.birthday AS "birthday",
-			a.province AS "province",
-			a.city AS "city",
-			a.country AS "country",
-			a.headimgurl AS "headimgurl",
-			a.user_type AS "userType",
-			a.u_num AS "uNum"
+		a.uid AS "uid",
+		a.unionid AS "unionid",
+		a.nickname AS "nickname",
+		a.sex AS "sex",
+		a.constellation AS "constellation",
+		a.birthday AS "birthday",
+		a.province AS "province",
+		a.city AS "city",
+		a.country AS "country",
+		a.headimgurl AS "headimgurl",
+		a.user_type AS "userType",
+		a.u_num AS "uNum",
+		a.personal_signature as "personalSignature"
 		FROM
-			system_user a
+		system_user a
 		WHERE
-			a.uid = #{uid}
+		a.uid = #{uid}
 	</select>
-	
+
 	<select id="getToken" resultType="SystemUser">
-		SELECT 
-			a.token_local AS "tokenLocal"
+		SELECT
+		a.token_local AS "tokenLocal"
 		FROM system_user a
-		<include refid="systemUserJoins"/>
-		WHERE a.uid = #{uid} 
+		<include refid="systemUserJoins" />
+		WHERE a.uid = #{uid}
 		AND a.del_flag = '0'
 	</select>
-	
+
 	<select id="getUserByThreeUnionid" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		WHERE a.unionid = #{unionid}
 		AND a.del_flag = '0'
 	</select>
 
 	<select id="getUserByLoginName" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		WHERE a.login_name = #{loginName}
 		AND a.`password` = #{password}
 		AND a.del_flag = '0'
 	</select>
-	
+
 	<select id="getUserByMobile" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		WHERE a.mobile = #{mobile}
 		AND a.`password` = #{password}
 		AND a.del_flag = '0'
 	</select>
 	<select id="getUserOnlyByMobile" resultType="SystemUser">
-		SELECT 
-			<include refid="systemUserColumns"/>
+		SELECT
+		<include refid="systemUserColumns" />
 		FROM system_user a
-		<include refid="systemUserJoins"/>
+		<include refid="systemUserJoins" />
 		WHERE a.mobile = #{mobile}
 		AND a.del_flag = '0'
 	</select>
-	
+
 	<select id="getUserCount" resultType="int">
 		SELECT
-			COUNT(1)
+		COUNT(1)
 		FROM
-			system_user
+		system_user
 		WHERE
-			uid != #{uid}
+		uid != #{uid}
 		AND del_flag = "0"
 	</select>
-	
+
 	<select id="getUserList" resultType="com.innovate.cms.modules.data.entity.RegUserInfoToJson">
 		SELECT
-			uid,
-			nickname,
-			headimgurl,
-			create_time AS "createTime"
+		uid,
+		nickname,
+		headimgurl,
+		create_time AS "createTime"
 		FROM
-			system_user
+		system_user
 		WHERE
-			uid != #{uid}
+		uid != #{uid}
 		AND del_flag = "0"
 		ORDER BY
-			create_time DESC
+		create_time DESC
 		LIMIT #{offset}, #{limit}
 	</select>
-	
+
 	<select id="getUserInfoByNickname" resultType="com.innovate.cms.modules.data.entity.RegUserInfoToJson">
 		SELECT
-			uid,
-			nickname,
-			headimgurl
+		uid,
+		nickname,
+		headimgurl
 		FROM
-			system_user
+		system_user
 		WHERE
-			nickname LIKE CONCAT('%',#{nickname},'%')  
+		nickname LIKE CONCAT('%',#{nickname},'%')
 		AND del_flag = "0"
 	</select>
 
 	<insert id="insert">
 		INSERT INTO system_user(
-			uid,
-			unionid,
-			openid,
-			nickname,
-			sex,
-			token_local,
-			login_name,
-			mobile,
-			password,
-			constellation,
-			birthday,
-			province,
-			city,
-			country,
-			headimgurl,
-			lang,
-			email,
-			os,
-			user_groups,
-			user_type,
-			login_flag,
-			update_time,
-			create_time,
-			del_flag
+		uid,
+		unionid,
+		openid,
+		nickname,
+		sex,
+		token_local,
+		login_name,
+		mobile,
+		password,
+		constellation,
+		birthday,
+		province,
+		city,
+		country,
+		headimgurl,
+		lang,
+		email,
+		os,
+		user_groups,
+		user_type,
+		login_flag,
+		update_time,
+		create_time,
+		del_flag
 		) VALUES (
-			#{uid},
-			#{unionid},
-			#{openid},
-			#{nickname},
-			#{sex},
-			#{tokenLocal},
-			#{loginName},
-			#{mobile},
-			#{password},
-			#{constellation},
-			#{birthday},
-			#{province},
-			#{city},
-			#{country},
-			#{headimgurl},
-			#{lang},
-			#{email},
-			#{os},
-			#{userGroups},
-			#{userType},
-			#{loginFlag},
-			#{updateTime},
-			#{createTime},
-			#{delFlag}
+		#{uid},
+		#{unionid},
+		#{openid},
+		#{nickname},
+		#{sex},
+		#{tokenLocal},
+		#{loginName},
+		#{mobile},
+		#{password},
+		#{constellation},
+		#{birthday},
+		#{province},
+		#{city},
+		#{country},
+		#{headimgurl},
+		#{lang},
+		#{email},
+		#{os},
+		#{userGroups},
+		#{userType},
+		#{loginFlag},
+		#{updateTime},
+		#{createTime},
+		#{delFlag}
 		)
 	</insert>
-		
+
+	<insert id="savePhoto">
+		INSERT INTO system_user_pic (url, uid, u_num) SELECT
+		#{pic},
+		u.uid,
+		u.u_num
+		FROM
+		system_user u
+		WHERE
+		u.uid = #{uid}
+	</insert>
+	<update id="delPhoto">
+		UPDATE system_user_pic
+		SET del_flag = 1
+		WHERE
+		pic_id = #{picId}
+	</update>
 	<insert id="insertUser">
 		INSERT INTO system_user(
-			uid,
-			unionid,
-			openid,
-			nickname,
-			sex,
-			token_local,
-			login_name,
-			mobile,
-			password,
-			constellation,
-			birthday,
-			province,
-			city,
-			country,
-			headimgurl,
-			lang,
-			email,
-			os,
-			user_groups,
-			user_type,
-			create_time
+		uid,
+		unionid,
+		openid,
+		nickname,
+		sex,
+		token_local,
+		login_name,
+		mobile,
+		password,
+		constellation,
+		birthday,
+		province,
+		city,
+		country,
+		headimgurl,
+		lang,
+		email,
+		os,
+		user_groups,
+		user_type,
+		create_time
 		) VALUES (
-			#{uid},
-			#{unionid},
-			#{openid},
-			#{nickname},
-			#{sex},
-			#{tokenLocal},
-			#{loginName},
-			#{mobile},
-			#{password},
-			#{constellation},
-			#{birthday},
-			#{province},
-			#{city},
-			#{country},
-			#{headimgurl},
-			#{lang},
-			#{email},
-			#{os},
-			#{userGroups},
-			#{userType},
-			#{createTime}
+		#{uid},
+		#{unionid},
+		#{openid},
+		#{nickname},
+		#{sex},
+		#{tokenLocal},
+		#{loginName},
+		#{mobile},
+		#{password},
+		#{constellation},
+		#{birthday},
+		#{province},
+		#{city},
+		#{country},
+		#{headimgurl},
+		#{lang},
+		#{email},
+		#{os},
+		#{userGroups},
+		#{userType},
+		#{createTime}
 		)
 	</insert>
-	
+
 	<update id="updateUser">
-		UPDATE system_user SET 	
-			token_local = #{tokenLocal},
-			os = #{os}
+		UPDATE system_user SET
+		token_local = #{tokenLocal},
+		os = #{os}
 		WHERE uid = #{uid}
 	</update>
 
 	<update id="update">
-		UPDATE system_user SET 	
-			uid = #{uid},
-			unionid = #{unionid},
-			openid = #{openid},
-			nickname = #{nickname},
-			sex = #{sex},
-			token_local = #{tokenLocal},
-			login_name = #{loginName},
-			mobile = #{mobile},
-			password = #{password},
-			constellation = #{constellation},
-			birthday = #{birthday},
-			province = #{province},
-			city = #{city},
-			country = #{country},
-			headimgurl = #{headimgurl},
-			lang = #{lang},
-			email = #{email},
-			os = #{os},
-			user_groups = #{userGroups},
-			user_type = #{userType},
-			login_flag = #{loginFlag},
-			update_time = #{updateTime},
-			create_time = #{createTime}
+		UPDATE system_user SET
+		uid = #{uid},
+		unionid = #{unionid},
+		openid = #{openid},
+		nickname = #{nickname},
+		sex = #{sex},
+		token_local = #{tokenLocal},
+		login_name = #{loginName},
+		mobile = #{mobile},
+		password = #{password},
+		constellation = #{constellation},
+		birthday = #{birthday},
+		province = #{province},
+		city = #{city},
+		country = #{country},
+		headimgurl = #{headimgurl},
+		lang = #{lang},
+		email = #{email},
+		os = #{os},
+		user_groups = #{userGroups},
+		user_type = #{userType},
+		login_flag = #{loginFlag},
+		update_time = #{updateTime},
+		create_time = #{createTime}
 		WHERE uid = #{uid}
 	</update>
-	
-	
+
+
 	<update id="updateUserInfo">
-		UPDATE system_user SET 	
-			<if test="nickname != null and nickname != ''">
-				nickname = #{nickname},
-			</if>
-			<if test="sex != null and sex != ''">
-				sex = #{sex},
-			</if>
-			<if test="constellation != null and constellation != ''">
-				constellation = #{constellation},
-			</if>
-			<if test="birthday != null and birthday != ''">
-				birthday = #{birthday},
-			</if>
-			<if test="province != null and province != ''">
-				province = #{province},
-			</if>
-			<if test="city != null and city != ''">
-				city = #{city},
-			</if>
-			<if test="country != null and country != ''">
-				country = #{country},
-			</if>
-			<if test="headimgurl != null and headimgurl != ''">
-				headimgurl = #{headimgurl}
-			</if>
+		UPDATE system_user SET
+		<if test="nickname != null and nickname != ''">
+			nickname = #{nickname},
+		</if>
+		<if test="sex != null and sex != ''">
+			sex = #{sex},
+		</if>
+		<if test="constellation != null and constellation != ''">
+			constellation = #{constellation},
+		</if>
+		<if test="birthday != null and birthday != ''">
+			birthday = #{birthday},
+		</if>
+		<if test="province != null and province != ''">
+			province = #{province},
+		</if>
+		<if test="city != null and city != ''">
+			city = #{city},
+		</if>
+		<if test="country != null and country != ''">
+			country = #{country},
+		</if>
+		<if test="headimgurl != null and headimgurl != ''">
+			headimgurl = #{headimgurl}
+		</if>
+		<if test="personalSignature != null and personalSignature != ''">
+			personal_signature = #{personalSignature}
+		</if>
 		WHERE uid = #{uid}
 	</update>
-	
-	
+
+
+
 	<update id="delete">
-		UPDATE system_user SET 
-			del_flag = #{DEL_FLAG_DELETE}
+		UPDATE system_user SET
+		del_flag = #{DEL_FLAG_DELETE}
 		WHERE uid = #{uid}
 	</update>
-	
+
 	<update id="logout">
-		UPDATE system_user SET 	
-			token_local = #{tokenLocal}
+		UPDATE system_user SET
+		token_local = #{tokenLocal}
 		WHERE uid = #{uid}
 	</update>
 </mapper>

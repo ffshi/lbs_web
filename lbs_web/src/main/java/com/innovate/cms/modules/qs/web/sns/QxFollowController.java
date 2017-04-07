@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.innovate.cms.common.config.Global;
-import com.innovate.cms.common.utils.DateUtils;
 import com.innovate.cms.common.utils.IdGen;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.web.BaseController;
@@ -53,47 +52,7 @@ public class QxFollowController extends BaseController {
 	@Autowired
 	private QxPushInfoService qxPushInfoService;
 
-	/**
-	 * 存储用户当天所有首页精选专题接口 当用户做完当天精选题目的时候调用该接口
-	 * 
-	 * @param map
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping(value = "/v1/sns/storeT0results", method = RequestMethod.POST)
-	public @ResponseBody BaseBackInfo storeT0results(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
-		String uid = map.get("uid");
-		String result = map.get("result");
-
-		int currentDay = Integer.parseInt(DateUtils.getDate("yyyyMMdd"));
-
-		BaseBackInfo backInfo = new BaseBackInfo();
-		if (StrUtil.isBlank(uid) || StrUtil.isBlank(result)) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg(Global.str300209);
-			return info;
-		}
-		if (result.contains("0") || result.length() != 10) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg("User can't done the questions !");
-			return info;
-		}
-		try {
-			// 存储用户当天的精选题答案
-			qxFollowService.storeT0results(uid, result, currentDay);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-			backInfo.setRetMsg(Global.ERROR);
-			backInfo.setStateCode(Global.intNO);
-		}
-		return backInfo;
-	}
 
 	/**
 	 * 添加好友/删除好友 flag：0：add 1:del

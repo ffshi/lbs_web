@@ -5,6 +5,7 @@ package com.innovate.cms.modules.data.entity;
 
 import java.io.Serializable;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.innovate.cms.common.config.Global;
 
 /**
@@ -28,7 +29,13 @@ public class BaseUserPropertyToJson implements Serializable {
 	private String province; // 归属省会
 	private String city; // 归属市级城市
 
-	private int uNum;//本平台用户号,类似QQ
+	// 本平台用户号,类似QQ号
+	@JSONField(name = "u_num")
+	private int uNum;
+	// 个人签名
+	@JSONField(name = "personal_signature")
+	private String personalSignature;
+
 	public BaseUserPropertyToJson() {
 		super();
 	}
@@ -43,6 +50,14 @@ public class BaseUserPropertyToJson implements Serializable {
 		this.constellation = constellation;
 		this.province = province;
 		this.city = city;
+	}
+
+	public String getPersonalSignature() {
+		return personalSignature;
+	}
+
+	public void setPersonalSignature(String personalSignature) {
+		this.personalSignature = personalSignature;
 	}
 
 	public int getuNum() {
@@ -72,7 +87,7 @@ public class BaseUserPropertyToJson implements Serializable {
 	public String getHeadimgurl() {
 		String imgUrl = this.headimgurl;
 		if (imgUrl.length() > 0) {
-			if (!(imgUrl.toLowerCase().trim().startsWith(Global.HTTP)||imgUrl.toLowerCase().trim().startsWith(Global.HTTPS))) {
+			if (!(imgUrl.toLowerCase().trim().startsWith(Global.HTTP) || imgUrl.toLowerCase().trim().startsWith(Global.HTTPS))) {
 				imgUrl = Global._URL + imgUrl;
 			}
 		}

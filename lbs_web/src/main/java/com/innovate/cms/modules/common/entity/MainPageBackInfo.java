@@ -1,5 +1,7 @@
 package com.innovate.cms.modules.common.entity;
 
+import java.util.List;
+
 public class MainPageBackInfo<T> extends DataBackInfo<T> {
 
 	/**
@@ -10,33 +12,43 @@ public class MainPageBackInfo<T> extends DataBackInfo<T> {
 	private String uid;
 	private String nickname;
 	private String headimgurl;
-	// 用户上传题目数
-	private int ugcCount;
+	// 用户号 类似qq
+	private int uNum;
+	// 用户签名
+	private String personalSignature;
 	// 用户关注人数
 	private int followsNum;
 	// 用户粉丝人数
 	private int followersNum;
-	// 用户足迹数
-	private int historyNum;
+
+	// 用户相册
+	private List<UserPic> pics;
 
 	public MainPageBackInfo() {
 	}
 
-	public MainPageBackInfo(String uid, String nickname, String headimgurl, int ugcCount, int followsNum, int followersNum) {
-		this.uid = uid;
-		this.nickname = nickname;
-		this.headimgurl = headimgurl;
-		this.ugcCount = ugcCount;
-		this.followsNum = followsNum;
-		this.followersNum = followersNum;
+	public List<UserPic> getPics() {
+		return pics;
 	}
 
-	public int getHistoryNum() {
-		return historyNum;
+	public void setPics(List<UserPic> pics) {
+		this.pics = pics;
 	}
 
-	public void setHistoryNum(int historyNum) {
-		this.historyNum = historyNum;
+	public int getuNum() {
+		return uNum;
+	}
+
+	public void setuNum(int uNum) {
+		this.uNum = uNum;
+	}
+
+	public String getPersonalSignature() {
+		return personalSignature;
+	}
+
+	public void setPersonalSignature(String personalSignature) {
+		this.personalSignature = personalSignature;
 	}
 
 	public String getUid() {
@@ -61,14 +73,6 @@ public class MainPageBackInfo<T> extends DataBackInfo<T> {
 
 	public void setHeadimgurl(String headimgurl) {
 		this.headimgurl = headimgurl;
-	}
-
-	public int getUgcCount() {
-		return ugcCount;
-	}
-
-	public void setUgcCount(int ugcCount) {
-		this.ugcCount = ugcCount;
 	}
 
 	public int getFollowsNum() {

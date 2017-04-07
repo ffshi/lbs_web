@@ -51,4 +51,59 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 */
 	List<Integer> userPriseList(String uid);
 
+	/**
+	 * 根据消息id获取消息
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> getMsgByMid(@Param("mid")int mid);
+
+	/**
+	 * 获取用户最新发布的消息 前20条
+	 * @param uid
+	 * @return
+	 */
+	List<DynamicMsgForService> userLatestMsg(@Param("uid")String uid);
+
+	/**
+	 * 上拉获取下一页消息
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> userUpLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+
+	/**
+	 * 下拉刷新获取最新
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> userDownLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+
+	/**
+	 * 好友动态 获取用户好友最新消息
+	 * @param uid
+	 * @return
+	 */
+	List<DynamicMsgForService> friendLatestMsg(String uid);
+
+	/**
+	 * 好友动态 上拉获取下一页好友动态
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> friendUpLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+
+	/**
+	 * 好友动态 下拉刷新获取最新
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> friendDownLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+	
+
 }

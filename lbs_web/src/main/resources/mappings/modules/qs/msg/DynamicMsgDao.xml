@@ -85,6 +85,35 @@
 		m.mid desc
 		LIMIT 10
 	</select>
+	<select id="getMsgByMid" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name ,
+		m.headimgurl,
+		m.msg_type ,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address ,
+		m.business_name ,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type ,
+		s.prise_num ,
+		s.comment_num 
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
+		WHERE
+		m.mid = #{mid} AND 
+		m.mid = s.mid
+		
+	</select>
 	<select id="nearMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
 		m.mid,
@@ -118,6 +147,209 @@
 		ORDER BY
 		m.mid desc
 	</select>
+	
+
+
+	
+	<select id="userLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.uid = #{uid} AND 
+			m.mid = s.mid
+		
+		order by m.mid desc LIMIT 20
+	</select>
+	
+	<select id="userUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+			SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.uid = #{uid} AND 
+			m.mid = s.mid AND 
+			m.mid &lt; #{mid}
+		order by m.mid desc LIMIT 20
+	</select>
+	
+	<select id="userDownLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+			SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.uid = #{uid} AND 
+			m.mid = s.mid AND 
+			m.mid &gt; #{mid}
+		order by m.mid desc LIMIT 20
+	</select>
+	
+	<select id="friendLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f
+		WHERE
+			f.uid = #{uid}
+		AND m.uid = f.follow_uid
+		
+		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	
+	<select id="friendUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f
+		WHERE
+			f.uid = #{uid}
+		AND m.uid = f.follow_uid
+		AND m.mid &lt; #{mid}
+		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	
+	<select id="friendDownLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+				SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f
+		WHERE
+			f.uid = #{uid}
+		AND m.uid = f.follow_uid
+		AND m.mid &gt; #{mid}
+		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	
+	
 	
 	<select id="userPriseList" resultType="int">
 		SELECT

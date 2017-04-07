@@ -33,12 +33,16 @@ import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.aliIM.IMUtils;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
+import com.innovate.cms.modules.common.entity.MainPageBackInfo;
+import com.innovate.cms.modules.common.entity.UserPic;
 import com.innovate.cms.modules.data.entity.BaseUserPropertyToJson;
 import com.innovate.cms.modules.data.entity.BubbleInfoToJson;
 import com.innovate.cms.modules.data.entity.RegUserInfoToJson;
 import com.innovate.cms.modules.data.entity.UserInfoToJson;
+import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 import com.innovate.cms.modules.qs.entity.user.FollowerUser;
 import com.innovate.cms.modules.qs.entity.user.SystemUser;
+import com.innovate.cms.modules.qs.service.msg.DynamicMsgService;
 import com.innovate.cms.modules.qs.service.sns.QxFollowService;
 import com.innovate.cms.modules.qs.service.user.SystemUserInfoService;
 import com.innovate.cms.modules.qs.service.user.SystemUserService;
@@ -59,23 +63,8 @@ public class SystemUserInfoController extends BaseController {
 	private SystemUserService systemUserService;
 	@Autowired
 	private QxFollowService qxFollowService;
-
-	/*
-	 * @Autowired private QxUserMsgService qxUserMsgService;
-	 * 
-	 * @Autowired private QxMessageService qxMessageService;
-	 * 
-	 * @Autowired private QxMessagePostService qxMessagePostService;
-	 * 
-	 * @Autowired private QxFootprintService qxFootprintService;
-	 * 
-	 * @Autowired private QxMatchService qxMatchService;
-	 */
-	
-
-
-
-	
+	@Autowired
+	private DynamicMsgService dynamicMsgService;
 
 	/**
 	 * 获取用户关注的好友
@@ -312,6 +301,7 @@ public class SystemUserInfoController extends BaseController {
 					systemUser.setProvince(userInfoToJson.getProvince());
 					systemUser.setCity(userInfoToJson.getCity());
 					systemUser.setCountry(userInfoToJson.getCountry());
+					systemUser.setPersonalSignature(userInfoToJson.getPersonalSignature());
 					logger.debug("保存的头像={}", systemUser.getHeadimgurl());
 					systemUserService.putUserInfo(systemUser);
 					// 更新好友数据
@@ -469,8 +459,6 @@ public class SystemUserInfoController extends BaseController {
 		return backInfo;
 	}
 
-	
-	
 	/**
 	 * 获取用户基本属性---性别、年龄、星座、地区
 	 * 
@@ -605,6 +593,126 @@ public class SystemUserInfoController extends BaseController {
 			logger.debug("[SystemUserInfoController - searchUserByNickname()接口报错：{}]", e.getMessage());
 			backInfo.setStateCode(Global.int300302);
 			backInfo.setRetMsg(Global.str300302);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 存储用户相册
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/savePhoto", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo savePhoto(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+		String pics = map.get("pics");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(pics)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			String[] picStrings = pics.split(",");
+			for (String pic : picStrings) {
+				// 存储相册
+				systemUserService.savePhoto(uid, pic);
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 删除用户相册
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/delPhoto", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo delPhoto(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String picIdsStr = map.get("picIds");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(picIdsStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			String[] picIds = picIdsStr.split(",");
+			for (String pid : picIds) {
+				// 删除相册
+				int picId = Integer.parseInt(pid);
+				systemUserService.delPhoto(picId);
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 用户主页
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/userMainPage", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userMainPage(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String uid = map.get("uid");
+		MainPageBackInfo<DynamicMsgForService> backInfo = new MainPageBackInfo<DynamicMsgForService>();
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			List<DynamicMsgForService> msgs = dynamicMsgService.lastesMsg();
+			if (msgs.size() > 0) {
+				backInfo.setData(msgs);
+			}
+			SystemUser user = systemUserService.findByUid(uid);
+			backInfo.setHeadimgurl(user.getHeadimgurl());
+			backInfo.setNickname(user.getNickname());
+			backInfo.setuNum(user.getuNum());
+			backInfo.setPersonalSignature(user.getPersonalSignature());
+			// 获取用户关注数
+			backInfo.setFollowsNum(systemUserService.followsNum(uid));
+			// 获取获取粉丝数
+			backInfo.setFollowersNum(systemUserService.followersNum(uid));
+			backInfo.setUid(uid);
+			//获取用户相册
+			List<UserPic> pics = systemUserService.userPics(uid);
+			backInfo.setPics(pics);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
 		}
 		return backInfo;
 	}

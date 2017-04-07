@@ -10,17 +10,20 @@ import com.innovate.cms.modules.data.entity.DynamicMsgToJson;
 import com.innovate.cms.modules.qs.dao.msg.DynamicMsgDao;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsg;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
+
 /**
  * 用户动态消息
+ * 
  * @author shifangfang
  * @date 2017年3月16日 上午11:24:09
  */
 @Service
 @Transactional(readOnly = true)
-public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
+public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 存储用户发布的动态
+	 * 
 	 * @param dynamicMsgToJson
 	 */
 	@Transactional(readOnly = false)
@@ -30,6 +33,7 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 
 	/**
 	 * 未获取用户位置信息时获取首页信息接口
+	 * 
 	 * @return
 	 */
 	public List<DynamicMsgForService> lastesMsg() {
@@ -37,12 +41,13 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 	}
 
 	/**
-	 *自增点赞数
+	 * 自增点赞数
 	 */
 	@Transactional(readOnly = false)
 	public void addPriseNum(int mid) {
 		super.dao.addPriseNum(mid);
 	}
+
 	/**
 	 * 自减点赞数
 	 */
@@ -50,6 +55,7 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 	public void subPriseNum(int mid) {
 		super.dao.subPriseNum(mid);
 	}
+
 	/**
 	 * 自增评论数
 	 */
@@ -60,6 +66,7 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 
 	/**
 	 * 根据指定的消息mid获取一批消息
+	 * 
 	 * @param mids
 	 * @return
 	 */
@@ -69,6 +76,7 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 
 	/**
 	 * 获取用户点赞消息列表
+	 * 
 	 * @param uid
 	 * @return
 	 */
@@ -76,8 +84,77 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg>{
 		return super.dao.userPriseList(uid);
 	}
 
-	
+	/**
+	 * 根据消息id获取消息
+	 * 
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> getMsgByMid(int mid) {
+		return super.dao.getMsgByMid(mid);
+	}
 
-	
+	/**
+	 * 获取用户最新发布的消息 前20条
+	 * 
+	 * @param uid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userLatestMsg(String uid) {
+		return super.dao.userLatestMsg(uid);
+	}
+
+	/**
+	 * 上拉获取下一页消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userUpLatestMsg(String uid, int mid) {
+		return super.dao.userUpLatestMsg(uid, mid);
+	}
+
+	/**
+	 * 下拉刷新获取最新
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userDownLatestMsg(String uid, int mid) {
+		return super.dao.userDownLatestMsg(uid, mid);
+	}
+
+	/**
+	 * 好友动态 获取用户好友最新消息
+	 * 
+	 * @param uid
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendLatestMsg(String uid) {
+		return super.dao.friendLatestMsg(uid);
+	}
+
+	/**
+	 * 好友动态 上拉获取下一页好友动态
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendUpLatestMsg(String uid, int mid) {
+		return super.dao.friendUpLatestMsg(uid, mid);
+	}
+
+	/**
+	 * 好友动态 下拉刷新获取最新
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendDownLatestMsg(String uid, int mid) {
+		return super.dao.friendDownLatestMsg(uid,mid);
+	}
 
 }

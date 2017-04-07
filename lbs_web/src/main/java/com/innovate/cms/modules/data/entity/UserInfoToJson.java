@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.dozer.Mapping;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.innovate.cms.common.config.Global;
 
@@ -26,7 +27,11 @@ public class UserInfoToJson implements Serializable {
 	private String userType; // 用户类型0、官方1、普通2、微信3、web微信4、QQ5、微博
 
 	// 本平台用户号,类似QQ号
+	@JSONField(name = "u_num")
 	private int uNum;
+	// 个人签名
+	@JSONField(name = "personal_signature")
+	private String personalSignature;
 
 	public UserInfoToJson() {
 		super();
@@ -46,6 +51,14 @@ public class UserInfoToJson implements Serializable {
 		this.headimgurl = headimgurl;
 		this.userGroups = userGroups;
 		this.userType = userType;
+	}
+
+	public String getPersonalSignature() {
+		return personalSignature;
+	}
+
+	public void setPersonalSignature(String personalSignature) {
+		this.personalSignature = personalSignature;
 	}
 
 	public int getuNum() {

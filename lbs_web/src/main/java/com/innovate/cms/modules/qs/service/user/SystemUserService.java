@@ -14,6 +14,7 @@ import com.innovate.cms.common.security.Digests;
 import com.innovate.cms.common.service.CrudService;
 import com.innovate.cms.common.utils.IdGen;
 import com.innovate.cms.common.utils.StringUtils;
+import com.innovate.cms.modules.common.entity.UserPic;
 import com.innovate.cms.modules.data.entity.RegUserInfoToJson;
 import com.innovate.cms.modules.qs.dao.user.SystemUserDao;
 import com.innovate.cms.modules.qs.entity.user.FollowerUser;
@@ -302,6 +303,34 @@ public class SystemUserService extends CrudService<SystemUserDao, SystemUser> {
 
 	public int getUgcNum(String uid) {
 		return super.dao.getUgcNum(uid);
+	}
+
+	/**
+	 * 存储相册
+	 * @param uid
+	 * @param pic
+	 */
+	@Transactional(readOnly = false)
+	public void savePhoto(String uid, String pic) {
+		super.dao.savePhoto(uid,pic);
+	}
+
+	/**
+	 * 删除相册
+	 * @param picId
+	 */
+	@Transactional(readOnly = false)
+	public void delPhoto(int picId) {
+		super.dao.delPhoto(picId);
+	}
+
+	/**
+	 * 获取用户相册
+	 * @param uid
+	 * @return
+	 */
+	public List<UserPic> userPics(String uid) {
+		return super.dao.userPics(uid);
 	}
 
 }
