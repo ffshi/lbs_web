@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.innovate.cms.modules.qs.dao.tribe.ImTribeDao">
+
+	<select id="get" resultType="ImTribe">
+
+	</select>
+
+	<select id="findList" resultType="ImTribe">
+
+	</select>
+
+
+	<insert id="insert">
+
+
+	</insert>
+
+	<insert id="save" useGeneratedKeys="true" keyProperty="tid">
+		INSERT INTO im_tribe (
+		owner_uid,
+		owner_name,
+		owner_headimg,
+		tribe_id,
+		tribe_img,
+		tribe_type,
+		tribe_category,
+		name,
+		introduction,
+		location,
+		location_name
+		) SELECT
+		u.uid,
+		u.nickname,
+		u.headimgurl,
+		#{tribeId},
+		#{tribeImg},
+		#{tribeType},
+		#{tribeCategory},
+		#{name},
+		#{introduction},
+		#{location},
+		#{locationName}
+		FROM
+		system_user u
+		WHERE
+		u.uid = #{ownerUid}
+
+	</insert>
+
+
+	<select id="nearTribe" resultType="com.innovate.cms.modules.qs.entity.tribe.ImTribe">
+		SELECT
+		tid,
+		tribe_id,
+		tribe_img,
+		tribe_type,
+		tribe_category,
+		owner_uid,
+		owner_name,
+		owner_headimg,
+		NAME,
+		introduction,
+		location,
+		coord_type,
+		location_name,
+		create_time
+		FROM
+		im_tribe
+		WHERE
+		tribe_id IN
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		AND del_flag = 0
+		ORDER BY
+		tid DESC
+	</select>
+
+	<select id="tribeInfo" resultType="com.innovate.cms.modules.qs.entity.tribe.ImTribe">
+		SELECT
+		tid,
+		tribe_id,
+		tribe_img,
+		tribe_type,
+		tribe_category,
+		owner_uid,
+		owner_name,
+		owner_headimg,
+		NAME,
+		introduction,
+		location,
+		coord_type,
+		location_name,
+		create_time
+		FROM
+		im_tribe
+		WHERE
+		tribe_id=#{tribeId}
+	</select>
+
+
+
+	<select id="userLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name,
+		m.headimgurl,
+		m.msg_type,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address,
+		m.business_name,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type,
+		s.prise_num,
+		s.comment_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
+		WHERE
+		m.uid = #{uid} AND
+		m.mid = s.mid
+
+		order by m.mid desc LIMIT 20
+	</select>
+
+	<select id="userUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name,
+		m.headimgurl,
+		m.msg_type,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address,
+		m.business_name,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type,
+		s.prise_num,
+		s.comment_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
+		WHERE
+		m.uid = #{uid} AND
+		m.mid = s.mid AND
+		m.mid &lt; #{mid}
+		order by m.mid desc LIMIT 20
+	</select>
+
+	<select id="userDownLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name,
+		m.headimgurl,
+		m.msg_type,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address,
+		m.business_name,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type,
+		s.prise_num,
+		s.comment_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
+		WHERE
+		m.uid = #{uid} AND
+		m.mid = s.mid AND
+		m.mid &gt; #{mid}
+		order by m.mid desc LIMIT 20
+	</select>
+
+	<select id="friendLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name,
+		m.headimgurl,
+		m.msg_type,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address,
+		m.business_name,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type,
+		s.prise_num,
+		s.comment_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s,
+		qx_follow AS f
+		WHERE
+		f.uid = #{uid}
+		AND m.uid = f.follow_uid
+
+		AND m.mid = s.mid
+		ORDER BY
+		m.mid DESC
+		LIMIT 20
+	</select>
+
+	<select id="friendUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name,
+		m.headimgurl,
+		m.msg_type,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address,
+		m.business_name,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type,
+		s.prise_num,
+		s.comment_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s,
+		qx_follow AS f
+		WHERE
+		f.uid = #{uid}
+		AND m.uid = f.follow_uid
+		AND m.mid &lt; #{mid}
+		AND m.mid = s.mid
+		ORDER BY
+		m.mid DESC
+		LIMIT 20
+	</select>
+
+	<select id="friendDownLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name,
+		m.headimgurl,
+		m.msg_type,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address,
+		m.business_name,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type,
+		s.prise_num,
+		s.comment_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s,
+		qx_follow AS f
+		WHERE
+		f.uid = #{uid}
+		AND m.uid = f.follow_uid
+		AND m.mid &gt; #{mid}
+		AND m.mid = s.mid
+		ORDER BY
+		m.mid DESC
+		LIMIT 20
+	</select>
+
+
+
+	<select id="userPriseList" resultType="int">
+		SELECT
+		mid
+		FROM
+		dynamic_msg_prise
+		WHERE
+		uid = #{uid}
+	</select>
+
+
+	<update id="addPriseNum">
+		UPDATE dynamic_msg_statistic
+		SET prise_num = prise_num + 1
+		WHERE
+		mid = #{mid}
+	</update>
+	<update id="subPriseNum">
+		UPDATE dynamic_msg_statistic
+		SET prise_num = prise_num - 1
+		WHERE
+		mid = #{mid}
+	</update>
+	<update id="addCommentNum">
+
+	</update>
+
+	<insert id="saveQxTagUser">
+		INSERT IGNORE INTO `qx_tag_user` (
+		`uid`,
+		`tagId`,
+		`tagName`
+		)
+		VALUES
+		(
+		#{uid},
+		#{tagId},
+		#{tagName}
+		) ON DUPLICATE KEY UPDATE nums=nums+1
+
+	</insert>
+
+
+
+
+
+
+
+</mapper>

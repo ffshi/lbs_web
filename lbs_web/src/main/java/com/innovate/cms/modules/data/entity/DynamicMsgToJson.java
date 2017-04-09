@@ -32,7 +32,7 @@ public class DynamicMsgToJson implements Serializable {
 	//格式为：[经度,纬度]或[墨卡托坐标]
 	private String location = "";
 	//1（GPS经纬度坐标）、2（国测局加密经纬度坐标）、3（百度加密经纬度坐标）、4（百度加密墨卡托坐标）
-	private int coord_type;
+	private int coordType;
 
 	public DynamicMsgToJson() {
 		super();
@@ -64,12 +64,14 @@ public class DynamicMsgToJson implements Serializable {
 		this.mid = mid;
 	}
 
-	public int getCoord_type() {
-		return coord_type;
+	
+
+	public int getCoordType() {
+		return coordType;
 	}
 
-	public void setCoord_type(int coord_type) {
-		this.coord_type = coord_type;
+	public void setCoordType(int coordType) {
+		this.coordType = coordType;
 	}
 
 	public String getLocation() {
