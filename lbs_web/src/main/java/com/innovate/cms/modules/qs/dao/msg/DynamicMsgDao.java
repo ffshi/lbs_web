@@ -104,6 +104,18 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @return
 	 */
 	List<DynamicMsgForService> friendDownLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+
+	/**
+	 * 获取用户消息总数/动态总数
+	 * @return
+	 */
+	int getMsgNum(@Param("uid")String uid);
+
+	/**
+	 * 获取虚拟消息
+	 * @return
+	 */
+	List<DynamicMsgForService> virtualMsg();
 	
 
 }

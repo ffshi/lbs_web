@@ -244,4 +244,26 @@ public interface SystemUserDao extends CrudDao<SystemUser> {
 	 */
 	public List<UserPic> userPics(String uid);
 
+	/**
+	 * 上传/屏蔽通信录
+	 * @param uid
+	 * @param addressList
+	 * @param isShield
+	 */
+	public void shieldAddressList(@Param("uid")String uid, @Param("addressList")String addressList, @Param("isShield")int isShield);
+
+	/**
+	 * 修改背景图
+	 * @param uid
+	 * @param backgroundImage
+	 */
+	public void uploadBackgroundImg(@Param("uid")String uid, @Param("backgroundImage")String backgroundImage);
+
+	/**
+	 * 获取有设置屏蔽功能的用户uid
+	 * @param uid
+	 * @return
+	 */
+	public List<String> getShieldUids(@Param("uid")String uid,@Param("mobile")String mobile);
+
 }

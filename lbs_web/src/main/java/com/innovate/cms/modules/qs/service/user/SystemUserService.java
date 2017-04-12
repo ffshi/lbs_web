@@ -333,4 +333,34 @@ public class SystemUserService extends CrudService<SystemUserDao, SystemUser> {
 		return super.dao.userPics(uid);
 	}
 
+	/**
+	 * 上传/屏蔽通信录
+	 * @param uid
+	 * @param addressList
+	 * @param isShield
+	 */
+	@Transactional(readOnly = false)
+	public void shieldAddressList(String uid, String addressList, int isShield) {
+		super.dao.shieldAddressList(uid,addressList,isShield);
+	}
+
+	/**
+	 * 修改背景图
+	 * @param uid
+	 * @param backgroundImage
+	 */
+	@Transactional(readOnly = false)
+	public void uploadBackgroundImg(String uid, String backgroundImage) {
+		super.dao.uploadBackgroundImg(uid,backgroundImage);
+	}
+
+	/**
+	 * 获取有设置屏蔽功能的用户uid
+	 * @param uid
+	 * @return
+	 */
+	public List<String> getShieldUids(String uid,String mobile) {
+		return super.dao.getShieldUids(uid,mobile);
+	}
+
 }

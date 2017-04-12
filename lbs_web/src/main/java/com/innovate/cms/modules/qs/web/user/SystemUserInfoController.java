@@ -350,6 +350,79 @@ public class SystemUserInfoController extends BaseController {
 	}
 
 	/**
+	 * 上传/屏蔽通信录
+	 * 
+	 * @param userInfoToJson
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/shieldAddressList", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo uploadAddressList(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		// 是否屏蔽通信录0-否1-是
+		String isShieldStr = map.get("isShield");
+		String uid = map.get("uid");
+		// 通讯录,修改屏蔽状态的时候addressList传空字符串
+		String addressList = map.get("addressList");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+
+		// 如果用户名为空则直接返回
+		if (StrUtil.isBlank(uid) || uid.trim().length() != 32 || StrUtil.isBlank(isShieldStr) || StrUtil.isBlank(addressList)) {
+			logger.debug("UserInfoController - uploadAddressList -  参数错误或为空");
+			backInfo.setStateCode(Global.int300209);
+			backInfo.setRetMsg(Global.str300209);
+		} else {
+			try {
+				int isShield = Integer.parseInt(isShieldStr);
+				// 上传/屏蔽通信录
+				systemUserService.shieldAddressList(uid, addressList, isShield);
+				backInfo.setStateCode(Global.intYES);
+				backInfo.setRetMsg(Global.SUCCESS);
+			} catch (Exception e) {
+				logger.debug("更新用户失败", e.getMessage()); 
+				backInfo.setStateCode(Global.int300302);
+				backInfo.setRetMsg(Global.str300302);
+			}
+		}
+		return backInfo;
+	}
+	/**
+	 * 修改用户背景图
+	 * 
+	 * @param userInfoToJson
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/uploadBackgroundImg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo uploadBackgroundImg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String backgroundImage = map.get("backgroundImage");
+		String uid = map.get("uid");
+		
+		BaseBackInfo backInfo = new BaseBackInfo();
+		
+		// 如果用户名为空则直接返回
+		if (StrUtil.isBlank(uid) || uid.trim().length() != 32 || StrUtil.isBlank(backgroundImage) ) {
+			logger.debug("UserInfoController - uploadAddressList -  参数错误或为空");
+			backInfo.setStateCode(Global.int300209);
+			backInfo.setRetMsg(Global.str300209);
+		} else {
+			try {
+				// 修改背景图
+				systemUserService.uploadBackgroundImg(uid, backgroundImage);
+				backInfo.setStateCode(Global.intYES);
+				backInfo.setRetMsg(Global.SUCCESS);
+			} catch (Exception e) {
+				logger.debug("更新用户失败", e.getMessage()); 
+				backInfo.setStateCode(Global.int300302);
+				backInfo.setRetMsg(Global.str300302);
+			}
+		}
+		return backInfo;
+	}
+
+	/**
 	 * 举报 暂未开放
 	 * 
 	 * @Title: saveReport
@@ -690,7 +763,7 @@ public class SystemUserInfoController extends BaseController {
 			return info;
 		}
 		try {
-			List<DynamicMsgForService> msgs = dynamicMsgService.lastesMsg();
+			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsg(uid);
 			if (msgs.size() > 0) {
 				backInfo.setData(msgs);
 			}
@@ -698,13 +771,16 @@ public class SystemUserInfoController extends BaseController {
 			backInfo.setHeadimgurl(user.getHeadimgurl());
 			backInfo.setNickname(user.getNickname());
 			backInfo.setuNum(user.getuNum());
+			backInfo.setBackgroundImage(user.getBackgroundImage());
+			//	获取用户消息总数
+			backInfo.setMsgNum(dynamicMsgService.getMsgNum(uid));
 			backInfo.setPersonalSignature(user.getPersonalSignature());
 			// 获取用户关注数
 			backInfo.setFollowsNum(systemUserService.followsNum(uid));
 			// 获取获取粉丝数
 			backInfo.setFollowersNum(systemUserService.followersNum(uid));
 			backInfo.setUid(uid);
-			//获取用户相册
+			// 获取用户相册
 			List<UserPic> pics = systemUserService.userPics(uid);
 			backInfo.setPics(pics);
 			backInfo.setStateCode(Global.intYES);

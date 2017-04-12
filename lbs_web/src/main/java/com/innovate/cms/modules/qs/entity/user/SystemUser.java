@@ -50,6 +50,11 @@ public class SystemUser extends DataEntity<SystemUser> {
 	//个人签名
 	@JSONField(name="personal_signature")
 	private String personalSignature;
+	//用户背景图
+	@JSONField(name="background_image")
+	private String backgroundImage="";
+	
+	
 	public SystemUser() {
 		super();
 	}
@@ -95,6 +100,15 @@ public class SystemUser extends DataEntity<SystemUser> {
 		this.os = os;
 		this.userType = userType;
 		this.createTime = createTime;
+	}
+	
+
+	public String getBackgroundImage() {
+		return backgroundImage;
+	}
+
+	public void setBackgroundImage(String backgroundImage) {
+		this.backgroundImage = backgroundImage;
 	}
 
 	public SystemUser(String id){

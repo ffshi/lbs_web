@@ -2,6 +2,12 @@ package com.innovate.cms.modules.common.entity;
 
 import java.util.List;
 
+/**
+ * 
+ * @author shifangfang
+ * @date 2017年4月12日 下午3:07:02
+ * @param <T>
+ */
 public class MainPageBackInfo<T> extends DataBackInfo<T> {
 
 	/**
@@ -16,15 +22,35 @@ public class MainPageBackInfo<T> extends DataBackInfo<T> {
 	private int uNum;
 	// 用户签名
 	private String personalSignature;
+	// 用户签名
+	private String backgroundImage;
 	// 用户关注人数
 	private int followsNum;
 	// 用户粉丝人数
 	private int followersNum;
+	// 用户动态总数
+	private int msgNum;
 
 	// 用户相册
 	private List<UserPic> pics;
 
 	public MainPageBackInfo() {
+	}
+
+	public String getBackgroundImage() {
+		return backgroundImage;
+	}
+
+	public void setBackgroundImage(String backgroundImage) {
+		this.backgroundImage = backgroundImage;
+	}
+
+	public int getMsgNum() {
+		return msgNum;
+	}
+
+	public void setMsgNum(int msgNum) {
+		this.msgNum = msgNum;
 	}
 
 	public List<UserPic> getPics() {

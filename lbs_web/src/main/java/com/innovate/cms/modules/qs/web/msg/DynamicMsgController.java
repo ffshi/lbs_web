@@ -1,7 +1,11 @@
 package com.innovate.cms.modules.qs.web.msg;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +31,11 @@ import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgInfo;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgPrise;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService;
+import com.innovate.cms.modules.qs.entity.user.SystemUser;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgCommentService;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgPriseService;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgService;
+import com.innovate.cms.modules.qs.service.user.SystemUserService;
 
 /**
  * 
@@ -46,9 +52,12 @@ public class DynamicMsgController extends BaseController {
 	private DynamicMsgPriseService dynamicMsgPriseService;
 	@Autowired
 	private DynamicMsgCommentService dynamicMsgCommentService;
+	@Autowired
+	private SystemUserService systemUserService;
 
 	/**
 	 * 存储消息动态
+	 * 
 	 * @param dynamicMsgToJson
 	 * @param request
 	 * @param response
@@ -62,7 +71,7 @@ public class DynamicMsgController extends BaseController {
 		int msgType = dynamicMsgToJson.getMsgType();
 		String location = dynamicMsgToJson.getLocation();
 		ItemBackInfo backInfo = new ItemBackInfo();
-		if (StrUtil.isBlank(description) || StrUtil.isBlank(uidString)|| StrUtil.isBlank(location) || msgType < 0) {
+		if (StrUtil.isBlank(description) || StrUtil.isBlank(uidString) || StrUtil.isBlank(location) || msgType < 0) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -378,6 +387,41 @@ public class DynamicMsgController extends BaseController {
 	}
 
 	/**
+	 * 过滤屏蔽通讯录的消息
+	 * 
+	 * @param uid
+	 * @param msgs
+	 * @return
+	 */
+	public List<DynamicMsgForService> filterShieldMsg(String uid, List<DynamicMsgForService> msgs) {
+		
+		if (msgs.size()<1) {
+			return msgs;
+		}
+		
+		SystemUser user = systemUserService.findByUid(uid);
+		if (user.getMobile() != null && user.getMobile().length() > 0) {
+			// 获取有设置屏蔽功能的用户uid
+			List<String> uids = systemUserService.getShieldUids(uid,user.getMobile());
+			if (uids.size()==0) {
+				return msgs;
+			}
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			Set<String> uidsSet = new HashSet(Arrays.asList(uids));
+			Iterator<DynamicMsgForService> ite = msgs.iterator();
+			while (ite.hasNext()) {
+				DynamicMsgForService m = ite.next();
+				if (uidsSet.contains(m.getUid())) {
+					ite.remove();
+				}
+			}
+		} else {
+			return msgs;
+		}
+		return msgs;
+	}
+
+	/**
 	 * 未获取用户位置信息时获取首页信息接口
 	 * 
 	 * @param map
@@ -388,10 +432,43 @@ public class DynamicMsgController extends BaseController {
 	@RequestMapping(value = "/v1/msg/lastesMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo lastesMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
+		String uid = map.get("uid");
+
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			// 未获取用户位置信息时获取首页信息接口
 			List<DynamicMsgForService> msgs = dynamicMsgService.lastesMsg();
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(filterShieldMsg(uid, msgs));
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	/**
+	 * 未获取用户位置信息时获取首页信息接口
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/virtualMsg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo virtualMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			// 获取虚拟消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.virtualMsg();
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(msgs);
@@ -402,7 +479,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 根据消息id获取消息
 	 * 
@@ -427,7 +504,7 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int mid = Integer.parseInt(midStr);
-			//根据消息id获取消息
+			// 根据消息id获取消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
@@ -439,6 +516,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 获取用户最新发布的消息
@@ -451,9 +529,9 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userLatestMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userLatestMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -462,10 +540,11 @@ public class DynamicMsgController extends BaseController {
 		}
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
-			//获取用户最新发布的消息 前20条
+			// 获取用户最新发布的消息 前20条
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsg(uid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
 			backInfo.setData(msgs);
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
@@ -474,6 +553,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 上拉获取下一页消息
@@ -486,10 +566,10 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userUpLatestMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userUpLatestMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -499,11 +579,12 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int mid = Integer.parseInt(midStr);
-			//上拉获取下一页消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid,mid);
+			// 上拉获取下一页消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid, mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(msgs);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
@@ -511,6 +592,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 下拉刷新获取最新
@@ -523,10 +605,10 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userDownLatestMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userDownLatestMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -536,11 +618,12 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int mid = Integer.parseInt(midStr);
-			//下拉刷新获取最新
-			List<DynamicMsgForService> msgs = dynamicMsgService.userDownLatestMsg(uid,mid);
+			// 下拉刷新获取最新
+			List<DynamicMsgForService> msgs = dynamicMsgService.userDownLatestMsg(uid, mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(msgs);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
@@ -548,6 +631,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 获取用户好友最新消息
@@ -560,9 +644,9 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/friendLatestMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo friendLatestMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -571,11 +655,12 @@ public class DynamicMsgController extends BaseController {
 		}
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
-			//好友动态 获取用户好友最新消息
+			// 好友动态 获取用户好友最新消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.friendLatestMsg(uid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
-			backInfo.setData(msgs);
+			// backInfo.setData(msgs);
+			backInfo.setData(filterShieldMsg(uid, msgs));
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
@@ -583,6 +668,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 上拉获取下一页好友消息
@@ -595,10 +681,10 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/friendUpLatestMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo friendUpLatestMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -608,11 +694,12 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int mid = Integer.parseInt(midStr);
-			//好友动态 上拉获取下一页好友动态
-			List<DynamicMsgForService> msgs = dynamicMsgService.friendUpLatestMsg(uid,mid);
+			// 好友动态 上拉获取下一页好友动态
+			List<DynamicMsgForService> msgs = dynamicMsgService.friendUpLatestMsg(uid, mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
-			backInfo.setData(msgs);
+			// backInfo.setData(msgs);
+			backInfo.setData(filterShieldMsg(uid, msgs));
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
@@ -620,6 +707,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 下拉刷新好友的最新消息
@@ -632,10 +720,10 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/friendDownLatestMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo friendDownLatestMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -645,11 +733,12 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int mid = Integer.parseInt(midStr);
-			//好友动态 下拉刷新获取最新
-			List<DynamicMsgForService> msgs = dynamicMsgService.friendDownLatestMsg(uid,mid);
+			// 好友动态 下拉刷新获取最新
+			List<DynamicMsgForService> msgs = dynamicMsgService.friendDownLatestMsg(uid, mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
-			backInfo.setData(msgs);
+			// backInfo.setData(msgs);
+			backInfo.setData(filterShieldMsg(uid, msgs));
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
@@ -657,7 +746,6 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-
 
 	/**
 	 * 获取附近消息
@@ -673,7 +761,8 @@ public class DynamicMsgController extends BaseController {
 	public @ResponseBody BaseBackInfo nearMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String idstr = map.get("mids");
-		if (StrUtil.isBlank(idstr)) {
+		String uid = map.get("uid");
+		if (StrUtil.isBlank(idstr) || StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -690,7 +779,8 @@ public class DynamicMsgController extends BaseController {
 			List<DynamicMsgForService> msgs = dynamicMsgService.nearMsg(mids);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
-			backInfo.setData(msgs);
+			// backInfo.setData(msgs);
+			backInfo.setData(filterShieldMsg(uid, msgs));
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
@@ -698,8 +788,10 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * -v1.0 用户点赞消息id列表
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
@@ -718,7 +810,7 @@ public class DynamicMsgController extends BaseController {
 			return info;
 		}
 		try {
-			List<Integer> mids= dynamicMsgService.userPriseList(uid);
+			List<Integer> mids = dynamicMsgService.userPriseList(uid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(mids);
@@ -729,6 +821,5 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
-	
+
 }

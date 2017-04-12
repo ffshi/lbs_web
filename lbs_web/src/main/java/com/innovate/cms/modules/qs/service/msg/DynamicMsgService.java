@@ -157,4 +157,23 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 		return super.dao.friendDownLatestMsg(uid,mid);
 	}
 
+	/**
+	 * 获取用户消息总数/动态总数
+	 * @return
+	 */
+	public int getMsgNum(String uid) {
+		return super.dao.getMsgNum(uid);
+	}
+
+	/**
+	 * 获取虚拟消息
+	 * @return
+	 */
+	public List<DynamicMsgForService> virtualMsg() {
+		return super.dao.virtualMsg();
+	}
+
+
+
+
 }

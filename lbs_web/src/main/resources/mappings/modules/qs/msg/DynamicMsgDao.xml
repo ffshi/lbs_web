@@ -75,7 +75,8 @@
 		m.location,
 		m.coord_type ,
 		s.prise_num ,
-		s.comment_num 
+		s.comment_num,
+		s.share_num 
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -83,7 +84,63 @@
 		m.mid = s.mid
 		ORDER BY
 		m.mid desc
-		LIMIT 10
+		LIMIT 20
+	</select>
+	
+	<select id="virtualMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					dynamic_msg
+				WHERE
+					mid >= (
+						(
+							SELECT
+								MAX(mid)
+							FROM
+								dynamic_msg
+						) - (
+							SELECT
+								MIN(mid)
+							FROM
+								dynamic_msg
+						)
+					) * RAND() + (
+						SELECT
+							MIN(mid)
+						FROM
+							dynamic_msg
+					)
+				AND is_virtual = 1
+				LIMIT 20
+			) AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.mid = s.mid
+		ORDER BY
+					m.mid DESC
 	</select>
 	<select id="getMsgByMid" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
@@ -105,7 +162,8 @@
 		m.location,
 		m.coord_type ,
 		s.prise_num ,
-		s.comment_num 
+		s.comment_num,
+		s.share_num 
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -134,7 +192,8 @@
 		m.location,
 		m.coord_type ,
 		s.prise_num ,
-		s.comment_num 
+		s.comment_num,
+		s.share_num 
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -171,7 +230,8 @@
 			m.location,
 			m.coord_type,
 			s.prise_num,
-			s.comment_num
+			s.comment_num,
+		s.share_num 
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s
@@ -202,7 +262,8 @@
 			m.location,
 			m.coord_type,
 			s.prise_num,
-			s.comment_num
+			s.comment_num,
+		s.share_num 
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s
@@ -233,7 +294,8 @@
 			m.location,
 			m.coord_type,
 			s.prise_num,
-			s.comment_num
+			s.comment_num,
+		s.share_num 
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s
@@ -264,7 +326,8 @@
 			m.location,
 			m.coord_type,
 			s.prise_num,
-			s.comment_num
+			s.comment_num,
+		s.share_num 
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -299,7 +362,8 @@
 			m.location,
 			m.coord_type,
 			s.prise_num,
-			s.comment_num
+			s.comment_num,
+		s.share_num 
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -334,7 +398,8 @@
 			m.location,
 			m.coord_type,
 			s.prise_num,
-			s.comment_num
+			s.comment_num,
+		s.share_num 
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -349,7 +414,14 @@
 		LIMIT 20
 	</select>
 	
-	
+	<select id="getMsgNum" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			dynamic_msg
+		WHERE
+			uid = #{uid}
+	</select>
 	
 	<select id="userPriseList" resultType="int">
 		SELECT

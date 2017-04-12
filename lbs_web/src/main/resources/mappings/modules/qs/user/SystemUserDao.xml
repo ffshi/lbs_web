@@ -41,6 +41,16 @@
 		<include refid="systemUserJoins" />
 		WHERE a.uid = #{uid}
 	</select>
+	
+	<select id="getShieldUids" resultType="String">
+		SELECT
+			uid
+		FROM
+			system_user u
+		WHERE
+			u.is_shield = 1
+		AND address_list  LIKE CONCAT('%',#{mobile},'%')
+	</select>
 
 	<select id="findList" resultType="SystemUser">
 		SELECT
@@ -111,8 +121,9 @@
 		a.headimgurl AS "headimgurl",
 		a.unionid AS "unionid",
 		a.u_num AS "uNum",
-		a.personal_signature as "personalSignature"
-
+		a.personal_signature as "personalSignature",
+		a.mobile as "mobile",
+		a.background_image as "backgroundImage"
 		FROM system_user a
 		WHERE a.uid = #{uid}
 	</select>
@@ -172,12 +183,12 @@
 	</select>
 	<select id="userPics" resultType="com.innovate.cms.modules.common.entity.UserPic">
 		SELECT
-			pic_id AS "picId",
-			url
+		pic_id AS "picId",
+		url
 		FROM
-			system_user_pic
+		system_user_pic
 		WHERE
-			uid = #{uid}  AND del_flag=0
+		uid = #{uid} AND del_flag=0
 	</select>
 	<select id="followersNum" resultType="int">
 		SELECT
@@ -447,6 +458,17 @@
 		WHERE uid = #{uid}
 	</update>
 
+	<update id="shieldAddressList">
+		UPDATE system_user SET
+		<if test="addressList != null and addressList != '' and addressList != '-1'">
+			address_list = #{addressList},
+		</if>
+		is_shield=#{isShield} WHERE uid = #{uid}
+	</update>
+	<update id="uploadBackgroundImg">
+		UPDATE system_user SET
+		background_image = #{backgroundImage} WHERE uid = #{uid}
+	</update>
 
 	<update id="updateUserInfo">
 		UPDATE system_user SET

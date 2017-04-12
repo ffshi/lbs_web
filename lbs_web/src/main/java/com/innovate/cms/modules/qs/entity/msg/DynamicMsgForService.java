@@ -17,23 +17,23 @@ public class DynamicMsgForService implements Serializable {
 
 	/**
 	 * 自动把数据中user_name的数据包装到javaBean的userName中
-	 * @JSONField(name="user_name")对应数据库属性字段名
-		private String userName = "";
+	 * 
+	 * @JSONField(name="user_name")对应数据库属性字段名 private String userName = "";
 	 */
 	private static final long serialVersionUID = 1L;
 	private int mid;
 	private String uid;
-	@JSONField(name="user_name")
+	@JSONField(name = "user_name")
 	private String userName = "";
 	private String headimgurl = "";
-	@JSONField(name="msg_type")
+	@JSONField(name = "msg_type")
 	private int msgType;
 	private int anonymity;
 	private String title;
 	private String description = "";
-	@JSONField(name="business_address")
+	@JSONField(name = "business_address")
 	private String businessAddress = "";
-	@JSONField(name="business_name")
+	@JSONField(name = "business_name")
 	private String businessName = "";
 	private float price;
 	private float reward;
@@ -42,21 +42,36 @@ public class DynamicMsgForService implements Serializable {
 	private String geoId = "";
 	private String pics = "";
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@JSONField(name="publish_time")
+	@JSONField(name = "publish_time")
 	private Date publishTime;
 	private String location = "";
-	@JSONField(name="coord_type")
+	@JSONField(name = "coord_type")
 	private int coordType;
 	@JsonIgnore
 	private int isPrise;
 
-	@JSONField(name="prise_num")
+	@JSONField(name = "prise_num")
 	private int priseNum;// 点赞次数
-	@JSONField(name="comment_num")
+	@JSONField(name = "comment_num")
 	private int commentNum;// 评论次数
+	@JSONField(name = "share_num")
+	private int shareNum;// 分享次数
+//	@JSONField(name = "is_shield")
+//	private int isShield;// 是否屏蔽
+//	@JSONField(name = "address_list")
+//	private String addressList = "";
 
 	public DynamicMsgForService() {
 		super();
+	}
+
+
+	public int getShareNum() {
+		return shareNum;
+	}
+
+	public void setShareNum(int shareNum) {
+		this.shareNum = shareNum;
 	}
 
 	public int getMid() {
