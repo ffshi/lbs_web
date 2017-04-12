@@ -116,6 +116,11 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @return
 	 */
 	List<DynamicMsgForService> virtualMsg();
+	/**
+	 * 统计分享次数
+	 * @param mid
+	 */
+	void addShareNum(int mid);
 	
 
 }

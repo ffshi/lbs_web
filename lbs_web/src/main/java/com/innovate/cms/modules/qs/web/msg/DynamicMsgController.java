@@ -124,6 +124,39 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+	
+	/**
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/sns/addShareNum", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo addShareNum(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(midStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid=Integer.parseInt(midStr);
+			//统计分享数
+			dynamicMsgService.addShareNum(mid);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
 
 	/**
 	 * 取消点赞

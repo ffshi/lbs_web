@@ -445,8 +445,11 @@
 		WHERE
 		mid = #{mid}
 	</update>
-	<update id="addCommentNum">
-		
+	<update id="addShareNum">
+		UPDATE dynamic_msg_statistic
+		SET share_num = share_num + 1
+		WHERE
+			mid = #{mid}
 	</update>
 
 	<insert id="saveQxTagUser">

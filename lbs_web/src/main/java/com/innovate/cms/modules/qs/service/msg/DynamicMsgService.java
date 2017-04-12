@@ -173,6 +173,15 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 		return super.dao.virtualMsg();
 	}
 
+	/**
+	 * 统计分享次数
+	 * @param mid
+	 */
+	@Transactional(readOnly = false)
+	public void addShareNum(int mid) {
+		super.dao.addShareNum(mid);
+	}
+
 
 
 
