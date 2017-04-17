@@ -123,7 +123,8 @@
 		a.u_num AS "uNum",
 		a.personal_signature as "personalSignature",
 		a.mobile as "mobile",
-		a.background_image as "backgroundImage"
+		a.background_image as "backgroundImage",
+		a.sex
 		FROM system_user a
 		WHERE a.uid = #{uid}
 	</select>

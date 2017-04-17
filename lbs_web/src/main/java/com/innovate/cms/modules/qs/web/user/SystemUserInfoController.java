@@ -771,6 +771,7 @@ public class SystemUserInfoController extends BaseController {
 			backInfo.setNickname(user.getNickname());
 			backInfo.setuNum(user.getuNum());
 			backInfo.setBackgroundImage(user.getBackgroundImage());
+			backInfo.setSex(user.getSex());
 			// 获取用户消息总数
 			backInfo.setMsgNum(dynamicMsgService.getMsgNum(uid));
 			backInfo.setPersonalSignature(user.getPersonalSignature());

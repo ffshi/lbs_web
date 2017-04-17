@@ -30,11 +30,19 @@ public class MainPageBackInfo<T> extends DataBackInfo<T> {
 	private int followersNum;
 	// 用户动态总数
 	private int msgNum;
-
+	private String sex; // 用户的性别，值为1时是男性，值为2时是女性，默认值为0时是未知
 	// 用户相册
 	private List<UserPic> pics;
 
 	public MainPageBackInfo() {
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
 	}
 
 	public String getBackgroundImage() {
