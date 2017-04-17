@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,7 +67,7 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/save", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo save(@RequestBody DynamicMsgToJson dynamicMsgToJson, HttpServletRequest request, HttpServletResponse response) {
-
+		
 		String description = dynamicMsgToJson.getDescription();
 		String uidString = dynamicMsgToJson.getUid();
 		int msgType = dynamicMsgToJson.getMsgType();
@@ -124,15 +126,16 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
+	 * 统计消息被分享的次数
 	 * 
 	 * @param map
 	 * @param request
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/v1/sns/addShareNum", method = RequestMethod.POST)
+	@RequestMapping(value = "/v1/msg/addShareNum", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo addShareNum(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String midStr = map.get("mid");
@@ -145,8 +148,8 @@ public class DynamicMsgController extends BaseController {
 			return info;
 		}
 		try {
-			int mid=Integer.parseInt(midStr);
-			//统计分享数
+			int mid = Integer.parseInt(midStr);
+			// 统计分享数
 			dynamicMsgService.addShareNum(mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
@@ -427,16 +430,16 @@ public class DynamicMsgController extends BaseController {
 	 * @return
 	 */
 	public List<DynamicMsgForService> filterShieldMsg(String uid, List<DynamicMsgForService> msgs) {
-		
-		if (msgs.size()<1) {
+
+		if (msgs.size() < 1) {
 			return msgs;
 		}
-		
+
 		SystemUser user = systemUserService.findByUid(uid);
 		if (user.getMobile() != null && user.getMobile().length() > 0) {
 			// 获取有设置屏蔽功能的用户uid
-			List<String> uids = systemUserService.getShieldUids(uid,user.getMobile());
-			if (uids.size()==0) {
+			List<String> uids = systemUserService.getShieldUids(uid, user.getMobile());
+			if (uids.size() == 0) {
 				return msgs;
 			}
 			@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -487,6 +490,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 未获取用户位置信息时获取首页信息接口
 	 * 
@@ -497,7 +501,7 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/virtualMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo virtualMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			// 获取虚拟消息

@@ -42,7 +42,7 @@ public class SignFilter extends OncePerRequestFilter {
 		// String[] notFilter = new String[] {"/config/channel", "/config/time",
 		// "/user/report", "/isToken","/opt/openQuestions"};
 		// boolean doFilter = true; // 是否过滤
-
+		
 		String url = request.getRequestURI(); // 请求的url
 
 		// 头文件中参数

@@ -380,13 +380,14 @@ public class SystemUserInfoController extends BaseController {
 				backInfo.setStateCode(Global.intYES);
 				backInfo.setRetMsg(Global.SUCCESS);
 			} catch (Exception e) {
-				logger.debug("更新用户失败", e.getMessage()); 
+				logger.debug("更新用户失败", e.getMessage());
 				backInfo.setStateCode(Global.int300302);
 				backInfo.setRetMsg(Global.str300302);
 			}
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 修改用户背景图
 	 * 
@@ -399,11 +400,11 @@ public class SystemUserInfoController extends BaseController {
 	public @ResponseBody BaseBackInfo uploadBackgroundImg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 		String backgroundImage = map.get("backgroundImage");
 		String uid = map.get("uid");
-		
+
 		BaseBackInfo backInfo = new BaseBackInfo();
-		
+
 		// 如果用户名为空则直接返回
-		if (StrUtil.isBlank(uid) || uid.trim().length() != 32 || StrUtil.isBlank(backgroundImage) ) {
+		if (StrUtil.isBlank(uid) || uid.trim().length() != 32 || StrUtil.isBlank(backgroundImage)) {
 			logger.debug("UserInfoController - uploadAddressList -  参数错误或为空");
 			backInfo.setStateCode(Global.int300209);
 			backInfo.setRetMsg(Global.str300209);
@@ -414,7 +415,7 @@ public class SystemUserInfoController extends BaseController {
 				backInfo.setStateCode(Global.intYES);
 				backInfo.setRetMsg(Global.SUCCESS);
 			} catch (Exception e) {
-				logger.debug("更新用户失败", e.getMessage()); 
+				logger.debug("更新用户失败", e.getMessage());
 				backInfo.setStateCode(Global.int300302);
 				backInfo.setRetMsg(Global.str300302);
 			}
@@ -764,15 +765,13 @@ public class SystemUserInfoController extends BaseController {
 		}
 		try {
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsg(uid);
-			if (msgs.size() > 0) {
-				backInfo.setData(msgs);
-			}
+			backInfo.setData(msgs);
 			SystemUser user = systemUserService.findByUid(uid);
 			backInfo.setHeadimgurl(user.getHeadimgurl());
 			backInfo.setNickname(user.getNickname());
 			backInfo.setuNum(user.getuNum());
 			backInfo.setBackgroundImage(user.getBackgroundImage());
-			//	获取用户消息总数
+			// 获取用户消息总数
 			backInfo.setMsgNum(dynamicMsgService.getMsgNum(uid));
 			backInfo.setPersonalSignature(user.getPersonalSignature());
 			// 获取用户关注数
