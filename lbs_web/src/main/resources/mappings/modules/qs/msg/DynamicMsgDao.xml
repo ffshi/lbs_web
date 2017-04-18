@@ -333,9 +333,9 @@
 			dynamic_msg_statistic AS s,
 			qx_follow AS f
 		WHERE
-			f.uid = #{uid}
+			f.follow_uid = #{uid}
 			AND f.del_flag = 0
-		AND m.uid = f.follow_uid
+		AND m.uid = f.uid
 		
 		AND m.mid = s.mid
 		ORDER BY
@@ -370,9 +370,9 @@
 			dynamic_msg_statistic AS s,
 			qx_follow AS f
 		WHERE
-			f.uid = #{uid}
+			f.follow_uid = #{uid}
 			AND f.del_flag = 0
-		AND m.uid = f.follow_uid
+		AND m.uid = f.uid
 		AND m.mid &lt; #{mid}
 		AND m.mid = s.mid
 		ORDER BY
@@ -407,9 +407,9 @@
 			dynamic_msg_statistic AS s,
 			qx_follow AS f
 		WHERE
-			f.uid = #{uid}
+			f.follow_uid = #{uid}
 		AND f.del_flag = 0
-		AND m.uid = f.follow_uid
+		AND m.uid = f.uid
 		AND m.mid &gt; #{mid}
 		AND m.mid = s.mid
 		ORDER BY
