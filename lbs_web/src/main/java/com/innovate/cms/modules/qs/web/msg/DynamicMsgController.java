@@ -590,33 +590,39 @@ public class DynamicMsgController extends BaseController {
 	 * @param response
 	 * @return
 	 */
-	@CrossOrigin
-	@RequestMapping(value = "/v1/msg/getMsgByMid", method = RequestMethod.GET)
-	public @ResponseBody String getMsgByMid(HttpServletRequest request, HttpServletResponse response) {
-		String callback = request.getParameter("callback");
-		String midStr = request.getParameter("mid");
-
-		if (StrUtil.isBlank(midStr)) {
-			BaseBackInfo info = new BaseBackInfo();
-			info.setStateCode(Global.int300209);
-			info.setRetMsg(Global.str300209);
-			return JsonMapper.getInstance().toJsonP("paramIsBlank", info);
-		}
-		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
-		try {
-			int mid = Integer.parseInt(midStr);
-			// 根据消息id获取消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
-			backInfo.setStateCode(Global.intYES);
-			backInfo.setRetMsg(Global.SUCCESS);
-			backInfo.setData(msgs);
-		} catch (Exception e) {
-			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
-			backInfo.setRetMsg(Global.ERROR);
-			backInfo.setStateCode(Global.intNO);
-		}
-		return JsonMapper.getInstance().toJsonP(callback, backInfo);
-	}
+	// @CrossOrigin
+	// @RequestMapping(value = "/v1/msg/getMsgByMid", method =
+	// RequestMethod.GET)
+	// public @ResponseBody String getMsgByMid(HttpServletRequest request,
+	// HttpServletResponse response) {
+	// String callback = request.getParameter("callback");
+	// String midStr = request.getParameter("mid");
+	//
+	// if (StrUtil.isBlank(midStr)) {
+	// BaseBackInfo info = new BaseBackInfo();
+	// info.setStateCode(Global.int300209);
+	// info.setRetMsg(Global.str300209);
+	// return JsonMapper.getInstance().toJsonP("paramIsBlank", info);
+	// }
+	// DataBackInfo<DynamicMsgForService> backInfo = new
+	// DataBackInfo<DynamicMsgForService>();
+	// try {
+	// int mid = Integer.parseInt(midStr);
+	// // 根据消息id获取消息
+	// List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
+	// backInfo.setStateCode(Global.intYES);
+	// backInfo.setRetMsg(Global.SUCCESS);
+	// backInfo.setData(msgs);
+	// } catch (Exception e) {
+	// logger.debug("[" +
+	// Thread.currentThread().getStackTrace()[1].getClassName() + " - " +
+	// Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]",
+	// e.getMessage());
+	// backInfo.setRetMsg(Global.ERROR);
+	// backInfo.setStateCode(Global.intNO);
+	// }
+	// return JsonMapper.getInstance().toJsonP(callback, backInfo);
+	// }
 
 	/**
 	 * 
