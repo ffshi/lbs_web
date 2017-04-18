@@ -14,12 +14,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.innovate.cms.common.config.Global;
+import com.innovate.cms.common.mapper.JsonMapper;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
@@ -65,7 +67,7 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/save", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo save(@RequestBody DynamicMsgToJson dynamicMsgToJson, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String description = dynamicMsgToJson.getDescription();
 		String uidString = dynamicMsgToJson.getUid();
 		int msgType = dynamicMsgToJson.getMsgType();
@@ -525,11 +527,13 @@ public class DynamicMsgController extends BaseController {
 	 * @param response
 	 * @return
 	 */
+	@CrossOrigin
 	@RequestMapping(value = "/v1/msg/getMsgByMid", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo getMsgByMid(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String midStr = map.get("mid");
 
+		
 		if (StrUtil.isBlank(midStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -550,6 +554,68 @@ public class DynamicMsgController extends BaseController {
 			backInfo.setStateCode(Global.intNO);
 		}
 		return backInfo;
+	}
+	@CrossOrigin
+	@RequestMapping(value = "/v1/msg/getMsgByMidJSON", method = RequestMethod.GET)
+	public @ResponseBody BaseBackInfo getMsgByMidJSON(HttpServletRequest request, HttpServletResponse response) {
+		
+		String midStr = request.getParameter("mid");
+		
+		
+		if (StrUtil.isBlank(midStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 根据消息id获取消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@CrossOrigin
+	@RequestMapping(value = "/v1/msg/getMsgByMid", method = RequestMethod.GET)
+	public @ResponseBody String getMsgByMid(HttpServletRequest request, HttpServletResponse response) {
+		String callback = request.getParameter("callback");
+		String midStr = request.getParameter("mid");
+
+		if (StrUtil.isBlank(midStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return JsonMapper.getInstance().toJsonP("paramIsBlank", info);
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 根据消息id获取消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return JsonMapper.getInstance().toJsonP(callback, backInfo);
 	}
 
 	/**

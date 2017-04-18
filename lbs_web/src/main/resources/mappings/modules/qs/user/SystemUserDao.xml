@@ -495,7 +495,7 @@
 			country = #{country},
 		</if>
 		<if test="headimgurl != null and headimgurl != ''">
-			headimgurl = #{headimgurl}
+			headimgurl = #{headimgurl},
 		</if>
 		<if test="personalSignature != null and personalSignature != ''">
 			personal_signature = #{personalSignature}

@@ -43,6 +43,12 @@ public class SignFilter extends OncePerRequestFilter {
 		// "/user/report", "/isToken","/opt/openQuestions"};
 		// boolean doFilter = true; // 是否过滤
 		
+//		response.setHeader("Access-Control-Allow-Origin", "*");
+////		response.setHeader("Access-Control-Allow-Origin", DictionaryParam.get(Constant2.DICTIONARY_GROUP_GLOBAL_SETTING, "AccessControlAllowOrigin"));  
+//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");  
+//        response.setHeader("Access-Control-Max-Age", "3600");  
+//        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");  
+		
 		String url = request.getRequestURI(); // 请求的url
 
 		// 头文件中参数
@@ -55,6 +61,7 @@ public class SignFilter extends OncePerRequestFilter {
 
 		// 方便调试测试，测试时候用这个一header就可以了
 		String ff = request.getHeader("_");
+	
 		// 新增日志内容
 		String ip = StringUtils.getRemoteAddr(request);
 		MDC.put("ip", ip);

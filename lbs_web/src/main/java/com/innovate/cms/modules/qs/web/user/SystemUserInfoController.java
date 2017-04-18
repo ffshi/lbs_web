@@ -275,11 +275,7 @@ public class SystemUserInfoController extends BaseController {
 		String _uid = StrUtil.nullToEmpty(request.getHeader("Uid"));
 		BaseBackInfo backInfo = new BaseBackInfo();
 		// 如果用户名为空则直接返回
-		if (StrUtil.isBlank(_uid) || _uid.trim().length() != 32 || StrUtil.isBlank(userInfoToJson.getNickname()) || StrUtil.isBlank(userInfoToJson.getHeadimgurl())
-		// ||StrUtil.isBlank(userInfoToJson.getConstellation())
-		// ||StrUtil.isBlank(userInfoToJson.getBirthday().toString())
-		// ||StrUtil.isBlank(userInfoToJson.getSex())
-		) {
+		if (StrUtil.isBlank(_uid) || _uid.trim().length() != 32) {
 			logger.debug("输入参数中头像地址为：{}", userInfoToJson.getHeadimgurl());
 			logger.debug("UserInfoController - putUserInfo -  参数错误或为空");
 			backInfo.setStateCode(Global.int300209);
@@ -301,6 +297,9 @@ public class SystemUserInfoController extends BaseController {
 					systemUser.setProvince(userInfoToJson.getProvince());
 					systemUser.setCity(userInfoToJson.getCity());
 					systemUser.setCountry(userInfoToJson.getCountry());
+					if(userInfoToJson.getPersonalSignature()==null && userInfoToJson.getPersonalSignature().trim().equals("")){
+						userInfoToJson.setPersonalSignature("-1");
+					}
 					systemUser.setPersonalSignature(userInfoToJson.getPersonalSignature());
 					logger.debug("保存的头像={}", systemUser.getHeadimgurl());
 					systemUserService.putUserInfo(systemUser);
@@ -341,6 +340,7 @@ public class SystemUserInfoController extends BaseController {
 				 * }; }.start(); }
 				 */
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.debug("更新用户失败", e.getMessage());
 				backInfo.setStateCode(Global.int300302);
 				backInfo.setRetMsg(Global.str300302);
