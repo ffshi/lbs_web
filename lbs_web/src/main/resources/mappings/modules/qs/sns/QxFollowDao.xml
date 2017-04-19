@@ -285,9 +285,9 @@
 			END
 		)
 		WHERE
-			del_flag = "0"
-			AND (uid = #{uid}
-			OR follow_uid = #{uid})
+			
+			uid = #{uid}
+			OR follow_uid = #{uid}
 	</update>
 
 	<update id="delete">

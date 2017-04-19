@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.innovate.cms.common.config.Global;
-import com.innovate.cms.common.mapper.JsonMapper;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
@@ -533,7 +532,6 @@ public class DynamicMsgController extends BaseController {
 
 		String midStr = map.get("mid");
 
-		
 		if (StrUtil.isBlank(midStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -555,13 +553,13 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	@CrossOrigin
 	@RequestMapping(value = "/v1/msg/getMsgByMidJSON", method = RequestMethod.GET)
 	public @ResponseBody BaseBackInfo getMsgByMidJSON(HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String midStr = request.getParameter("mid");
-		
-		
+
 		if (StrUtil.isBlank(midStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);

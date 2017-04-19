@@ -182,6 +182,17 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 		super.dao.addShareNum(mid);
 	}
 
+	/**
+	 * 更新消息中的用户信息
+	 * @param _uid
+	 * @param nickname
+	 * @param headimgurl
+	 */
+	@Transactional(readOnly = false)
+	public void updateUserInfo(String uid, String nickname, String headimgurl) {
+		super.dao.updateUserInfo(uid,nickname,headimgurl);
+	}
+
 
 
 

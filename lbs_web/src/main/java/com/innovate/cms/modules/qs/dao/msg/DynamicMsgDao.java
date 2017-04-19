@@ -121,6 +121,14 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param mid
 	 */
 	void addShareNum(int mid);
+
+	/**
+	 * 更新消息中的用户信息
+	 * @param _uid
+	 * @param nickname
+	 * @param headimgurl
+	 */
+	void updateUserInfo(@Param("uid")String uid, @Param("nickname")String nickname, @Param("headimgurl")String headimgurl);
 	
 
 }
