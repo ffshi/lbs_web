@@ -363,4 +363,14 @@ public class SystemUserService extends CrudService<SystemUserDao, SystemUser> {
 		return super.dao.getShieldUids(uid,mobile);
 	}
 
+	/**
+	 * 上拉获取用户相册
+	 * @param uid
+	 * @param picId
+	 * @return
+	 */
+	public List<UserPic> userUpPics(String uid, int picId) {
+		return super.dao.userUpPics(uid,picId);
+	}
+
 }

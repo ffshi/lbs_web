@@ -288,11 +288,11 @@ public class SystemUserInfoController extends BaseController {
 				boolean imgBoolean = userInfoToJson.getHeadimgurl() != null && userInfoToJson.getHeadimgurl().trim().length() > 0 && !systemUser.getHeadimgurl().equals(userInfoToJson.getHeadimgurl());
 				boolean nameBoolean = userInfoToJson.getNickname() != null && userInfoToJson.getNickname().trim().length() > 0 && !systemUser.getNickname().equals(userInfoToJson.getNickname());
 				if (systemUser != null) {
-					//为了防止关联数据更新错误，因为数据不更改客户端可能不传递
-					if (userInfoToJson.getHeadimgurl()==null || userInfoToJson.getHeadimgurl().trim().length()<1) {
+					// 为了防止关联数据更新错误，因为数据不更改客户端可能不传递
+					if (userInfoToJson.getHeadimgurl() == null || userInfoToJson.getHeadimgurl().trim().length() < 1) {
 						userInfoToJson.setHeadimgurl(systemUser.getHeadimgurl());
 					}
-					if (userInfoToJson.getNickname()==null || userInfoToJson.getNickname().trim().length()<1) {
+					if (userInfoToJson.getNickname() == null || userInfoToJson.getNickname().trim().length() < 1) {
 						userInfoToJson.setNickname(systemUser.getNickname());
 					}
 					systemUser.setNickname(userInfoToJson.getNickname());
@@ -762,6 +762,74 @@ public class SystemUserInfoController extends BaseController {
 	}
 
 	/**
+	 * 获取用户相册 最新200张，最多200张
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/userPics", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userPics(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+
+		DataBackInfo<UserPic> backInfo = new DataBackInfo<>();
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			// 获取用户相册
+			List<UserPic> pics = systemUserService.userPics(uid);
+			backInfo.setData(pics);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 上拉获取20张
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/user/userUpPics", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userUpPics(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+		String picIdStr = map.get("picId");
+
+		DataBackInfo<UserPic> backInfo = new DataBackInfo<>();
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(picIdStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int picId = Integer.parseInt(picIdStr);
+			// 上拉获取用户相册
+			List<UserPic> pics = systemUserService.userUpPics(uid, picId);
+			backInfo.setData(pics);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
 	 * 用户主页
 	 * 
 	 * @param map
@@ -796,9 +864,7 @@ public class SystemUserInfoController extends BaseController {
 			// 获取获取粉丝数
 			backInfo.setFollowersNum(systemUserService.followersNum(uid));
 			backInfo.setUid(uid);
-			// 获取用户相册
-			List<UserPic> pics = systemUserService.userPics(uid);
-			backInfo.setPics(pics);
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {

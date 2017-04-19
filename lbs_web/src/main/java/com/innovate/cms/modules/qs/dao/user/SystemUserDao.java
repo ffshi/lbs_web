@@ -266,4 +266,12 @@ public interface SystemUserDao extends CrudDao<SystemUser> {
 	 */
 	public List<String> getShieldUids(@Param("uid")String uid,@Param("mobile")String mobile);
 
+	/**
+	 * 上拉获取用户相册
+	 * @param uid
+	 * @param picId
+	 * @return
+	 */
+	public List<UserPic> userUpPics(@Param("uid")String uid, @Param("picId")int picId);
+
 }
