@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.innovate.cms.common.config.Global;
 import com.innovate.cms.common.utils.StrUtil;
+import com.innovate.cms.common.utils.sensitiveWord.ChatFilter;
 import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
@@ -36,6 +37,7 @@ public class ImTribeController extends BaseController {
 	@Autowired
 	private ImTribeService imTribeService;
 
+	private static ChatFilter filter = null;
 	/**
 	 * 存储群组
 	 * 
@@ -46,7 +48,7 @@ public class ImTribeController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/tribe/save", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo save(@RequestBody ImTribeToJSON imTribeToJSON, HttpServletRequest request, HttpServletResponse response) {
-
+		
 		BaseBackInfo backInfo = new BaseBackInfo();
 		String name = imTribeToJSON.getName();
 		String tribeImg = imTribeToJSON.getTribeImg();
@@ -208,6 +210,46 @@ public class ImTribeController extends BaseController {
 			imTribeService.updateTribe(imTribeToJSON);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	
+	/**
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/tribe/filterTribeName", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo filterTribeName(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String text = map.get("text");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(text)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			
+			if (filter == null) {
+				filter = new ChatFilter();
+			}
+			if (filter.filte(text).contains("*")) {
+				backInfo.setStateCode(Global.intYES);
+				backInfo.setRetMsg(Global.SUCCESS);
+			}else {
+				backInfo.setStateCode(Global.intNO);
+				backInfo.setRetMsg(Global.SUCCESS);
+			}
+			
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
