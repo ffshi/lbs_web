@@ -33,6 +33,7 @@ import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.aliIM.IMUtils;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
+import com.innovate.cms.modules.common.entity.ItemBackInfo;
 import com.innovate.cms.modules.common.entity.MainPageBackInfo;
 import com.innovate.cms.modules.common.entity.UserPic;
 import com.innovate.cms.modules.data.entity.BaseUserPropertyToJson;
@@ -688,6 +689,48 @@ public class SystemUserInfoController extends BaseController {
 	}
 
 	/**
+	 * 存储用户相册，存储多个
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	// @RequestMapping(value = "/v1/user/savePhoto", method =
+	// RequestMethod.POST)
+	// public @ResponseBody BaseBackInfo savePhoto(@RequestBody Map<String,
+	// String> map, HttpServletRequest request, HttpServletResponse response) {
+	//
+	// String uid = map.get("uid");
+	// String pics = map.get("pics");
+	//
+	// BaseBackInfo backInfo = new BaseBackInfo();
+	// if (StrUtil.isBlank(uid) || StrUtil.isBlank(pics)) {
+	// BaseBackInfo info = new BaseBackInfo();
+	// info.setStateCode(Global.int300209);
+	// info.setRetMsg(Global.str300209);
+	// return info;
+	// }
+	// try {
+	// String[] picStrings = pics.split(",");
+	// for (String pic : picStrings) {
+	// // 存储相册
+	// systemUserService.savePhoto(uid, pic);
+	// }
+	// backInfo.setStateCode(Global.intYES);
+	// backInfo.setRetMsg(Global.SUCCESS);
+	// } catch (Exception e) {
+	// logger.debug("[" +
+	// Thread.currentThread().getStackTrace()[1].getClassName() + " - " +
+	// Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]",
+	// e.getMessage());
+	// backInfo.setRetMsg(Global.ERROR);
+	// backInfo.setStateCode(Global.intNO);
+	// }
+	// return backInfo;
+	// }
+
+	/**
 	 * 存储用户相册
 	 * 
 	 * @param map
@@ -699,21 +742,21 @@ public class SystemUserInfoController extends BaseController {
 	public @ResponseBody BaseBackInfo savePhoto(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String uid = map.get("uid");
-		String pics = map.get("pics");
+		String pic = map.get("pic");
 
-		BaseBackInfo backInfo = new BaseBackInfo();
-		if (StrUtil.isBlank(uid) || StrUtil.isBlank(pics)) {
+		ItemBackInfo backInfo = new ItemBackInfo();
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(pic)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
 			return info;
 		}
 		try {
-			String[] picStrings = pics.split(",");
-			for (String pic : picStrings) {
-				// 存储相册
-				systemUserService.savePhoto(uid, pic);
-			}
+
+			UserPic userPic = new UserPic(uid, pic);
+			// 用户相册-存储单张图片
+			systemUserService.saveSinglePhoto(userPic);
+			backInfo.setItem(userPic);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {
@@ -763,6 +806,7 @@ public class SystemUserInfoController extends BaseController {
 
 	/**
 	 * 获取用户相册 最新200张，最多200张
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
@@ -796,6 +840,7 @@ public class SystemUserInfoController extends BaseController {
 
 	/**
 	 * 上拉获取20张
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response

@@ -72,8 +72,7 @@ public class ImTribeController extends BaseController {
 		}
 		return backInfo;
 	}
-	
-	
+
 	/**
 	 * 获取附近群组
 	 * 
@@ -113,9 +112,10 @@ public class ImTribeController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 获取群信息
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
@@ -135,11 +135,79 @@ public class ImTribeController extends BaseController {
 		}
 		try {
 			int tribeId = Integer.parseInt(tribeIdStr);
-			//获取群信息
+			// 获取群信息
 			ImTribe tribe = imTribeService.tribeInfo(tribeId);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setItem(tribe);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 解散群组
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/tribe/delTribe", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo delTribe(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String tribeIdStr = map.get("tribeId");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(tribeIdStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int tribeId = Integer.parseInt(tribeIdStr);
+			// 解散群组
+			imTribeService.delTribe(tribeId);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 更新/编辑群组信息
+	 * 
+	 * @param imTribeToJSON
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/tribe/updateTribe", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo updateTribe(@RequestBody ImTribeToJSON imTribeToJSON, HttpServletRequest request, HttpServletResponse response) {
+
+		int tribeId = imTribeToJSON.getTribeId();
+
+		//
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (tribeId == 0) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			// 更新/编辑群组信息
+			imTribeService.updateTribe(imTribeToJSON);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);

@@ -36,5 +36,17 @@ public interface ImTribeDao extends CrudDao<ImTribe> {
 	 * @return
 	 */
 	ImTribe tribeInfo(@Param("tribeId")int tribeId);
+
+	/**
+	 * 解散群组
+	 * @param tribeId
+	 */
+	void delTribe(int tribeId);
+
+	/**
+	 * 更新/编辑群组信息
+	 * @param imTribeToJSON
+	 */
+	void updateTribe(ImTribeToJSON imTribeToJSON);
 	
 }

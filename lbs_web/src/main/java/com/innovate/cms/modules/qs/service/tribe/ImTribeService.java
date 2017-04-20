@@ -45,5 +45,23 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 	public ImTribe tribeInfo(int tribeId) {
 		return super.dao.tribeInfo(tribeId);
 	}
+
+	/**
+	 * 解散群组
+	 * @param tribeId
+	 */
+	@Transactional(readOnly = false)
+	public void delTribe(int tribeId) {
+		super.dao.delTribe(tribeId);
+	}
+
+	/**
+	 * 更新/编辑群组信息
+	 * @param imTribeToJSON
+	 */
+	@Transactional(readOnly = false)
+	public void updateTribe(ImTribeToJSON imTribeToJSON) {
+		super.dao.updateTribe(imTribeToJSON);
+	}
 	
 }

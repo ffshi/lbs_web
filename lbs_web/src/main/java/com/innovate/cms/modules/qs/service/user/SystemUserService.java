@@ -373,4 +373,13 @@ public class SystemUserService extends CrudService<SystemUserDao, SystemUser> {
 		return super.dao.userUpPics(uid,picId);
 	}
 
+	/**
+	 * 用户相册-存储单张图片
+	 * @param userPic
+	 */
+	@Transactional(readOnly = false)
+	public void saveSinglePhoto(UserPic userPic) {
+		super.dao.saveSinglePhoto(userPic);
+	}
+
 }

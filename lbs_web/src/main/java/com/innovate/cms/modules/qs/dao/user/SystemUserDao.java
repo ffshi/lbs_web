@@ -274,4 +274,10 @@ public interface SystemUserDao extends CrudDao<SystemUser> {
 	 */
 	public List<UserPic> userUpPics(@Param("uid")String uid, @Param("picId")int picId);
 
+	/**
+	 * 用户相册-存储单张图片
+	 * @param userPic
+	 */
+	public void saveSinglePhoto(UserPic userPic);
+
 }

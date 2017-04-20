@@ -379,6 +379,16 @@
 		WHERE
 		u.uid = #{uid}
 	</insert>
+	<insert id="saveSinglePhoto" useGeneratedKeys="true"  keyProperty="picId" >
+		INSERT INTO system_user_pic (url, uid, u_num) SELECT
+		#{url},
+		u.uid,
+		u.u_num
+		FROM
+		system_user u
+		WHERE
+		u.uid = #{uid}
+	</insert>
 	<update id="delPhoto">
 		UPDATE system_user_pic
 		SET del_flag = 1
