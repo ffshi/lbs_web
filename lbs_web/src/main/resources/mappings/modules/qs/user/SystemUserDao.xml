@@ -185,7 +185,8 @@
 	<select id="userPics" resultType="com.innovate.cms.modules.common.entity.UserPic">
 		SELECT
 		pic_id AS "picId",
-		url
+		url,
+		create_time
 		FROM
 		system_user_pic
 		WHERE
@@ -194,7 +195,8 @@
 	<select id="userUpPics" resultType="com.innovate.cms.modules.common.entity.UserPic">
 		SELECT
 		pic_id AS "picId",
-		url
+		url,
+		create_time
 		FROM
 		system_user_pic
 		WHERE
