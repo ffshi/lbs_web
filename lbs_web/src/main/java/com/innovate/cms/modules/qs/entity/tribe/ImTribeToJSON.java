@@ -20,7 +20,7 @@ public class ImTribeToJSON implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int tid;
 	@JSONField(name = "tribe_id")
-	private int tribeId;
+	private long tribeId;
 	@JSONField(name = "tribe_img")
 	private String tribeImg;
 	@JSONField(name = "tribe_type")
@@ -57,8 +57,34 @@ public class ImTribeToJSON implements Serializable {
 	// '经纬度类型1（GPS经纬度坐标）2（国测局加密经纬度坐标）3（百度加密经纬度坐标）4（百度加密墨卡托坐标）',
 	// `location_name` varchar(255) DEFAULT '' COMMENT '位置名字,如融科创意中心',
 
-	public String getTribeImg() {
-		return tribeImg;
+	public ImTribeToJSON() {
+		super();
+	}
+
+	public ImTribeToJSON(int tid, long tribeId, String tribeImg, String tribeType, String tribeCategory, String ownerUid, String name, String introduction, String location, String ownerName, String ownerHeadimg, Date createTime, String coordType, String locationName) {
+		super();
+		this.tid = tid;
+		this.tribeId = tribeId;
+		this.tribeImg = tribeImg;
+		this.tribeType = tribeType;
+		this.tribeCategory = tribeCategory;
+		this.ownerUid = ownerUid;
+		this.name = name;
+		this.introduction = introduction;
+		this.location = location;
+		this.ownerName = ownerName;
+		this.ownerHeadimg = ownerHeadimg;
+		this.createTime = createTime;
+		this.coordType = coordType;
+		this.locationName = locationName;
+	}
+
+	public long getTribeId() {
+		return tribeId;
+	}
+
+	public void setTribeId(long tribeId) {
+		this.tribeId = tribeId;
 	}
 
 	public int getTid() {
@@ -67,14 +93,6 @@ public class ImTribeToJSON implements Serializable {
 
 	public void setTid(int tid) {
 		this.tid = tid;
-	}
-
-	public int getTribeId() {
-		return tribeId;
-	}
-
-	public void setTribeId(int tribeId) {
-		this.tribeId = tribeId;
 	}
 
 	public String getOwnerName() {
@@ -103,6 +121,10 @@ public class ImTribeToJSON implements Serializable {
 
 	public void setTribeImg(String tribeImg) {
 		this.tribeImg = tribeImg;
+	}
+
+	public String getTribeImg() {
+		return tribeImg;
 	}
 
 	public String getTribeType() {

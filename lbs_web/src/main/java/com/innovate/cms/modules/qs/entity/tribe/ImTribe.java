@@ -21,7 +21,7 @@ public class ImTribe extends DataEntity<ImTribe> {
 
 	private int tid;
 	@JSONField(name = "tribe_id")
-	private int tribeId;
+	private long tribeId;
 	@JSONField(name = "tribe_img")
 	private String tribeImg;
 	@JSONField(name = "tribe_type")
@@ -94,11 +94,11 @@ public class ImTribe extends DataEntity<ImTribe> {
 		this.tid = tid;
 	}
 
-	public int getTribeId() {
+	public long getTribeId() {
 		return tribeId;
 	}
 
-	public void setTribeId(int tribeId) {
+	public void setTribeId(long tribeId) {
 		this.tribeId = tribeId;
 	}
 

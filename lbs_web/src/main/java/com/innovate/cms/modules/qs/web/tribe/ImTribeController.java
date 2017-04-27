@@ -1,6 +1,5 @@
 package com.innovate.cms.modules.qs.web.tribe;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.druid.support.logging.Log;
 import com.innovate.cms.common.config.Global;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.utils.sensitiveWord.ChatFilter;
@@ -138,7 +136,7 @@ public class ImTribeController extends BaseController {
 			return info;
 		}
 		try {
-			int tribeId = Integer.parseInt(tribeIdStr);
+			long tribeId = Long.parseLong(tribeIdStr);
 			// 获取群信息
 			ImTribe tribe = imTribeService.tribeInfo(tribeId);
 			backInfo.setStateCode(Global.intYES);
@@ -173,7 +171,7 @@ public class ImTribeController extends BaseController {
 			return info;
 		}
 		try {
-			int tribeId = Integer.parseInt(tribeIdStr);
+			long tribeId = Long.parseLong(tribeIdStr);
 			// 解散群组
 			imTribeService.delTribe(tribeId);
 			backInfo.setStateCode(Global.intYES);
@@ -197,7 +195,7 @@ public class ImTribeController extends BaseController {
 	@RequestMapping(value = "/v1/tribe/updateTribe", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo updateTribe(@RequestBody ImTribeToJSON imTribeToJSON, HttpServletRequest request, HttpServletResponse response) {
 
-		int tribeId = imTribeToJSON.getTribeId();
+		long tribeId = imTribeToJSON.getTribeId();
 
 		//
 		BaseBackInfo backInfo = new BaseBackInfo();

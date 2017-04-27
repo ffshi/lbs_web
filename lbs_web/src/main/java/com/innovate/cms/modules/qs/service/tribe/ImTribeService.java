@@ -42,7 +42,7 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 	 * @param tribeId
 	 * @return
 	 */
-	public ImTribe tribeInfo(int tribeId) {
+	public ImTribe tribeInfo(long tribeId) {
 		return super.dao.tribeInfo(tribeId);
 	}
 
@@ -51,7 +51,7 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 	 * @param tribeId
 	 */
 	@Transactional(readOnly = false)
-	public void delTribe(int tribeId) {
+	public void delTribe(long tribeId) {
 		super.dao.delTribe(tribeId);
 	}
 
