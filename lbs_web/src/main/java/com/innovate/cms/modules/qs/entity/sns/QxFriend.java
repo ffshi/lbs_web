@@ -10,7 +10,7 @@ import com.innovate.cms.common.config.Global;
  * @author shifangfang
  *
  */
-public class QxFriend implements Serializable{
+public class QxFriend implements Serializable {
 	/**
 	 * 
 	 */
@@ -18,10 +18,9 @@ public class QxFriend implements Serializable{
 
 	private String followUid;
 
-	private String followImg;
+	private String followImg = "-1";
 
-	private String followName;
-	
+	private String followName = "-1";
 
 	public QxFriend() {
 		super();
@@ -44,11 +43,9 @@ public class QxFriend implements Serializable{
 
 	public String getFollowImg() {
 		String imgUrl = this.followImg;
-		if (imgUrl.length()>0)
-		{
-			if (!(imgUrl.toLowerCase().trim().startsWith(Global.HTTP)||imgUrl.toLowerCase().trim().startsWith(Global.HTTPS)))
-			{
-					imgUrl = Global._URL+imgUrl;
+		if (imgUrl.length() > 0 && !imgUrl.equals("-1")) {
+			if (!(imgUrl.toLowerCase().trim().startsWith(Global.HTTP) || imgUrl.toLowerCase().trim().startsWith(Global.HTTPS))) {
+				imgUrl = Global._URL + imgUrl;
 			}
 		}
 		return imgUrl;
@@ -66,5 +63,4 @@ public class QxFriend implements Serializable{
 		this.followName = followName;
 	}
 
-	
 }
