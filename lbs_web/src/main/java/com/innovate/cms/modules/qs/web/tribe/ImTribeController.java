@@ -1,5 +1,6 @@
 package com.innovate.cms.modules.qs.web.tribe;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.druid.support.logging.Log;
 import com.innovate.cms.common.config.Global;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.utils.sensitiveWord.ChatFilter;
@@ -96,9 +98,9 @@ public class ImTribeController extends BaseController {
 			return info;
 		}
 		String[] ids = tribeIds.split(",");
-		int[] mids = new int[ids.length];
+		long[] mids = new long[ids.length];
 		for (int i = 0; i < ids.length; i++) {
-			mids[i] = Integer.parseInt(ids[i]);
+			mids[i] = Long.parseLong(ids[i]);
 		}
 		DataBackInfo<ImTribe> backInfo = new DataBackInfo<ImTribe>();
 		try {

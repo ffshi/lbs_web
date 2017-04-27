@@ -32,7 +32,7 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 	 * @param mids
 	 * @return
 	 */
-	public List<ImTribe> nearTribe(int[] tribeIds) {
+	public List<ImTribe> nearTribe(long[] tribeIds) {
 		
 		return super.dao.nearTribe(tribeIds);
 	}

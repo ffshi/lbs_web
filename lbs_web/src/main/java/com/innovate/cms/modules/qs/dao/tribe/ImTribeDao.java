@@ -28,7 +28,7 @@ public interface ImTribeDao extends CrudDao<ImTribe> {
 	 * @param mids
 	 * @return
 	 */
-	List<ImTribe> nearTribe(int[] tribeIds);
+	List<ImTribe> nearTribe(long[] tribeIds);
 
 	/**
 	 * 获取群信息
