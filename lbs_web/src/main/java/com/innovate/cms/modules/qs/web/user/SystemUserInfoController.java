@@ -286,15 +286,31 @@ public class SystemUserInfoController extends BaseController {
 				SystemUser systemUser = systemUserService.get(_uid);
 				// String nickname = systemUser.getNickname();
 				// String headimgurl = systemUser.getHeadimgurl();
-				boolean imgBoolean = userInfoToJson.getHeadimgurl() != null && userInfoToJson.getHeadimgurl().trim().length() > 0 && !systemUser.getHeadimgurl().equals(userInfoToJson.getHeadimgurl());
-				boolean nameBoolean = userInfoToJson.getNickname() != null && userInfoToJson.getNickname().trim().length() > 0 && !systemUser.getNickname().equals(userInfoToJson.getNickname());
+				// boolean imgBoolean = userInfoToJson.getHeadimgurl() != null
+				// && userInfoToJson.getHeadimgurl().trim().length() > 0 &&
+				// !systemUser.getHeadimgurl().equals(userInfoToJson.getHeadimgurl());
+				// boolean nameBoolean = userInfoToJson.getNickname() != null &&
+				// userInfoToJson.getNickname().trim().length() > 0 &&
+				// !systemUser.getNickname().equals(userInfoToJson.getNickname());
+				boolean imgBoolean = userInfoToJson.getHeadimgurl() != null && userInfoToJson.getHeadimgurl().trim().length() > 0;
+				boolean nameBoolean = userInfoToJson.getNickname() != null && userInfoToJson.getNickname().trim().length() > 0;
 				if (systemUser != null) {
 					// 为了防止关联数据更新错误，因为数据不更改客户端可能不传递
 					if (userInfoToJson.getHeadimgurl() == null || userInfoToJson.getHeadimgurl().trim().length() < 1) {
-						userInfoToJson.setHeadimgurl(systemUser.getHeadimgurl());
+						if (systemUser.getHeadimgurl()!=null && systemUser.getHeadimgurl().trim().length()>2) {
+							userInfoToJson.setHeadimgurl(systemUser.getHeadimgurl());
+						}else {
+							userInfoToJson.setHeadimgurl("-1");
+						}
+						
 					}
 					if (userInfoToJson.getNickname() == null || userInfoToJson.getNickname().trim().length() < 1) {
-						userInfoToJson.setNickname(systemUser.getNickname());
+						if (systemUser.getNickname()!=null&&!systemUser.getNickname().trim().equals("-1")) {
+							userInfoToJson.setNickname(systemUser.getNickname());
+						}else {
+							userInfoToJson.setNickname("-1");
+						}
+						
 					}
 					systemUser.setNickname(userInfoToJson.getNickname());
 					// systemUser.setHeadimgurl(userInfoToJson.getHeadimgurl().replace(Global._URL,
