@@ -106,13 +106,13 @@ public class QxFollowController extends BaseController {
 					// 没添加过该好友
 					SystemUser fuser = systemUserService.findByUid(followUid);
 					qxFollow.setFlid(IdGen.uuid());
-					qxFollow.setFollowName(fuser.getNickname()==null?"":fuser.getNickname());
-					qxFollow.setFollowImg(fuser.getHeadimgurl()==null?"":fuser.getHeadimgurl());
-					qxFollow.setFollowUnionid(fuser.getUnionid()==null?"":fuser.getUnionid());
+					qxFollow.setFollowName(fuser.getNickname()==null?"-1":fuser.getNickname());
+					qxFollow.setFollowImg(fuser.getHeadimgurl()==null?"-1":fuser.getHeadimgurl());
+					qxFollow.setFollowUnionid(fuser.getUnionid()==null?"-1":fuser.getUnionid());
 
-					qxFollow.setName(user.getNickname()==null?"":user.getNickname());
-					qxFollow.setImg(user.getHeadimgurl()==null?"":user.getHeadimgurl());
-					qxFollow.setUnionid(user.getUnionid()==null?"":user.getUnionid());
+					qxFollow.setName(user.getNickname()==null?"-1":user.getNickname());
+					qxFollow.setImg(user.getHeadimgurl()==null?"-1":user.getHeadimgurl());
+					qxFollow.setUnionid(user.getUnionid()==null?"-1":user.getUnionid());
 					qxFollowService.saveFollow(qxFollow);
 				} else {
 					// 曾经添加过,但是删除了，现在再次添加
