@@ -103,8 +103,7 @@
 
 
 	<update id="delTribe">
-		UPDATE im_tribe
-		SET del_flag = 1
+		DELETE from im_tribe
 		WHERE
 			tribe_id = #{tribeId}
 

@@ -152,6 +152,7 @@ public class ImTribeController extends BaseController {
 
 	/**
 	 * 解散群组
+	 * 需要真正的删除该数据，因为阿里IM会重复使用id
 	 * 
 	 * @param map
 	 * @param request

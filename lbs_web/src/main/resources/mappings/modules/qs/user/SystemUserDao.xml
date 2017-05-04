@@ -519,8 +519,9 @@
 			headimgurl = #{headimgurl},
 		</if>
 		<if test="personalSignature != null and personalSignature != ''">
-			personal_signature = #{personalSignature}
+			personal_signature = #{personalSignature},
 		</if>
+		uid=#{uid}
 		WHERE uid = #{uid}
 	</update>
 
