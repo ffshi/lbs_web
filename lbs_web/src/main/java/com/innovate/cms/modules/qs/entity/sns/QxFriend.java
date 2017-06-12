@@ -2,6 +2,9 @@ package com.innovate.cms.modules.qs.entity.sns;
 
 import java.io.Serializable;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.innovate.cms.common.config.Global;
 
 /**
@@ -21,6 +24,11 @@ public class QxFriend implements Serializable {
 	private String followImg = "-1";
 
 	private String followName = "-1";
+	private String sex; // 用户的性别，值为1时是男性，值为2时是女性，默认值为0时是未知
+	// 个人签名
+	@JsonInclude(Include.NON_EMPTY)
+	@JSONField(name = "personal_signature")
+	private String personalSignature;
 
 	public QxFriend() {
 		super();
@@ -31,6 +39,22 @@ public class QxFriend implements Serializable {
 		this.followUid = followUid;
 		this.followImg = followImg;
 		this.followName = followName;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getPersonalSignature() {
+		return personalSignature;
+	}
+
+	public void setPersonalSignature(String personalSignature) {
+		this.personalSignature = personalSignature;
 	}
 
 	public String getFollowUid() {

@@ -113,11 +113,14 @@
 		SELECT
 			a.follow_uid as followUid,
 			a.follow_img as followImg,
-			a.follow_name as followName
-		FROM qx_follow a
+			a.follow_name as followName,
+			u.personal_signature AS personalSignature,
+			u.sex AS sex
+		FROM qx_follow a,system_user AS u
 		<where>
 			a.uid = #{uid} AND
 			a.del_flag = '0'
+			AND a.follow_uid = u.uid
 		</where>
 	</select>
 

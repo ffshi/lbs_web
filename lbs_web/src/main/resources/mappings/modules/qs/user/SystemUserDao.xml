@@ -128,18 +128,7 @@
 		FROM system_user a
 		WHERE a.uid = #{uid}
 	</select>
-	<select id="findFollows" resultType="SystemUser">
-		SELECT
-		follow_uid AS "uid",
-		follow_name AS "nickname",
-		follow_img AS "headimgurl",
-		follow_unionid AS "unionid"
-		FROM
-		qx_follow
-		WHERE
-		uid = #{uid}
-		AND del_flag = 0;
-	</select>
+
 	<select id="followsNum" resultType="int">
 		SELECT
 		count(1)
@@ -169,18 +158,33 @@
 		uid = #{uid}
 		AND del_flag = "0"
 	</select>
-
+	<select id="findFollows" resultType="SystemUser">
+		SELECT
+		a.follow_uid AS "uid",
+		a.follow_name AS "nickname",
+		a.follow_img AS "headimgurl",
+		a.follow_unionid AS "unionid",
+		u.personal_signature AS personalSignature,
+		u.sex AS sex
+		FROM qx_follow a,system_user AS u
+		WHERE
+		a.uid = #{uid}
+		AND a.del_flag = 0
+		AND a.follow_uid = u.uid 
+	</select>
 	<select id="findFollowers" resultType="com.innovate.cms.modules.qs.entity.user.FollowerUser">
 		SELECT
-		uid AS "uid",
-		`name` AS "nickname",
-		img AS "headimgurl",
-		unionid AS "unionid"
-		FROM
-		qx_follow
+		a.uid AS "uid",
+		a.`name` AS "nickname",
+		a.img AS "headimgurl",
+		a.unionid AS "unionid",
+		u.personal_signature AS personalSignature,
+		u.sex AS sex
+		FROM qx_follow a,system_user AS u
 		WHERE
-		follow_uid = #{uid}
-		AND del_flag = 0;
+		a.follow_uid = #{uid}
+		AND a.del_flag = 0
+		AND a.uid = u.uid 
 	</select>
 	<select id="userPics" resultType="com.innovate.cms.modules.common.entity.UserPic">
 		SELECT
