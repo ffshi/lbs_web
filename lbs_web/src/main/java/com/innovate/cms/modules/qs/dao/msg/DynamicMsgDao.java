@@ -21,24 +21,27 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 
 	/**
 	 * 存储用户发布的动态
+	 * 
 	 * @param dynamicMsgToJson
 	 */
 	void save(DynamicMsgToJson dynamicMsgToJson);
 
 	/**
 	 * 未获取用户位置信息时获取首页信息接口
+	 * 
 	 * @return
 	 */
 	List<DynamicMsgForService> lastesMsg();
 
-	void addPriseNum(@Param("mid")int mid);
+	void addPriseNum(@Param("mid") int mid);
 
-	void subPriseNum(@Param("mid")int mid);
+	void subPriseNum(@Param("mid") int mid);
 
-	void addCommentNum(@Param("mid")int mid);
+	void addCommentNum(@Param("mid") int mid);
 
 	/**
 	 * 根据指定的消息mid获取一批消息
+	 * 
 	 * @param mids
 	 * @return
 	 */
@@ -46,6 +49,7 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 
 	/**
 	 * 获取用户点赞消息列表
+	 * 
 	 * @param uid
 	 * @return
 	 */
@@ -53,36 +57,41 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 
 	/**
 	 * 根据消息id获取消息
+	 * 
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> getMsgByMid(@Param("mid")int mid);
+	List<DynamicMsgForService> getMsgByMid(@Param("mid") int mid);
 
 	/**
 	 * 获取用户最新发布的消息 前20条
+	 * 
 	 * @param uid
 	 * @return
 	 */
-	List<DynamicMsgForService> userLatestMsg(@Param("uid")String uid);
+	List<DynamicMsgForService> userLatestMsg(@Param("uid") String uid);
 
 	/**
 	 * 上拉获取下一页消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> userUpLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+	List<DynamicMsgForService> userUpLatestMsg(@Param("uid") String uid, @Param("mid") int mid);
 
 	/**
 	 * 下拉刷新获取最新
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> userDownLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+	List<DynamicMsgForService> userDownLatestMsg(@Param("uid") String uid, @Param("mid") int mid);
 
 	/**
 	 * 好友动态 获取用户好友最新消息
+	 * 
 	 * @param uid
 	 * @return
 	 */
@@ -95,40 +104,82 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> friendUpLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+	List<DynamicMsgForService> friendUpLatestMsg(@Param("uid") String uid, @Param("mid") int mid);
 
 	/**
 	 * 好友动态 下拉刷新获取最新
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> friendDownLatestMsg(@Param("uid")String uid, @Param("mid")int mid);
+	List<DynamicMsgForService> friendDownLatestMsg(@Param("uid") String uid, @Param("mid") int mid);
 
 	/**
 	 * 获取用户消息总数/动态总数
+	 * 
 	 * @return
 	 */
-	int getMsgNum(@Param("uid")String uid);
+	int getMsgNum(@Param("uid") String uid);
 
 	/**
 	 * 获取虚拟消息
+	 * 
 	 * @return
 	 */
 	List<DynamicMsgForService> virtualMsg();
+
 	/**
 	 * 统计分享次数
+	 * 
 	 * @param mid
 	 */
 	void addShareNum(int mid);
 
 	/**
 	 * 更新消息中的用户信息
+	 * 
 	 * @param _uid
 	 * @param nickname
 	 * @param headimgurl
 	 */
-	void updateUserInfo(@Param("uid")String uid, @Param("nickname")String nickname, @Param("headimgurl")String headimgurl);
-	
+	void updateUserInfo(@Param("uid") String uid, @Param("nickname") String nickname, @Param("headimgurl") String headimgurl);
+
+	/**
+	 * 根据消息类型获取用户好友最新消息
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> friendLatestMsgByMsgtype(@Param("uid") String uid, @Param("msgType") int[] msgType);
+
+	/**
+	 * 根据消息类型上拉获取下一页好友动态
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> friendUpLatestMsgByMsgtype(@Param("uid") String uid, @Param("mid") int mid, @Param("msgType") int[] msgType);
+
+	/**
+	 * 根据消息类型下拉刷新好友的最新消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> friendDownLatestMsgByMsgType(@Param("uid") String uid, @Param("mid") int mid, @Param("msgType") int[] msgType);
+
+	/**
+	 * 根据消息类型获取虚拟消息
+	 * 
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> virtualMsgByMsgtype(@Param("msgType") int[] msgType);
 
 }

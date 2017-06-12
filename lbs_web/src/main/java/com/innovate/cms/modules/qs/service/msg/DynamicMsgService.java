@@ -149,16 +149,18 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 好友动态 下拉刷新获取最新
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendDownLatestMsg(String uid, int mid) {
-		return super.dao.friendDownLatestMsg(uid,mid);
+		return super.dao.friendDownLatestMsg(uid, mid);
 	}
 
 	/**
 	 * 获取用户消息总数/动态总数
+	 * 
 	 * @return
 	 */
 	public int getMsgNum(String uid) {
@@ -167,6 +169,7 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 获取虚拟消息
+	 * 
 	 * @return
 	 */
 	public List<DynamicMsgForService> virtualMsg() {
@@ -175,6 +178,7 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 统计分享次数
+	 * 
 	 * @param mid
 	 */
 	@Transactional(readOnly = false)
@@ -184,16 +188,56 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 更新消息中的用户信息
+	 * 
 	 * @param _uid
 	 * @param nickname
 	 * @param headimgurl
 	 */
 	@Transactional(readOnly = false)
 	public void updateUserInfo(String uid, String nickname, String headimgurl) {
-		super.dao.updateUserInfo(uid,nickname,headimgurl);
+		super.dao.updateUserInfo(uid, nickname, headimgurl);
 	}
 
+	/**
+	 * 根据消息类型获取用户好友最新消息
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendLatestMsgByMsgtype(String uid, int[] msgType) {
+		return super.dao.friendLatestMsgByMsgtype(uid, msgType);
+	}
 
+	/**
+	 * 根据消息类型上拉获取下一页好友动态
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendUpLatestMsgByMsgtype(String uid, int mid, int[] msgType) {
+		return super.dao.friendUpLatestMsgByMsgtype(uid,mid,msgType);
+	}
 
+	/**
+	 * 根据消息类型下拉刷新好友的最新消息
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendDownLatestMsgByMsgType(String uid, int mid, int[] msgType) {
+		return super.dao.friendDownLatestMsgByMsgType(uid,mid,msgType);
+	}
+
+	/**
+	 * 根据消息类型获取虚拟消息
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> virtualMsgByMsgtype(int[] msgType) {
+		return super.dao.virtualMsgByMsgtype(msgType);
+	}
 
 }

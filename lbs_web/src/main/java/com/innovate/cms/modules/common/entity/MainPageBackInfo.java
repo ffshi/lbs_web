@@ -30,11 +30,21 @@ public class MainPageBackInfo<T> extends DataBackInfo<T> {
 	private int followersNum;
 	// 用户动态总数
 	private int msgNum;
+	// 用户所属群组总数
+	private int tribleNum;
 	private String sex; // 用户的性别，值为1时是男性，值为2时是女性，默认值为0时是未知
 	// 用户相册
 	private List<UserPic> pics;
 
 	public MainPageBackInfo() {
+	}
+
+	public int getTribleNum() {
+		return tribleNum;
+	}
+
+	public void setTribleNum(int tribleNum) {
+		this.tribleNum = tribleNum;
 	}
 
 	public String getSex() {

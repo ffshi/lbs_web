@@ -142,6 +142,65 @@
 		ORDER BY
 					m.mid DESC
 	</select>
+	<select id="virtualMsgByMsgtype" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					dynamic_msg
+				WHERE
+					mid >= (
+						(
+							SELECT
+								MAX(mid)
+							FROM
+								dynamic_msg
+						) - (
+							SELECT
+								MIN(mid)
+							FROM
+								dynamic_msg
+						)
+					) * RAND() + (
+						SELECT
+							MIN(mid)
+						FROM
+							dynamic_msg
+					)
+				AND is_virtual = 1
+				AND msg_type in
+				<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+				 #{item}  
+				</foreach>  
+				LIMIT 20
+			) AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.mid = s.mid
+		ORDER BY
+					m.mid DESC
+	</select>
 	<select id="getMsgByMid" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
 		m.mid,
@@ -342,6 +401,45 @@
 			m.mid DESC
 		LIMIT 20
 	</select>
+	<select id="friendLatestMsgByMsgtype" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f
+		WHERE
+			f.uid = #{uid}
+			AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.msg_type in
+		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
 	
 	<select id="friendUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
@@ -380,6 +478,47 @@
 		LIMIT 20
 	</select>
 	
+	<select id="friendUpLatestMsgByMsgtype" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f
+		WHERE
+			f.uid = #{uid}
+			AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid &lt; #{mid}
+		AND m.msg_type in
+		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	
 	<select id="friendDownLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 				SELECT
 			m.mid,
@@ -411,6 +550,48 @@
 		AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &gt; #{mid}
+		
+		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	
+	<select id="friendDownLatestMsgByMsgType" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+				SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f
+		WHERE
+			f.uid = #{uid}
+		AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid &gt; #{mid}
+		AND m.msg_type in
+		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
 		AND m.mid = s.mid
 		ORDER BY
 			m.mid DESC

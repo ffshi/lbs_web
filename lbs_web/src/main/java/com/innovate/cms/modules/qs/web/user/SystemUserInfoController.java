@@ -924,6 +924,8 @@ public class SystemUserInfoController extends BaseController {
 			backInfo.setFollowsNum(systemUserService.followsNum(uid));
 			// 获取获取粉丝数
 			backInfo.setFollowersNum(systemUserService.followersNum(uid));
+			// 获取用户加入群组的数量
+			backInfo.setTribleNum(IMUtils.getAllTribesId(uid).length);
 			backInfo.setUid(uid);
 
 			backInfo.setStateCode(Global.intYES);
