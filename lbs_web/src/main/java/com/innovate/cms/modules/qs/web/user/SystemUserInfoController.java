@@ -323,7 +323,7 @@ public class SystemUserInfoController extends BaseController {
 					systemUser.setProvince(userInfoToJson.getProvince());
 					systemUser.setCity(userInfoToJson.getCity());
 					systemUser.setCountry(userInfoToJson.getCountry());
-					if (userInfoToJson.getPersonalSignature() == null && userInfoToJson.getPersonalSignature().trim().equals("")) {
+					if (userInfoToJson.getPersonalSignature() == null || userInfoToJson.getPersonalSignature().trim().equals("")) {
 						userInfoToJson.setPersonalSignature("-1");
 					}
 					systemUser.setPersonalSignature(userInfoToJson.getPersonalSignature());

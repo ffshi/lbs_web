@@ -6,6 +6,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import qselect_3_web.IMConfig;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.innovate.cms.common.mapper.JsonMapper;
@@ -16,11 +18,15 @@ import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.TaobaoRequest;
 import com.taobao.api.TaobaoResponse;
+import com.taobao.api.domain.OpenImUser;
+import com.taobao.api.domain.TribeInfo;
 import com.taobao.api.domain.Userinfos;
+import com.taobao.api.request.OpenimTribeGetalltribesRequest;
 import com.taobao.api.request.OpenimUsersAddRequest;
 import com.taobao.api.request.OpenimUsersDeleteRequest;
 import com.taobao.api.request.OpenimUsersGetRequest;
 import com.taobao.api.request.OpenimUsersUpdateRequest;
+import com.taobao.api.response.OpenimTribeGetalltribesResponse;
 import com.taobao.api.response.OpenimUsersAddResponse;
 import com.taobao.api.response.OpenimUsersDeleteResponse;
 import com.taobao.api.response.OpenimUsersUpdateResponse;
@@ -36,11 +42,12 @@ import com.taobao.api.response.OpenimUsersUpdateResponse;
 public class IMUtils {
 
 	protected static Logger logger = LoggerFactory.getLogger(IMUtils.class);
-	
+
 	public static final TaobaoClient client = new DefaultTaobaoClient(IMConfig.Url, IMConfig.APPKEY, IMConfig.AppSecret);
 
 	/**
 	 * 删除用户
+	 * 
 	 * @param user
 	 * @return
 	 */
@@ -48,7 +55,7 @@ public class IMUtils {
 		OpenimUsersDeleteRequest req = new OpenimUsersDeleteRequest();
 		req.setUserids(user.getUid());
 		OpenimUsersDeleteResponse rsp;
-		logger.info("删除用户："+JsonMapper.toJsonString(user));
+		logger.info("删除用户：" + JsonMapper.toJsonString(user));
 		try {
 			rsp = client.execute(req);
 			return rsp.getBody();
@@ -150,13 +157,13 @@ public class IMUtils {
 
 	private static String addIMUsers(List<Userinfos> users) {
 		OpenimUsersAddRequest req = new OpenimUsersAddRequest();
-		
+
 		OpenimUsersAddResponse rsp;
 		try {
-			logger.info("添加用户："+JsonMapper.toJsonString(users));
+			logger.info("添加用户：" + JsonMapper.toJsonString(users));
 			req.setUserinfos(users);
 			rsp = client.execute(req);
-			logger.info("添加用户结果："+rsp.getBody());
+			logger.info("添加用户结果：" + rsp.getBody());
 			return rsp.getBody();
 		} catch (ApiException e) {
 			e.printStackTrace();
@@ -184,7 +191,6 @@ public class IMUtils {
 			return "error";
 		}
 	}
-
 
 	/**
 	 * 调用 TaobaoRequest 的方法
@@ -311,6 +317,34 @@ public class IMUtils {
 	 */
 	public static String getPwd(String uid) {
 		return Digests.md5(uid + "qx" + uid);
+	}
+
+	/**
+	 * 获取用户所属群组列表
+	 */
+	public static long[] getAllTribesId(String uid) {
+		// TaobaoClient client = new DefaultTaobaoClient(IMConfig.Url,
+		// IMConfig.APPKEY, IMConfig.AppSecret);
+		OpenimTribeGetalltribesRequest req = new OpenimTribeGetalltribesRequest();
+		OpenImUser obj1 = new OpenImUser();
+		obj1.setUid(uid);
+		obj1.setTaobaoAccount(false);
+		obj1.setAppKey(IMConfig.APPKEY);
+		req.setUser(obj1);
+		req.setTribeTypes("0,1");
+		OpenimTribeGetalltribesResponse rsp;
+		long[] ids = new long[] {};
+		try {
+			rsp = client.execute(req);
+			List<TribeInfo> infos = rsp.getTribeInfoList();
+			ids = new long[infos.size()];
+			for (int i = 0; i < infos.size(); i++) {
+				ids[i] = infos.get(i).getTribeId();
+			}
+		} catch (ApiException e) {
+			e.printStackTrace();
+		}
+		return ids;
 	}
 
 }

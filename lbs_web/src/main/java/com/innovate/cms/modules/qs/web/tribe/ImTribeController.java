@@ -1,5 +1,6 @@
 package com.innovate.cms.modules.qs.web.tribe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import com.innovate.cms.common.config.Global;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.utils.sensitiveWord.ChatFilter;
 import com.innovate.cms.common.web.BaseController;
+import com.innovate.cms.modules.aliIM.IMUtils;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
 import com.innovate.cms.modules.common.entity.ItemBackInfo;
@@ -38,6 +40,7 @@ public class ImTribeController extends BaseController {
 	private ImTribeService imTribeService;
 
 	private static ChatFilter filter = null;
+
 	/**
 	 * 存储群组
 	 * 
@@ -48,7 +51,7 @@ public class ImTribeController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/tribe/save", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo save(@RequestBody ImTribeToJSON imTribeToJSON, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		BaseBackInfo backInfo = new BaseBackInfo();
 		String name = imTribeToJSON.getName();
 		String tribeImg = imTribeToJSON.getTribeImg();
@@ -116,6 +119,44 @@ public class ImTribeController extends BaseController {
 	}
 
 	/**
+	 * 获取用户所属群组列表
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/tribe/userTribes", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userTribes(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		String uid = map.get("uid");
+		long[] tribeIds = IMUtils.getAllTribesId(uid);
+
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+
+		DataBackInfo<ImTribe> backInfo = new DataBackInfo<ImTribe>();
+		try {
+			// 根据指定群组tribeIds获取一批群组
+			List<ImTribe> msgs = new ArrayList<>();
+			if (tribeIds.length > 0) {
+				msgs = imTribeService.nearTribe(tribeIds);
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
 	 * 获取群信息
 	 * 
 	 * @param map
@@ -151,8 +192,7 @@ public class ImTribeController extends BaseController {
 	}
 
 	/**
-	 * 解散群组
-	 * 需要真正的删除该数据，因为阿里IM会重复使用id
+	 * 解散群组 需要真正的删除该数据，因为阿里IM会重复使用id
 	 * 
 	 * @param map
 	 * @param request
@@ -218,7 +258,7 @@ public class ImTribeController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 
 	 * @param map
@@ -239,18 +279,18 @@ public class ImTribeController extends BaseController {
 			return info;
 		}
 		try {
-			
+
 			if (filter == null) {
 				filter = new ChatFilter();
 			}
 			if (filter.filte(text).contains("*")) {
 				backInfo.setStateCode(Global.intYES);
 				backInfo.setRetMsg(Global.SUCCESS);
-			}else {
+			} else {
 				backInfo.setStateCode(Global.intNO);
 				backInfo.setRetMsg(Global.SUCCESS);
 			}
-			
+
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
