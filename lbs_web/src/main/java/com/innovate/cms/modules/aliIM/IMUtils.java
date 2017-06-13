@@ -337,10 +337,13 @@ public class IMUtils {
 		try {
 			rsp = client.execute(req);
 			List<TribeInfo> infos = rsp.getTribeInfoList();
-			ids = new long[infos.size()];
-			for (int i = 0; i < infos.size(); i++) {
-				ids[i] = infos.get(i).getTribeId();
+			if (infos != null) {
+				ids = new long[infos.size()];
+				for (int i = 0; i < infos.size(); i++) {
+					ids[i] = infos.get(i).getTribeId();
+				}
 			}
+
 		} catch (ApiException e) {
 			e.printStackTrace();
 		}

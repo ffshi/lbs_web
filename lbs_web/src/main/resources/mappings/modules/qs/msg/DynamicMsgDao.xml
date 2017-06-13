@@ -201,6 +201,158 @@
 		ORDER BY
 					m.mid DESC
 	</select>
+	<select id="virtualMsgByMsgtypeSex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+			SELECT
+				m.mid,
+				m.uid,
+				m.user_name,
+				m.headimgurl,
+				m.msg_type,
+				m.anonymity,
+				m.title,
+				m.description,
+				m.business_address,
+				m.business_name,
+				m.price,
+				m.reward,
+				m.requirements,
+				m.pics,
+				m.publish_time,
+				m.location,
+				m.coord_type,
+				s.prise_num,
+				s.comment_num
+			FROM
+				(
+					SELECT
+						d.mid,
+						d.uid,
+						d.user_name,
+						d.headimgurl,
+						d.msg_type,
+						d.anonymity,
+						d.title,
+						d.description,
+						d.business_address,
+						d.business_name,
+						d.price,
+						d.reward,
+						d.requirements,
+						d.pics,
+						d.publish_time,
+						d.location,
+						d.coord_type
+					FROM
+						dynamic_msg AS d,
+						system_user AS u
+					WHERE
+						d.mid >= (
+							(
+								SELECT
+									MAX(mid)
+								FROM
+									dynamic_msg
+							) - (
+								SELECT
+									MIN(mid)
+								FROM
+									dynamic_msg
+							)
+						) * RAND() + (
+							SELECT
+								MIN(mid)
+							FROM
+								dynamic_msg
+						)
+					AND d.is_virtual = 1
+					AND d.msg_type in
+					<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+					 #{item}  
+					</foreach>  
+					AND d.uid=u.uid
+					AND u.sex=#{sex}
+					LIMIT 20
+				) AS m,
+				dynamic_msg_statistic AS s
+			WHERE
+				m.mid = s.mid
+			ORDER BY
+				m.mid DESC
+	</select>
+	<select id="virtualMsgBySex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+			SELECT
+				m.mid,
+				m.uid,
+				m.user_name,
+				m.headimgurl,
+				m.msg_type,
+				m.anonymity,
+				m.title,
+				m.description,
+				m.business_address,
+				m.business_name,
+				m.price,
+				m.reward,
+				m.requirements,
+				m.pics,
+				m.publish_time,
+				m.location,
+				m.coord_type,
+				s.prise_num,
+				s.comment_num
+			FROM
+				(
+					SELECT
+						d.mid,
+						d.uid,
+						d.user_name,
+						d.headimgurl,
+						d.msg_type,
+						d.anonymity,
+						d.title,
+						d.description,
+						d.business_address,
+						d.business_name,
+						d.price,
+						d.reward,
+						d.requirements,
+						d.pics,
+						d.publish_time,
+						d.location,
+						d.coord_type
+					FROM
+						dynamic_msg AS d,
+						system_user AS u
+					WHERE
+						d.mid >= (
+							(
+								SELECT
+									MAX(mid)
+								FROM
+									dynamic_msg
+							) - (
+								SELECT
+									MIN(mid)
+								FROM
+									dynamic_msg
+							)
+						) * RAND() + (
+							SELECT
+								MIN(mid)
+							FROM
+								dynamic_msg
+						)
+					AND d.is_virtual = 1
+					AND d.uid=u.uid
+					AND u.sex=#{sex}
+					LIMIT 20
+				) AS m,
+				dynamic_msg_statistic AS s
+			WHERE
+				m.mid = s.mid
+			ORDER BY
+				m.mid DESC
+	</select>
 	<select id="getMsgByMid" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
 		m.mid,
@@ -440,6 +592,86 @@
 			m.mid DESC
 		LIMIT 20
 	</select>
+	<select id="friendLatestMsgByMsgtypeSex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f,
+			system_user as u
+		WHERE
+			f.uid = #{uid}
+			AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.msg_type in
+		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		AND m.mid = s.mid
+		AND u.uid = f.follow_uid
+		AND u.sex=#{sex}
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	<select id="friendLatestMsgBySex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f,
+			system_user as u
+		WHERE
+			f.uid = #{uid}
+			AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid = s.mid
+		AND u.uid = f.follow_uid
+		AND u.sex=#{sex}
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
 	
 	<select id="friendUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
@@ -514,6 +746,88 @@
 		 #{item}  
 		</foreach>  
 		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	<select id="friendUpLatestMsgByMsgtypeSex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f,
+			system_user as u
+		WHERE
+			f.uid = #{uid}
+			AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid &lt; #{mid}
+		AND m.msg_type in
+		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		AND m.mid = s.mid
+		AND u.uid = f.follow_uid
+		AND u.sex=#{sex}
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	<select id="friendUpLatestMsgBySex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f,
+			system_user as u
+		WHERE
+			f.uid = #{uid}
+			AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid &lt; #{mid}
+		AND m.mid = s.mid
+		AND u.uid = f.follow_uid
+		AND u.sex=#{sex}
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
@@ -593,6 +907,88 @@
 		 #{item}  
 		</foreach>  
 		AND m.mid = s.mid
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	<select id="friendDownLatestMsgByMsgTypeSex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f,
+			system_user as u
+		WHERE
+			f.uid = #{uid}
+		AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid &gt; #{mid}
+		AND m.msg_type in
+		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
+		 #{item}  
+		</foreach>  
+		AND m.mid = s.mid
+		AND u.uid = f.follow_uid
+		AND u.sex=#{sex}
+		ORDER BY
+			m.mid DESC
+		LIMIT 20
+	</select>
+	<select id="friendDownLatestMsgBySex" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			s.prise_num,
+			s.comment_num,
+		s.share_num 
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s,
+			qx_follow AS f,
+			system_user as u
+		WHERE
+			f.uid = #{uid}
+		AND f.del_flag = 0
+		AND m.uid = f.follow_uid
+		AND m.mid &gt; #{mid} 
+		AND m.mid = s.mid
+		AND u.uid = f.follow_uid
+		AND u.sex=#{sex}
 		ORDER BY
 			m.mid DESC
 		LIMIT 20

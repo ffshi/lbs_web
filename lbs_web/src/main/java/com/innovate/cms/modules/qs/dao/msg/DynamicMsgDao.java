@@ -182,4 +182,82 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 */
 	List<DynamicMsgForService> virtualMsgByMsgtype(@Param("msgType") int[] msgType);
 
+	/**
+	 * 根据消息类型和性别筛选虚拟最新消息
+	 * 
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> virtualMsgByMsgtypeSex(@Param("msgType") int[] msgType, @Param("sex") int sex);
+
+	/**
+	 * 根据性别获取虚拟消息
+	 * 
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> virtualMsgBySex(@Param("sex") int sex);
+
+	/**
+	 * 根据消息类型和性别筛选用户好友最新消息
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> friendLatestMsgByMsgtypeSex(@Param("uid") String uid, @Param("msgType") int[] msgType, @Param("sex") int sex);
+
+	/**
+	 * 根据性别筛选用户好友最新消息
+	 * 
+	 * @param uid
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> friendLatestMsgBySex(@Param("uid") String uid, @Param("sex") int sex);
+
+	/**
+	 * 根据消息类型和性别筛选用户好友下一页消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> friendUpLatestMsgByMsgtypeSex(@Param("uid") String uid, @Param("mid") int mid, @Param("msgType") int[] msgType, @Param("sex") int sex);
+
+	/**
+	 * 根据性别筛选用户好友下一页消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> friendUpLatestMsgBySex(@Param("uid") String uid, @Param("mid") int mid, @Param("sex") int sex);
+
+	/**
+	 * 根据消息类型和性别筛选用户好友最新消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> friendDownLatestMsgByMsgTypeSex(@Param("uid") String uid, @Param("mid") int mid, @Param("msgType") int[] msgType, @Param("sex") int sex);
+
+	/**
+	 * 根据性别筛选用户好友最新消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @param sex
+	 * @return
+	 */
+	List<DynamicMsgForService> friendDownLatestMsgBySex(@Param("uid") String uid, @Param("mid") int mid, @Param("sex") int sex);
+
 }

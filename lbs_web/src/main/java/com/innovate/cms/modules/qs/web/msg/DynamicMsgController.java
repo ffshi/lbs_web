@@ -515,7 +515,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 根据消息类型筛选虚拟消息
 	 * 
@@ -527,7 +527,8 @@ public class DynamicMsgController extends BaseController {
 	@RequestMapping(value = "/v1/msg/virtualMsgByMsgtype", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo virtualMsgByMsgtype(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 		String msgTypeStr = map.get("msgType");
-		if ( StrUtil.isBlank(msgTypeStr)) {
+		String sexStr = map.get("sex");
+		if (StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(sexStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -541,8 +542,20 @@ public class DynamicMsgController extends BaseController {
 			for (int i = 0; i < msgTypes.length; i++) {
 				msgType[i] = Integer.parseInt(msgTypes[i]);
 			}
-			//根据消息类型获取虚拟消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.virtualMsgByMsgtype(msgType);
+
+			int sex = Integer.parseInt(sexStr);
+			List<DynamicMsgForService> msgs = null;
+			if (!msgTypeStr.equals("-1") && sex != -1) {// 消息和性别都过滤
+				// 根据消息类型和性别筛选虚拟最新消息
+				msgs = dynamicMsgService.virtualMsgByMsgtypeSex(msgType, sex);
+			} else if (msgTypeStr.equals("-1") && sex != -1) {// 只过滤性别
+				//// 根据性别获取虚拟消息
+				msgs = dynamicMsgService.virtualMsgBySex(sex);
+			} else if (!msgTypeStr.equals("-1") && sex == -1) {// 只过滤消息类型
+				// 根据消息类型获取虚拟消息
+				msgs = dynamicMsgService.virtualMsgByMsgtype(msgType);
+			}
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(msgs);
@@ -619,46 +632,6 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-
-	/**
-	 * 
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	// @CrossOrigin
-	// @RequestMapping(value = "/v1/msg/getMsgByMid", method =
-	// RequestMethod.GET)
-	// public @ResponseBody String getMsgByMid(HttpServletRequest request,
-	// HttpServletResponse response) {
-	// String callback = request.getParameter("callback");
-	// String midStr = request.getParameter("mid");
-	//
-	// if (StrUtil.isBlank(midStr)) {
-	// BaseBackInfo info = new BaseBackInfo();
-	// info.setStateCode(Global.int300209);
-	// info.setRetMsg(Global.str300209);
-	// return JsonMapper.getInstance().toJsonP("paramIsBlank", info);
-	// }
-	// DataBackInfo<DynamicMsgForService> backInfo = new
-	// DataBackInfo<DynamicMsgForService>();
-	// try {
-	// int mid = Integer.parseInt(midStr);
-	// // 根据消息id获取消息
-	// List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
-	// backInfo.setStateCode(Global.intYES);
-	// backInfo.setRetMsg(Global.SUCCESS);
-	// backInfo.setData(msgs);
-	// } catch (Exception e) {
-	// logger.debug("[" +
-	// Thread.currentThread().getStackTrace()[1].getClassName() + " - " +
-	// Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]",
-	// e.getMessage());
-	// backInfo.setRetMsg(Global.ERROR);
-	// backInfo.setStateCode(Global.intNO);
-	// }
-	// return JsonMapper.getInstance().toJsonP(callback, backInfo);
-	// }
 
 	/**
 	 * 
@@ -826,9 +799,10 @@ public class DynamicMsgController extends BaseController {
 	public @ResponseBody BaseBackInfo friendLatestMsgByMsgtype(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String uid = map.get("uid");
+		String sexStr = map.get("sex");
 		String msgTypeStr = map.get("msgType");
 
-		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr)) {
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(sexStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -841,8 +815,19 @@ public class DynamicMsgController extends BaseController {
 			for (int i = 0; i < msgTypes.length; i++) {
 				msgType[i] = Integer.parseInt(msgTypes[i]);
 			}
-			// 好友动态 根据消息类型获取用户好友最新消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.friendLatestMsgByMsgtype(uid, msgType);
+			int sex = Integer.parseInt(sexStr);
+			List<DynamicMsgForService> msgs = null;
+			if (!msgTypeStr.equals("-1") && sex != -1) {// 消息和性别都过滤
+				// 根据消息类型和性别筛选用户好友最新消息
+				msgs = dynamicMsgService.friendLatestMsgByMsgtypeSex(uid, msgType, sex);
+			} else if (msgTypeStr.equals("-1") && sex != -1) {// 只过滤性别
+				// 根据性别筛选用户好友最新消息
+				msgs = dynamicMsgService.friendLatestMsgBySex(uid, sex);
+			} else if (!msgTypeStr.equals("-1") && sex == -1) {// 只过滤消息类型
+				// 好友动态 根据消息类型获取用户好友最新消息
+				msgs = dynamicMsgService.friendLatestMsgByMsgtype(uid, msgType);
+			}
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			// backInfo.setData(msgs);
@@ -893,6 +878,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 上拉获取下一页好友消息
@@ -905,12 +891,13 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/friendUpLatestMsgByMsgtype", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo friendUpLatestMsgByMsgtype(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
 		String msgTypeStr = map.get("msgType");
-		
-		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(midStr)) {
+		String sexStr = map.get("sex");
+
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(midStr) || StrUtil.isBlank(sexStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -924,8 +911,19 @@ public class DynamicMsgController extends BaseController {
 			for (int i = 0; i < msgTypes.length; i++) {
 				msgType[i] = Integer.parseInt(msgTypes[i]);
 			}
-			// 好友动态 根据消息类型上拉获取下一页好友动态
-			List<DynamicMsgForService> msgs = dynamicMsgService.friendUpLatestMsgByMsgtype(uid, mid,msgType);
+			int sex = Integer.parseInt(sexStr);
+			List<DynamicMsgForService> msgs = null;
+			if (!msgTypeStr.equals("-1") && sex != -1) {// 消息和性别都过滤
+				// 根据消息类型和性别筛选用户好友下一页消息
+				msgs = dynamicMsgService.friendUpLatestMsgByMsgtypeSex(uid, mid, msgType, sex);
+			} else if (msgTypeStr.equals("-1") && sex != -1) {// 只过滤性别
+				// 根据性别筛选用户好友下一页消息
+				msgs = dynamicMsgService.friendUpLatestMsgBySex(uid, mid, sex);
+			} else if (!msgTypeStr.equals("-1") && sex == -1) {// 只过滤消息类型
+				// 好友动态 根据消息类型上拉获取下一页好友动态
+				msgs = dynamicMsgService.friendUpLatestMsgByMsgtype(uid, mid, msgType);
+			}
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			// backInfo.setData(msgs);
@@ -976,6 +974,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 根据消息类型下拉刷新好友的最新消息
@@ -988,11 +987,12 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/friendDownLatestMsgByMsgType", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo friendDownLatestMsgByMsgType(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
 		String msgTypeStr = map.get("msgType");
-		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(midStr)) {
+		String sexStr = map.get("sex");
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(midStr) || StrUtil.isBlank(sexStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -1006,8 +1006,19 @@ public class DynamicMsgController extends BaseController {
 			for (int i = 0; i < msgTypes.length; i++) {
 				msgType[i] = Integer.parseInt(msgTypes[i]);
 			}
-			// 好友动态 根据消息类型下拉刷新好友的最新消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.friendDownLatestMsgByMsgType(uid, mid,msgType);
+			int sex = Integer.parseInt(sexStr);
+			List<DynamicMsgForService> msgs = null;
+			if (!msgTypeStr.equals("-1") && sex != -1) {// 消息和性别都过滤
+				// 根据消息类型和性别筛选用户好友最新消息
+				msgs = dynamicMsgService.friendDownLatestMsgByMsgTypeSex(uid, mid, msgType, sex);
+			} else if (msgTypeStr.equals("-1") && sex != -1) {// 只过滤性别
+				//根据性别筛选用户好友最新消息
+				msgs = dynamicMsgService.friendDownLatestMsgBySex(uid, mid, sex);
+			} else if (!msgTypeStr.equals("-1") && sex == -1) {// 只过滤消息类型
+				// 好友动态 根据消息类型下拉刷新好友的最新消息
+				msgs = dynamicMsgService.friendDownLatestMsgByMsgType(uid, mid, msgType);
+			}
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			// backInfo.setData(msgs);

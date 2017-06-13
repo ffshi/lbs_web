@@ -240,4 +240,90 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 		return super.dao.virtualMsgByMsgtype(msgType);
 	}
 
+	/**
+	 * 根据消息类型和性别筛选虚拟最新消息
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> virtualMsgByMsgtypeSex(int[] msgType, int sex) {
+		return super.dao.virtualMsgByMsgtypeSex(msgType,sex);
+	}
+
+	/**
+	 * 根据性别获取虚拟消息
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> virtualMsgBySex(int sex) {
+		return super.dao.virtualMsgBySex(sex);
+	}
+
+	/**
+	 * 根据消息类型和性别筛选用户好友最新消息
+	 * @param uid
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendLatestMsgByMsgtypeSex(String uid, int[] msgType, int sex) {
+		return super.dao.friendLatestMsgByMsgtypeSex(uid,msgType,sex);
+	}
+
+	/**
+	 * 根据性别筛选用户好友最新消息
+	 * @param uid
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendLatestMsgBySex(String uid, int sex) {
+		return super.dao.friendLatestMsgBySex(uid,sex);
+	}
+
+	/**
+	 * 根据消息类型和性别筛选用户好友下一页消息
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendUpLatestMsgByMsgtypeSex(String uid, int mid, int[] msgType, int sex) {
+		return super.dao.friendUpLatestMsgByMsgtypeSex(uid,mid,msgType,sex);
+	}
+
+	/**
+	 * 根据性别筛选用户好友下一页消息
+	 * @param uid
+	 * @param mid
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendUpLatestMsgBySex(String uid, int mid, int sex) {
+		return super.dao.friendUpLatestMsgBySex(uid,mid,sex);
+	}
+
+	/**
+	 *  根据消息类型和性别筛选用户好友最新消息
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendDownLatestMsgByMsgTypeSex(String uid, int mid, int[] msgType, int sex) {
+		return super.dao.friendDownLatestMsgByMsgTypeSex(uid,mid,msgType,sex);
+	}
+
+	/**
+	 * 根据性别筛选用户好友最新消息
+	 * @param uid
+	 * @param mid
+	 * @param sex
+	 * @return
+	 */
+	public List<DynamicMsgForService> friendDownLatestMsgBySex(String uid, int mid, int sex) {
+		return super.dao.friendDownLatestMsgBySex(uid,mid,sex);
+	}
+
 }
