@@ -260,4 +260,12 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 */
 	List<DynamicMsgForService> friendDownLatestMsgBySex(@Param("uid") String uid, @Param("mid") int mid, @Param("sex") int sex);
 
+	/**
+	 * //管理消息状态0-未完成(默认) 1-完成
+	 * 
+	 * @param mid
+	 * @param msgState
+	 */
+	int updateMsgState(@Param("mid") int mid, @Param("msgState") int msgState);
+
 }

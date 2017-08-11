@@ -56,15 +56,138 @@ public class DynamicMsgForService implements Serializable {
 	private int commentNum;// 评论次数
 	@JSONField(name = "share_num")
 	private int shareNum;// 分享次数
-//	@JSONField(name = "is_shield")
-//	private int isShield;// 是否屏蔽
-//	@JSONField(name = "address_list")
-//	private String addressList = "";
+	@JSONField(name = "apply_for_num")
+	private int applyForNum;// 申请报名人数
+
+	// @JSONField(name = "is_shield")
+	// private int isShield;// 是否屏蔽
+	// @JSONField(name = "address_list")
+	// private String addressList = "";
+
+	// 三期新增属性
+	// 活动时间/开始时间
+	@JSONField(name = "msg_date")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date msgDate;
+	@JSONField(name = "msg_end_date")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date msgEndDate;
+	// 二级消息类型
+	@JSONField(name = "msg_2level_type")
+	private int msg2levelType;
+	// 方便所有类型筛选
+	@JSONField(name = "msg_single_ype")
+	private int msgSingleType;
+	// 价格描述：比如一顿饭代表价格
+	@JSONField(name = "price_des")
+	private String priceDes = "";
+	// 消息状态0-未完成(默认) 1-完成
+	@JSONField(name = "msg_state")
+	private int msgState;
+	// 允许报名人数/参与人数/拼单人数
+	@JSONField(name = "apply_num")
+	private int applyNum;
+	// 座位数
+	@JSONField(name = "seat_num")
+	private int seatNum;
+	// 出发地
+	@JSONField(name = "start_place")
+	private String startPlace = "";
+	// 目的地
+	@JSONField(name = "aim_place")
+	private String aimPlace = "";
 
 	public DynamicMsgForService() {
 		super();
 	}
 
+	public int getApplyForNum() {
+		return applyForNum;
+	}
+
+	public Date getMsgDate() {
+		return msgDate;
+	}
+
+	public void setMsgDate(Date msgDate) {
+		this.msgDate = msgDate;
+	}
+
+	public Date getMsgEndDate() {
+		return msgEndDate;
+	}
+
+	public void setMsgEndDate(Date msgEndDate) {
+		this.msgEndDate = msgEndDate;
+	}
+
+	public int getMsg2levelType() {
+		return msg2levelType;
+	}
+
+	public void setMsg2levelType(int msg2levelType) {
+		this.msg2levelType = msg2levelType;
+	}
+
+	public int getMsgSingleType() {
+		return msgSingleType;
+	}
+
+	public void setMsgSingleType(int msgSingleType) {
+		this.msgSingleType = msgSingleType;
+	}
+
+	public String getPriceDes() {
+		return priceDes;
+	}
+
+	public void setPriceDes(String priceDes) {
+		this.priceDes = priceDes;
+	}
+
+	public int getMsgState() {
+		return msgState;
+	}
+
+	public void setMsgState(int msgState) {
+		this.msgState = msgState;
+	}
+
+	public int getApplyNum() {
+		return applyNum;
+	}
+
+	public void setApplyNum(int applyNum) {
+		this.applyNum = applyNum;
+	}
+
+	public int getSeatNum() {
+		return seatNum;
+	}
+
+	public void setSeatNum(int seatNum) {
+		this.seatNum = seatNum;
+	}
+
+	public String getStartPlace() {
+		return startPlace;
+	}
+
+	public void setStartPlace(String startPlace) {
+		this.startPlace = startPlace;
+	}
+
+	public String getAimPlace() {
+		return aimPlace;
+	}
+
+	public void setAimPlace(String aimPlace) {
+		this.aimPlace = aimPlace;
+	}
+
+	public void setApplyForNum(int applyForNum) {
+		this.applyForNum = applyForNum;
+	}
 
 	public int getShareNum() {
 		return shareNum;

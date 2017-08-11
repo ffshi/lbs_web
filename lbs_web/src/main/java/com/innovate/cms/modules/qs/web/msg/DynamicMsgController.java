@@ -490,6 +490,34 @@ public class DynamicMsgController extends BaseController {
 		return backInfo;
 	}
 
+	@RequestMapping(value = "/v1/msg/updateMsgState", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo delUserMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+		String msgStateStr = map.get("msgState");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(msgStateStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			int msgState = Integer.parseInt(msgStateStr);
+			// 管理消息状态0-未完成(默认) 1-完成
+			dynamicMsgService.updateMsgState(mid, msgState);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
 	/**
 	 * 未获取用户位置信息时获取首页信息接口
 	 * 
@@ -549,7 +577,7 @@ public class DynamicMsgController extends BaseController {
 				// 根据消息类型和性别筛选虚拟最新消息
 				msgs = dynamicMsgService.virtualMsgByMsgtypeSex(msgType, sex);
 			} else if (msgTypeStr.equals("-1") && sex != -1) {// 只过滤性别
-				//// 根据性别获取虚拟消息
+				// // 根据性别获取虚拟消息
 				msgs = dynamicMsgService.virtualMsgBySex(sex);
 			} else if (!msgTypeStr.equals("-1") && sex == -1) {// 只过滤消息类型
 				// 根据消息类型获取虚拟消息
@@ -1012,7 +1040,7 @@ public class DynamicMsgController extends BaseController {
 				// 根据消息类型和性别筛选用户好友最新消息
 				msgs = dynamicMsgService.friendDownLatestMsgByMsgTypeSex(uid, mid, msgType, sex);
 			} else if (msgTypeStr.equals("-1") && sex != -1) {// 只过滤性别
-				//根据性别筛选用户好友最新消息
+				// 根据性别筛选用户好友最新消息
 				msgs = dynamicMsgService.friendDownLatestMsgBySex(uid, mid, sex);
 			} else if (!msgTypeStr.equals("-1") && sex == -1) {// 只过滤消息类型
 				// 好友动态 根据消息类型下拉刷新好友的最新消息

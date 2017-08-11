@@ -1,18 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  
-  <groupId>com.cyou</groupId>
-  <artifactId>lbs_web</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
-  
-  <name>lbs_web</name>
-  <url>http://www.funchoice.cn</url>
-  <inceptionYear>2017-2018</inceptionYear>
-  
-  <!-- ########## 项目属性   ########## -->
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.cyou</groupId>
+	<artifactId>lbs_web</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>lbs_web</name>
+	<url>http://www.funchoice.cn</url>
+	<inceptionYear>2017-2018</inceptionYear>
+
+	<!-- ########## 项目属性 ########## -->
+	<properties>
 		<!-- main version setting -->
 		<spring.version>4.3.7.RELEASE</spring.version>
 		<validator.version>5.1.1.Final</validator.version>
@@ -24,7 +23,7 @@
 		<shiro.version>1.2.3</shiro.version>
 		<sitemesh.version>2.4.2</sitemesh.version>
 		<activiti.version>5.15.1</activiti.version>
-		
+
 		<!-- tools version setting -->
 		<slf4j.version>1.7.7</slf4j.version>
 		<commons-lang3.version>3.3.2</commons-lang3.version>
@@ -39,10 +38,10 @@
 		<dozer.version>5.5.1</dozer.version>
 		<poi.version>3.9</poi.version>
 		<freemarker.version>2.3.20</freemarker.version>
-		
+
 		<!-- jdbc driver setting -->
 		<mysql.driver.version>5.1.30</mysql.driver.version>
-	    <httpclient.version>4.5</httpclient.version>
+		<httpclient.version>4.5</httpclient.version>
 		<!-- environment setting -->
 		<jdk.version>1.7</jdk.version>
 		<tomcat.version>2.2</tomcat.version>
@@ -52,17 +51,13 @@
 		<downloadSources>true</downloadSources>
 		<!-- push -->
 		<aliyun.push.version>2.1.0</aliyun.push.version>
-  </properties>
-  <!-- ########## 设定主仓库，按设定顺序进行查找 ########## -->
-  <repositories>
-		<!-- 开源中国仓库   -->
-		<!-- <repository>
-            <id>oschina-repos</id>
-            <name>Oschina Releases</name>
-            <url>http://maven.oschina.net/content/groups/public</url>
-        </repository>  -->
-        <!-- cyou私服  -->
-        <repository>
+	</properties>
+	<!-- ########## 设定主仓库，按设定顺序进行查找 ########## -->
+	<repositories>
+		<!-- 开源中国仓库 -->
+		<!-- <repository> <id>oschina-repos</id> <name>Oschina Releases</name> <url>http://maven.oschina.net/content/groups/public</url> </repository> -->
+		<!-- cyou私服 -->
+		<repository>
 			<id>nexus</id>
 			<name>cyou Releases</name>
 			<url>http://123.56.247.164:8081/nexus/content/groups/public</url>
@@ -72,72 +67,72 @@
 			<name>cyou oschinathird</name>
 			<url>http://123.56.247.164:8081/nexus/content/repositories/oschinathird</url>
 		</repository>
-        <!-- 阿里仓库 -->
-        <repository>
-            <id>albaba-repos</id>
-            <name>albaba Releases</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
-        </repository>
-        <!-- 其他仓库   -->
-        <repository>
-            <id>java-repos</id>
-            <name>Java Repository</name>
-            <url>http://download.java.net/maven/2/</url>
-        </repository>
-        
-        <repository>
-            <id>springsource-repos</id>
-            <name>SpringSource Repository</name>
-            <url>http://repo.spring.io/release/</url>
-        </repository>
-        
+		<!-- 阿里仓库 -->
+		<repository>
+			<id>albaba-repos</id>
+			<name>albaba Releases</name>
+			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		</repository>
+		<!-- 其他仓库 -->
+		<repository>
+			<id>java-repos</id>
+			<name>Java Repository</name>
+			<url>http://download.java.net/maven/2/</url>
+		</repository>
+
+		<repository>
+			<id>springsource-repos</id>
+			<name>SpringSource Repository</name>
+			<url>http://repo.spring.io/release/</url>
+		</repository>
+
 		<repository>
 			<id>central-repos</id>
 			<name>Central Repository</name>
 			<url>http://repo.maven.apache.org/maven2</url>
 		</repository>
-		
+
 		<repository>
 			<id>central-repos2</id>
 			<name>Central Repository 2</name>
 			<url>http://repo1.maven.org/maven2/</url>
 		</repository>
-		
+
 		<repository>
 			<id>activiti-repos</id>
 			<name>Activiti Repository</name>
 			<url>https://maven.alfresco.com/nexus/content/groups/public</url>
 		</repository>
-		
+
 		<repository>
 			<id>activiti-repos2</id>
 			<name>Activiti Repository 2</name>
 			<url>https://app.camunda.com/nexus/content/groups/public</url>
 		</repository>
-		
-  </repositories>
-  
-  <!-- ########## 设定插件仓库  ########## -->
-  <pluginRepositories> 
-		<!-- cyou Nexus私服 --> 
+
+	</repositories>
+
+	<!-- ########## 设定插件仓库 ########## -->
+	<pluginRepositories>
+		<!-- cyou Nexus私服 -->
 		<pluginRepository>
 			<id>nexus-repos</id>
 			<name>Team Nexus Repository</name>
 			<url>http://123.56.247.164:8081/nexus/content/groups/public</url>
-		</pluginRepository> 
-		
+		</pluginRepository>
+
 		<pluginRepository>
-            <id>oschina-repos</id>
-            <name>Oschina Releases</name>
-            <url>http://maven.oschina.net/content/groups/public</url>
-        </pluginRepository>
-  </pluginRepositories> 
-  
-  <!-- ########## 依赖项定义   ########## -->
-  <dependencies>
-  
-  	<!-- SPRING begin -->
-  		<dependency>
+			<id>oschina-repos</id>
+			<name>Oschina Releases</name>
+			<url>http://maven.oschina.net/content/groups/public</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- ########## 依赖项定义 ########## -->
+	<dependencies>
+
+		<!-- SPRING begin -->
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -179,8 +174,8 @@
 			<artifactId>spring-tx</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-  	
-  		<!-- spring orm -->
+
+		<!-- spring orm -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
@@ -191,15 +186,15 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
 		<!-- bean validate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${validator.version}</version>
 		</dependency>
-		
-  		<!-- AOP begin -->
+
+		<!-- AOP begin -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -216,11 +211,11 @@
 			<version>3.1</version>
 		</dependency>
 		<!-- AOP end -->
-		
-	<!-- SPRING end -->	
-	
-  	<!-- PERSISTENCE begin -->
-  	<!-- MyBatis -->
+
+		<!-- SPRING end -->
+
+		<!-- PERSISTENCE begin -->
+		<!-- MyBatis -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
@@ -231,14 +226,14 @@
 			<artifactId>mybatis-spring</artifactId>
 			<version>${mybatis-spring.version}</version>
 		</dependency>
-		
+
 		<!-- connection pool -->
 		<dependency>
-		     <groupId>com.alibaba</groupId>
-		     <artifactId>druid</artifactId>
-		     <version>${druid.version}</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
 		</dependency>
-		
+
 		<!-- jdbc driver -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -246,9 +241,9 @@
 			<version>${mysql.driver.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-	<!-- PERSISTENCE end -->
-	
-  	<!-- WEB begin -->
+		<!-- PERSISTENCE end -->
+
+		<!-- WEB begin -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
@@ -299,35 +294,24 @@
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- <dependency> <groupId>javax.servlet</groupId> <artifactId>javax.servlet-api</artifactId> <version>3.0.1</version> <scope>provided</scope> </dependency> <dependency> <groupId>javax.servlet.jsp</groupId> <artifactId>jsp-api</artifactId> <version>2.2</version> <scope>provided</scope> </dependency> -->
+		<!-- WEB end -->
 		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.2</version>
-			<scope>provided</scope>
-		</dependency> -->
-	<!-- WEB end -->
-	<dependency>
-		<groupId>com.ckfinder</groupId>
-		<artifactId>apache-ant-zip</artifactId>
-		<version>2.3</version>
-	</dependency>
-	<!-- CACHE begin -->
+			<groupId>com.ckfinder</groupId>
+			<artifactId>apache-ant-zip</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<!-- CACHE begin -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
-			 <version>2.5.1</version>
+			<version>2.5.1</version>
 		</dependency>
-	<!-- CACHE end -->
-	
+		<!-- CACHE end -->
 
-	<!-- Activiti end -->
-	<!-- LOGGING begin -->
+
+		<!-- Activiti end -->
+		<!-- LOGGING begin -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -350,8 +334,8 @@
 			<artifactId>jul-to-slf4j</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-	<!-- LOGGING end -->
-	<!-- GENERAL UTILS begin -->
+		<!-- LOGGING end -->
+		<!-- GENERAL UTILS begin -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -368,9 +352,9 @@
 			<version>${commons-codec.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>commons-fileupload</groupId>
-		    <artifactId>commons-fileupload</artifactId>
-		    <version>${commons-fileupload.version}</version>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>${commons-fileupload.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -383,14 +367,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-	<!-- google java lib -->
+
+		<!-- google java lib -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-		
+
 		<!-- jackson json -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -412,34 +396,34 @@
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
-		<!-- fastjson json  -->
+		<!-- fastjson json -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
 		</dependency>
-		
+
 		<!-- xstream xml -->
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
 			<version>${xstream.version}</version>
 		</dependency>
-		
+
 		<!-- pojo copy -->
 		<dependency>
 			<groupId>net.sf.dozer</groupId>
 			<artifactId>dozer</artifactId>
 			<version>${dozer.version}</version>
 		</dependency>
-		
+
 		<!-- freemarker engine -->
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 			<version>${freemarker.version}</version>
 		</dependency>
-		
+
 		<!-- email -->
 		<dependency>
 			<groupId>javax.activation</groupId>
@@ -453,17 +437,17 @@
 			<artifactId>metadata-extractor</artifactId>
 			<version>2.6.2</version>
 		</dependency>
-	
-		
-	<!-- GENERAL UTILS end -->
 
-		<!--附加七牛包  -->
+
+		<!-- GENERAL UTILS end -->
+
+		<!--附加七牛包 -->
 		<dependency>
-		    <groupId>com.qiniu</groupId>
-		    <artifactId>qiniu-java-sdk</artifactId>
-		    <version>[7.0.0, 7.0.99]</version>
+			<groupId>com.qiniu</groupId>
+			<artifactId>qiniu-java-sdk</artifactId>
+			<version>[7.0.0, 7.0.99]</version>
 		</dependency>
-	<!-- TEST begin -->
+		<!-- TEST begin -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -474,16 +458,16 @@
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-	<!-- TEST end -->	
-	
-  	<!-- User Agent -->
+		<!-- TEST end -->
+
+		<!-- User Agent -->
 		<dependency>
 			<groupId>bitwalker</groupId>
 			<artifactId>UserAgentUtils</artifactId>
 			<version>1.13</version>
 		</dependency>
-		
-		<!-- 阿里	OCS 相关 -->	
+
+		<!-- 阿里 OCS 相关 -->
 		<dependency>
 			<groupId>com.aliyun</groupId>
 			<artifactId>ocs</artifactId>
@@ -494,39 +478,46 @@
 			<artifactId>netty</artifactId>
 			<version>3.6.3.Final</version>
 		</dependency>
-		<!-- 阿里相关  -->
+		<!-- 阿里相关 -->
 		<dependency>
-	        <groupId>com.aliyun</groupId>
-	        <artifactId>aliyun-java-sdk-push</artifactId>
-	        <version>${aliyun.push.version}</version>
-    	</dependency>
-    	<dependency>
-		  <groupId>com.aliyun</groupId>
-		  <artifactId>openim</artifactId>
-		  <version>20160714</version>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-push</artifactId>
+			<version>${aliyun.push.version}</version>
 		</dependency>
-		<!-- HTTP 请求微信 相关 -->	
 		<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-        <!-- 汉子转拼音 -->	
-        <dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>openim</artifactId>
+			<version>20160714</version>
+		</dependency>
+		<!-- HTTP 请求微信 相关 -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
+		</dependency>
+		<!-- 汉子转拼音 -->
+		<dependency>
 			<groupId>com.belerweb</groupId>
 			<artifactId>pinyin4j</artifactId>
 			<version>2.5.1</version>
 		</dependency>
-				<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.54</version>
 		</dependency>
-        
-  </dependencies>
-  <build>
-   		<finalName>lbs_web</finalName>
+		<!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.9.9</version>
+		</dependency>
+
+
+	</dependencies>
+	<build>
+		<finalName>lbs_web</finalName>
 		<outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes/</outputDirectory>
 		<plugins>
 			<!-- Compiler 插件, 设定JDK版本 -->
@@ -540,7 +531,7 @@
 					<showWarnings>true</showWarnings>
 				</configuration>
 			</plugin>
-		 
+
 			<!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -550,7 +541,7 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-	
+
 			<!-- war 打包插件, 设定war包名称不带版本号 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -577,15 +568,15 @@
 						static/supcan/doc/**,
 						static/SuperSlide/demo/**,
 						static/treeTable/demo/**<!-- , -->
-						<!-- userfiles/** --><!-- ,/**/*.jsp -->,
+						<!-- userfiles/** --><!-- ,/**/*.jsp -->
+						,
 						test/**
 					</warSourceExcludes>
-					<webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory><!-- 
-					<webXml>${project.basedir}/target/jspweb.xml</webXml> -->
+					<webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory><!-- <webXml>${project.basedir}/target/jspweb.xml</webXml> -->
 					<warName>${project.artifactId}</warName>
 				</configuration>
 			</plugin>
-			
+
 			<!-- Eclipse 插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -610,31 +601,31 @@
 					</additionalProjectnatures>
 				</configuration>
 			</plugin>
-			
+
 			<!-- tomcat6插件 -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat6-maven-plugin</artifactId>
-				<version>${tomcat.version}</version> 
+				<version>${tomcat.version}</version>
 				<configuration>
 					<port>${webserver.port}</port>
 					<path>/${project.artifactId}</path>
 					<uriEncoding>${project.build.sourceEncoding}</uriEncoding>
 				</configuration>
 			</plugin>
-			
+
 			<!-- tomcat7插件 -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>${tomcat.version}</version> 
+				<version>${tomcat.version}</version>
 				<configuration>
 					<port>${webserver.port}</port>
 					<path>/${project.artifactId}</path>
 					<uriEncoding>${project.build.sourceEncoding}</uriEncoding>
 				</configuration>
 			</plugin>
-			
+
 			<!-- jetty插件 -->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
@@ -649,7 +640,7 @@
 					<webAppConfig>
 						<contextPath>/${project.artifactId}</contextPath>
 					</webAppConfig>
-					<systemProperties>  
+					<systemProperties>
 						<systemProperty>
 							<name>org.mortbay.util.URI.charset</name>
 							<value>${project.build.sourceEncoding}</value>
@@ -657,35 +648,35 @@
 					</systemProperties>
 				</configuration>
 			</plugin>
-			
+
 			<!-- resource插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
 			</plugin>
-			
+
 			<!-- install插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>2.4</version>
 			</plugin>
-			
+
 			<!-- clean插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>2.5</version>
 			</plugin>
-			
+
 			<!-- ant插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 			</plugin>
-			
+
 			<!-- dependency插件 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -694,9 +685,9 @@
 			</plugin>
 		</plugins>
 	</build>
-	
 
-  
+
+
 	<description>lbs_web</description>
 	<organization>
 		<url>http://www.changyou.com</url>

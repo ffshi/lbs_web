@@ -211,28 +211,31 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 根据消息类型上拉获取下一页好友动态
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param msgType
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendUpLatestMsgByMsgtype(String uid, int mid, int[] msgType) {
-		return super.dao.friendUpLatestMsgByMsgtype(uid,mid,msgType);
+		return super.dao.friendUpLatestMsgByMsgtype(uid, mid, msgType);
 	}
 
 	/**
 	 * 根据消息类型下拉刷新好友的最新消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param msgType
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendDownLatestMsgByMsgType(String uid, int mid, int[] msgType) {
-		return super.dao.friendDownLatestMsgByMsgType(uid,mid,msgType);
+		return super.dao.friendDownLatestMsgByMsgType(uid, mid, msgType);
 	}
 
 	/**
 	 * 根据消息类型获取虚拟消息
+	 * 
 	 * @param msgType
 	 * @return
 	 */
@@ -242,16 +245,18 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 根据消息类型和性别筛选虚拟最新消息
+	 * 
 	 * @param msgType
 	 * @param sex
 	 * @return
 	 */
 	public List<DynamicMsgForService> virtualMsgByMsgtypeSex(int[] msgType, int sex) {
-		return super.dao.virtualMsgByMsgtypeSex(msgType,sex);
+		return super.dao.virtualMsgByMsgtypeSex(msgType, sex);
 	}
 
 	/**
 	 * 根据性别获取虚拟消息
+	 * 
 	 * @param sex
 	 * @return
 	 */
@@ -261,27 +266,30 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 根据消息类型和性别筛选用户好友最新消息
+	 * 
 	 * @param uid
 	 * @param msgType
 	 * @param sex
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendLatestMsgByMsgtypeSex(String uid, int[] msgType, int sex) {
-		return super.dao.friendLatestMsgByMsgtypeSex(uid,msgType,sex);
+		return super.dao.friendLatestMsgByMsgtypeSex(uid, msgType, sex);
 	}
 
 	/**
 	 * 根据性别筛选用户好友最新消息
+	 * 
 	 * @param uid
 	 * @param sex
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendLatestMsgBySex(String uid, int sex) {
-		return super.dao.friendLatestMsgBySex(uid,sex);
+		return super.dao.friendLatestMsgBySex(uid, sex);
 	}
 
 	/**
 	 * 根据消息类型和性别筛选用户好友下一页消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param msgType
@@ -289,22 +297,24 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendUpLatestMsgByMsgtypeSex(String uid, int mid, int[] msgType, int sex) {
-		return super.dao.friendUpLatestMsgByMsgtypeSex(uid,mid,msgType,sex);
+		return super.dao.friendUpLatestMsgByMsgtypeSex(uid, mid, msgType, sex);
 	}
 
 	/**
 	 * 根据性别筛选用户好友下一页消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param sex
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendUpLatestMsgBySex(String uid, int mid, int sex) {
-		return super.dao.friendUpLatestMsgBySex(uid,mid,sex);
+		return super.dao.friendUpLatestMsgBySex(uid, mid, sex);
 	}
 
 	/**
-	 *  根据消息类型和性别筛选用户好友最新消息
+	 * 根据消息类型和性别筛选用户好友最新消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param msgType
@@ -312,18 +322,31 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendDownLatestMsgByMsgTypeSex(String uid, int mid, int[] msgType, int sex) {
-		return super.dao.friendDownLatestMsgByMsgTypeSex(uid,mid,msgType,sex);
+		return super.dao.friendDownLatestMsgByMsgTypeSex(uid, mid, msgType, sex);
 	}
 
 	/**
 	 * 根据性别筛选用户好友最新消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param sex
 	 * @return
 	 */
 	public List<DynamicMsgForService> friendDownLatestMsgBySex(String uid, int mid, int sex) {
-		return super.dao.friendDownLatestMsgBySex(uid,mid,sex);
+		return super.dao.friendDownLatestMsgBySex(uid, mid, sex);
+	}
+
+	/**
+	 * //管理消息状态0-未完成(默认) 1-完成
+	 * 
+	 * @param mid
+	 * @param msgState
+	 */
+	@Transactional(readOnly = false)
+	public int updateMsgState(int mid, int msgState) {
+		return super.dao.updateMsgState(mid, msgState);
+
 	}
 
 }

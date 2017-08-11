@@ -32,7 +32,8 @@
 		requirements,
 		pics,
 		location,
-		geo_id
+		geo_id,
+		msg_date,msg_end_date,msg_2level_type,msg_single_type,price_des,msg_state,apply_num,seat_num,start_place,aim_place
 		) SELECT
 		u.uid,
 		u.nickname,
@@ -48,7 +49,7 @@
 		#{requirements},
 		#{pics},
 		#{location},
-		#{geoId}
+		#{geoId},#{msgDate},#{msgEndDate},#{msg2levelType},#{msgSingleType},#{priceDes},#{msgState},#{applyNum},#{seatNum},#{startPlace},#{aimPlace}
 		FROM
 		system_user AS u
 		WHERE
@@ -74,9 +75,11 @@
 		m.publish_time,
 		m.location,
 		m.coord_type ,
+		m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 		s.prise_num ,
 		s.comment_num,
-		s.share_num 
+		s.share_num,
+		s.apply_for_num
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -106,6 +109,7 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num
 		FROM
@@ -161,6 +165,7 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num
 		FROM
@@ -220,6 +225,7 @@
 				m.publish_time,
 				m.location,
 				m.coord_type,
+				m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 				s.prise_num,
 				s.comment_num
 			FROM
@@ -298,6 +304,7 @@
 				m.publish_time,
 				m.location,
 				m.coord_type,
+				m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 				s.prise_num,
 				s.comment_num
 			FROM
@@ -372,9 +379,11 @@
 		m.publish_time,
 		m.location,
 		m.coord_type ,
+		m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 		s.prise_num ,
 		s.comment_num,
-		s.share_num 
+		s.share_num,
+		s.apply_for_num 
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -402,9 +411,11 @@
 		m.publish_time ,
 		m.location,
 		m.coord_type ,
+		m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 		s.prise_num ,
 		s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 		dynamic_msg AS m,
 		dynamic_msg_statistic AS s
@@ -440,9 +451,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s
@@ -472,9 +485,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s
@@ -504,9 +519,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s
@@ -536,9 +553,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -572,9 +591,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -611,9 +632,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -653,9 +676,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -692,9 +717,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -729,9 +756,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -769,9 +798,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -812,9 +843,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -852,9 +885,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -890,9 +925,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -930,9 +967,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -973,9 +1012,11 @@
 			m.publish_time,
 			m.location,
 			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
 			s.prise_num,
 			s.comment_num,
-		s.share_num 
+		s.share_num ,
+		s.apply_for_num
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
@@ -1012,6 +1053,11 @@
 			uid = #{uid}
 	</select>
 
+	<update id="updateMsgState">
+		UPDATE dynamic_msg SET msg_state= #{msgState}
+		WHERE
+		mid = #{mid}
+	</update>
 
 	<update id="addPriseNum">
 		UPDATE dynamic_msg_statistic
