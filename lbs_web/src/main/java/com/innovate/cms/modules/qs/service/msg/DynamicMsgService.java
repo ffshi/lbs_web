@@ -9,6 +9,7 @@ import com.innovate.cms.common.service.CrudService;
 import com.innovate.cms.modules.data.entity.DynamicMsgToJson;
 import com.innovate.cms.modules.qs.dao.msg.DynamicMsgDao;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsg;
+import com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 
 /**
@@ -105,6 +106,17 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	}
 
 	/**
+	 * 按照一级分类获取用户最新发布的消息 前20条
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> userLatestMsgType(String uid, int msgType) {
+		return super.dao.userLatestMsgType(uid, msgType);
+	}
+
+	/**
 	 * 上拉获取下一页消息
 	 * 
 	 * @param uid
@@ -113,6 +125,17 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	 */
 	public List<DynamicMsgForService> userUpLatestMsg(String uid, int mid) {
 		return super.dao.userUpLatestMsg(uid, mid);
+	}
+
+	/**
+	 *  按照一级分类上拉获取用户发布的下一页消息
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> userUpLatestMsgType(String uid, int mid, int msgType) {
+		return super.dao.userUpLatestMsgType(uid, mid, msgType);
 	}
 
 	/**
@@ -347,6 +370,53 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	public int updateMsgState(int mid, int msgState) {
 		return super.dao.updateMsgState(mid, msgState);
 
+	}
+
+	/**
+	 * // 存储活动报名用户信息
+	 * 
+	 * @param mid
+	 * @param uid
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public int applyFor(int mid, String uid) {
+		return super.dao.applyFor(mid, uid);
+
+	}
+
+	/**
+	 * 统计报名人数
+	 * 
+	 * @param mid
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public int addApplyForNum(int mid) {
+		return super.dao.addApplyForNum(mid);
+
+	}
+
+	/**
+	 * 审核活动报名人员 0-未审核 1-通过 2-拒绝
+	 * 
+	 * @param mid
+	 * @param uid
+	 * @param checkState
+	 */
+	@Transactional(readOnly = false)
+	public int updateCheckState(int mid, String uid, int checkState) {
+		return super.dao.updateCheckState(mid, uid, checkState);
+	}
+
+	/**
+	 * 获取活动类消息报名用户列表
+	 * 
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgApplyForService> applyForList(int mid) {
+		return super.dao.applyForList(mid);
 	}
 
 }

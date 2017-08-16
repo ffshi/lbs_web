@@ -27,6 +27,7 @@ import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
 import com.innovate.cms.modules.common.entity.ItemBackInfo;
 import com.innovate.cms.modules.data.entity.DynamicMsgToJson;
+import com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgComment;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgInfo;
@@ -491,7 +492,7 @@ public class DynamicMsgController extends BaseController {
 	}
 
 	@RequestMapping(value = "/v1/msg/updateMsgState", method = RequestMethod.POST)
-	public @ResponseBody BaseBackInfo delUserMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody BaseBackInfo updateMsgState(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String midStr = map.get("mid");
 		String msgStateStr = map.get("msgState");
@@ -700,6 +701,45 @@ public class DynamicMsgController extends BaseController {
 
 	/**
 	 * 
+	 * 按一级分类获取用户最新发布的消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userLatestMsgType", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userLatestMsgType(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+		String msgTypeStr = map.get("msgType");
+
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int msgType = Integer.parseInt(msgTypeStr);
+			// 获取用户最新发布的消息 前20条
+			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsgType(uid, msgType);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 
 	 * 上拉获取下一页消息
 	 * 
 	 * 
@@ -725,6 +765,47 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 上拉获取下一页消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid, mid);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(msgs);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 
+	 * 按照一级分类上拉获取用户发布下一页消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userUpLatestMsgType", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userUpLatestMsgType(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+		String midStr = map.get("mid");
+		String msgTypeStr = map.get("msgType");
+
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(midStr) || StrUtil.isBlank(msgTypeStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int mid = Integer.parseInt(midStr);
+			int msgType = Integer.parseInt(msgTypeStr);
+			//  按照一级分类上拉获取用户发布下一页消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsgType(uid, mid, msgType);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(msgs);
@@ -1134,4 +1215,106 @@ public class DynamicMsgController extends BaseController {
 		return backInfo;
 	}
 
+	/**
+	 * 活动类消息报名
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/applyFor", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo applyFor(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+		String uid = map.get("uid");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 存储活动报名用户信息
+			dynamicMsgService.applyFor(mid, uid);
+			// 统计报名人数
+			dynamicMsgService.addApplyForNum(mid);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	// /审核活动报名人员 0-未审核 1-通过 2-拒绝
+	@RequestMapping(value = "/v1/msg/updateCheckState", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo updateCheckState(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+		String uid = map.get("uid");
+		String checkStateStr = map.get("checkState");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			int checkState = Integer.parseInt(checkStateStr);
+			// 审核活动报名人员 0-未审核 1-通过 2-拒绝
+			dynamicMsgService.updateCheckState(mid, uid, checkState);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * //获取活动类消息报名用户列表
+	 * 
+	 * @param dynamicMsgPrise
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/applyForList", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo applyForList(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+
+		DataBackInfo<DynamicMsgApplyForService> backInfo = new DataBackInfo<DynamicMsgApplyForService>();
+		if (StrUtil.isBlank(midStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 获取活动类消息报名用户列表
+			List<DynamicMsgApplyForService> data = dynamicMsgService.applyForList(mid);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(data);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
 }

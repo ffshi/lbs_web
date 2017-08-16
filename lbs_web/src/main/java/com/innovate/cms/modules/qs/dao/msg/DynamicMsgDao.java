@@ -8,6 +8,7 @@ import com.innovate.cms.common.persistence.CrudDao;
 import com.innovate.cms.common.persistence.annotation.MyBatisDao;
 import com.innovate.cms.modules.data.entity.DynamicMsgToJson;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsg;
+import com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 
 /**
@@ -267,5 +268,55 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param msgState
 	 */
 	int updateMsgState(@Param("mid") int mid, @Param("msgState") int msgState);
+
+	/**
+	 * // 存储活动报名用户信息
+	 * 
+	 * @param mid
+	 * @param uid
+	 * @return
+	 */
+	int applyFor(@Param("mid") int mid, @Param("uid") String uid);
+
+	/**
+	 * 统计报名人数
+	 * 
+	 * @param mid
+	 * @return
+	 */
+	int addApplyForNum(@Param("mid") int mid);
+
+	/**
+	 * 审核活动报名人员 0-未审核 1-通过 2-拒绝
+	 * 
+	 * @param mid
+	 * @param uid
+	 * @param checkState
+	 */
+	int updateCheckState(@Param("mid") int mid, @Param("uid") String uid, @Param("checkState") int checkState);
+
+	/**
+	 * 获取活动类消息报名用户列表
+	 * 
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgApplyForService> applyForList(@Param("mid") int mid);
+	/**
+	 * 按照一级分类获取用户最新发布的消息 前20条
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> userLatestMsgType(@Param("uid")String uid, @Param("msgType")int msgType);
+	/**
+	 *  按照一级分类上拉获取用户发布的下一页消息
+	 * @param uid
+	 * @param mid
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> userUpLatestMsgType(@Param("uid")String uid, @Param("mid")int mid, @Param("msgType")int msgType);
 
 }

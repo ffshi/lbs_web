@@ -465,6 +465,41 @@
 		
 		order by m.mid desc LIMIT 20
 	</select>
+	<select id="userLatestMsgType" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
+			s.prise_num,
+			s.comment_num,
+		s.share_num ,
+		s.apply_for_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.uid = #{uid} AND 
+			m.msg_type=#{msgType} AND
+			m.mid = s.mid
+			
+		
+		order by m.mid desc LIMIT 20
+	</select>
 	
 	<select id="userUpLatestMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 			SELECT
@@ -496,6 +531,40 @@
 		WHERE
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND 
+			m.mid &lt; #{mid}
+		order by m.mid desc LIMIT 20
+	</select>
+	<select id="userUpLatestMsgType" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+			SELECT
+			m.mid,
+			m.uid,
+			m.user_name,
+			m.headimgurl,
+			m.msg_type,
+			m.anonymity,
+			m.title,
+			m.description,
+			m.business_address,
+			m.business_name,
+			m.price,
+			m.reward,
+			m.requirements,
+			m.pics,
+			m.publish_time,
+			m.location,
+			m.coord_type,
+			m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,
+			s.prise_num,
+			s.comment_num,
+		s.share_num ,
+		s.apply_for_num
+		FROM
+			dynamic_msg AS m,
+			dynamic_msg_statistic AS s
+		WHERE
+			m.uid = #{uid} AND 
+			m.mid = s.mid AND 
+			m.msg_type=#{msgType} AND
 			m.mid &lt; #{mid}
 		order by m.mid desc LIMIT 20
 	</select>
@@ -1052,6 +1121,32 @@
 		WHERE
 			uid = #{uid}
 	</select>
+	<insert id="applyFor">
+		INSERT INTO msg_apply (
+			mid,
+			uid,
+			nickname,
+			headimgurl
+		)
+		SELECT
+		#{mid},		
+		u.uid,
+		u.nickname,
+		u.headimgurl
+		FROM system_user u WHERE u.uid=#{uid}
+	</insert>
+	<update id="updateCheckState">
+		UPDATE msg_apply
+		SET check_state = #{checkState} 
+		WHERE
+			mid = #{mid} and uid=#{uid}
+	</update>
+	<update id="addApplyForNum">
+		UPDATE dynamic_msg_statistic
+		SET apply_for_num = apply_for_num + 1
+		WHERE
+			mid = #{mid}
+	</update>
 
 	<update id="updateMsgState">
 		UPDATE dynamic_msg SET msg_state= #{msgState}
@@ -1100,7 +1195,22 @@
 	</insert>
 	
 
-
+	<select id="applyForList" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService">
+		SELECT
+			a.aid,
+			a.check_state,
+			a.create_time,
+			a.headimgurl,
+			a.uid,
+			a.nickname,
+			a.mid
+		FROM
+			msg_apply a
+		WHERE
+			mid = #{mid} 
+		ORDER BY
+			a.aid DESC
+	</select>
 
 
 

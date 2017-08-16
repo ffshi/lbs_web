@@ -53,4 +53,6 @@ public interface DynamicMsgPriseDao extends CrudDao<DynamicMsgPrise> {
 	 */
 	List<DynamicMsgPriseForService> downPriseList(@Param("mid")int mid, @Param("pid")int pid);
 
+
+
 }

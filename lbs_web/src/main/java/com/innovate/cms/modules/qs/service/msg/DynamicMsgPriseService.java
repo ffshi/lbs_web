@@ -66,4 +66,5 @@ public class DynamicMsgPriseService extends CrudService<DynamicMsgPriseDao, Dyna
 	}
 
 
+
 }
