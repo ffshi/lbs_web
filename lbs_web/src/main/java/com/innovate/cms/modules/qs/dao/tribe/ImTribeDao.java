@@ -48,5 +48,10 @@ public interface ImTribeDao extends CrudDao<ImTribe> {
 	 * @param imTribeToJSON
 	 */
 	void updateTribe(ImTribeToJSON imTribeToJSON);
+	/**
+	 * 关联报名建立的群组与消息
+	 * @param mid
+	 */
+	int connectMsgWithTribeId(@Param("tribeId")long tribeId,@Param("mid")int mid);
 	
 }

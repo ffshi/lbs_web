@@ -65,6 +65,15 @@ public class DynamicMsgPriseService extends CrudService<DynamicMsgPriseDao, Dyna
 		return super.dao.downPriseList(mid,pid);
 	}
 
+	/**
+	 * 获取最新10个点赞
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgPriseForService> priseListLimit10(int mid) {
+		return super.dao.priseListLimit10(mid);
+	}
+
 
 
 }

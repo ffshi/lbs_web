@@ -43,6 +43,8 @@ import com.innovate.cms.modules.data.entity.UserInfoToJson;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 import com.innovate.cms.modules.qs.entity.user.FollowerUser;
 import com.innovate.cms.modules.qs.entity.user.SystemUser;
+import com.innovate.cms.modules.qs.service.msg.DynamicMsgCommentService;
+import com.innovate.cms.modules.qs.service.msg.DynamicMsgPriseService;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgService;
 import com.innovate.cms.modules.qs.service.sns.QxFollowService;
 import com.innovate.cms.modules.qs.service.user.SystemUserInfoService;
@@ -66,6 +68,10 @@ public class SystemUserInfoController extends BaseController {
 	private QxFollowService qxFollowService;
 	@Autowired
 	private DynamicMsgService dynamicMsgService;
+	@Autowired
+	private DynamicMsgPriseService dynamicMsgPriseService;
+	@Autowired
+	private DynamicMsgCommentService dynamicMsgCommentService;
 
 	/**
 	 * 获取用户关注的好友
@@ -910,6 +916,12 @@ public class SystemUserInfoController extends BaseController {
 		}
 		try {
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsg(uid);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
 			backInfo.setData(msgs);
 			SystemUser user = systemUserService.findByUid(uid);
 			backInfo.setHeadimgurl(user.getHeadimgurl());

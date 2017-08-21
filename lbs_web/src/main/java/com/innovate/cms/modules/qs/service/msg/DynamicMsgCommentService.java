@@ -45,5 +45,14 @@ public class DynamicMsgCommentService extends CrudService<DynamicMsgCommentDao, 
 		return super.dao.latestCommentList(mid);
 	}
 
+	/**
+	 * 获取最新3条评论
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgComment> latestCommentListLimit3(int mid) {
+		return super.dao.latestCommentListLimit3(mid);
+	}
+
 
 }

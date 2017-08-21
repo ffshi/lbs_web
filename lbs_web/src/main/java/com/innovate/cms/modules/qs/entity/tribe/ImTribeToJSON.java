@@ -43,6 +43,8 @@ public class ImTribeToJSON implements Serializable {
 	private String coordType;
 	@JSONField(name = "location_name")
 	private String locationName;
+	//活动类消息id 为了报名而建立的群组
+	private int mid;
 
 	// `tid` int(11) NOT NULL AUTO_INCREMENT COMMENT '本平台群id',
 	// `tribe_id` int(11) DEFAULT '0' COMMENT '群id,阿里的IM群id',
@@ -77,6 +79,14 @@ public class ImTribeToJSON implements Serializable {
 		this.createTime = createTime;
 		this.coordType = coordType;
 		this.locationName = locationName;
+	}
+
+	public int getMid() {
+		return mid;
+	}
+
+	public void setMid(int mid) {
+		this.mid = mid;
 	}
 
 	public long getTribeId() {

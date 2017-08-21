@@ -2,6 +2,7 @@ package com.innovate.cms.modules.qs.entity.msg;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -96,9 +97,40 @@ public class DynamicMsgForService implements Serializable {
 	// 目的地
 	@JSONField(name = "aim_place")
 	private String aimPlace = "";
+	// 点赞列表
+	private List<DynamicMsgPriseForService> priseList;
+	// 评论列表
+	private List<DynamicMsgComment> commentList;
+	// 座位数
+	@JSONField(name = "tribe_id")
+	private int tribeId;
 
 	public DynamicMsgForService() {
 		super();
+	}
+
+	public int getTribeId() {
+		return tribeId;
+	}
+
+	public void setTribeId(int tribeId) {
+		this.tribeId = tribeId;
+	}
+
+	public List<DynamicMsgPriseForService> getPriseList() {
+		return priseList;
+	}
+
+	public void setPriseList(List<DynamicMsgPriseForService> priseList) {
+		this.priseList = priseList;
+	}
+
+	public List<DynamicMsgComment> getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(List<DynamicMsgComment> commentList) {
+		this.commentList = commentList;
 	}
 
 	public int getApplyForNum() {

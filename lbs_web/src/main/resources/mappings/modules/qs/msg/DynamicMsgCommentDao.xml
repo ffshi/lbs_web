@@ -36,6 +36,25 @@
 			c.cid DESC
 		LIMIT 20
 	</select>
+	<select id="latestCommentListLimit3" resultType="DynamicMsgComment">
+		SELECT
+			c.cid,
+			c.uid,
+			c.cname,
+			c.headimgurl,
+			c.content,
+			c.comment_type AS "commentType",
+			c.reply_uid AS "replyUid",
+			c.reply_name AS "replyName",
+			c.create_time AS "createTime"
+		FROM
+			dynamic_msg_comment c
+		WHERE
+			c.mid=#{mid}
+		ORDER BY
+			c.cid DESC
+		LIMIT 3
+	</select>
 	<select id="upCommentList" resultType="DynamicMsgComment">
 		SELECT
 			c.cid,

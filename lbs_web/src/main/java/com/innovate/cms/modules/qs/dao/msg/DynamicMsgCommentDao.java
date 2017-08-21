@@ -37,6 +37,12 @@ public interface DynamicMsgCommentDao extends CrudDao<DynamicMsgComment> {
 	 * @return
 	 */
 	List<DynamicMsgComment> latestCommentList(int mid);
+	/**
+	 * 获取最新3条评论
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgComment> latestCommentListLimit3(int mid);
 
 	
 

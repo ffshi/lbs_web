@@ -29,16 +29,18 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 
 	/**
 	 * 根据指定群组tribeIds获取一批群组
+	 * 
 	 * @param mids
 	 * @return
 	 */
 	public List<ImTribe> nearTribe(long[] tribeIds) {
-		
+
 		return super.dao.nearTribe(tribeIds);
 	}
 
 	/**
 	 * 获取群信息
+	 * 
 	 * @param tribeId
 	 * @return
 	 */
@@ -48,6 +50,7 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 
 	/**
 	 * 解散群组
+	 * 
 	 * @param tribeId
 	 */
 	@Transactional(readOnly = false)
@@ -57,11 +60,21 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 
 	/**
 	 * 更新/编辑群组信息
+	 * 
 	 * @param imTribeToJSON
 	 */
 	@Transactional(readOnly = false)
 	public void updateTribe(ImTribeToJSON imTribeToJSON) {
 		super.dao.updateTribe(imTribeToJSON);
 	}
-	
+
+	/**
+	 * 关联报名建立的群组与消息
+	 * @param mid
+	 */
+	@Transactional(readOnly = false)
+	public int connectMsgWithTribeId(long tribeId,int mid) {
+		return super.dao.connectMsgWithTribeId(tribeId,mid);
+	}
+
 }

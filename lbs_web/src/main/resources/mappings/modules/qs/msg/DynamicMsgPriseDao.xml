@@ -53,6 +53,21 @@
 			p.prise_id desc
 		LIMIT 20
 	</select>
+	<select id="priseListLimit10" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService">
+		SELECT
+			p.prise_id as priseId,
+			p.uid as uid,
+			p.cname,
+			p.headimgurl as headimgurl,
+			p.create_time as createTime
+		FROM
+			dynamic_msg_prise p
+		WHERE
+			mid = #{mid} and del_flag=0
+		ORDER BY
+			p.prise_id desc
+		LIMIT 10
+	</select>
 	<select id="upPriseList" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService">
 		SELECT
 			p.prise_id as priseId,

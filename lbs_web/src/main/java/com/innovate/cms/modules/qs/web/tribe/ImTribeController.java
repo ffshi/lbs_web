@@ -77,6 +77,44 @@ public class ImTribeController extends BaseController {
 		}
 		return backInfo;
 	}
+	/**
+	 * 存储为活动报名而建立的群组
+	 * 
+	 * @param dynamicMsgToJson
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/tribe/saveBelongtoMsg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo saveBelongtoMsg(@RequestBody ImTribeToJSON imTribeToJSON, HttpServletRequest request, HttpServletResponse response) {
+		
+		BaseBackInfo backInfo = new BaseBackInfo();
+		String name = imTribeToJSON.getName();
+		String tribeImg = imTribeToJSON.getTribeImg();
+		String introduction = imTribeToJSON.getIntroduction();
+		String location = imTribeToJSON.getLocation();
+		String locationName = imTribeToJSON.getLocationName();
+		if (StrUtil.isBlank(name) || StrUtil.isBlank(tribeImg) || StrUtil.isBlank(introduction) || StrUtil.isBlank(locationName) || StrUtil.isBlank(location) || imTribeToJSON.getMid()==0) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			// 存储群组创建信息
+			imTribeService.save(imTribeToJSON);
+			//关联报名建立的群组与消息
+			imTribeService.connectMsgWithTribeId(imTribeToJSON.getTribeId(),imTribeToJSON.getMid());
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setItem(imTribeToJSON);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
 
 	/**
 	 * 获取附近群组
