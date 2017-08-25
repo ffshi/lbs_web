@@ -104,9 +104,21 @@ public class DynamicMsgForService implements Serializable {
 	// 座位数
 	@JSONField(name = "tribe_id")
 	private int tribeId;
+	//报名审核状态
+	@JSONField(name = "check_state")
+	private Integer checkState;
+	
 
 	public DynamicMsgForService() {
 		super();
+	}
+
+	public int getCheckState() {
+		return checkState;
+	}
+
+	public void setCheckState(int checkState) {
+		this.checkState = checkState;
 	}
 
 	public int getTribeId() {

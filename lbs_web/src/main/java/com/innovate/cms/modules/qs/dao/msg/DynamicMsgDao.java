@@ -318,5 +318,56 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @return
 	 */
 	List<DynamicMsgForService> userUpLatestMsgType(@Param("uid")String uid, @Param("mid")int mid, @Param("msgType")int msgType);
+	/**
+	 * 获取用户报名审核状态获取
+	 * @param mid
+	 * @param uid
+	 * @return
+	 */
+	DynamicMsgApplyForService applyCheckState(@Param("mid")int mid, @Param("uid")String uid);
+	/**
+	 * 获取用户最新发布的活动类消息 前20条
+	 * @param uid
+	 * @return
+	 */
+	List<DynamicMsgForService> userLatestEventMsg(@Param("uid")String uid);
+	/**
+	 * 上拉获取下一页活动类消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> userUpLatestEventMsg(@Param("uid")String uid, @Param("mid")int mid);
+	/**
+	 * 获取用户最新报名的消息
+	 * @param uid
+	 * @return
+	 */
+	List<DynamicMsgForService> userApplyMsg(@Param("uid")String uid);
+	/**
+	 * 按一级分类获取用户最新报名的消息
+	 * @param uid
+	 * @param msgType
+	 * @return
+	 */
+	List<DynamicMsgForService> userApplyMsgFilter(@Param("uid")String uid, @Param("msgType")int msgType);
+	/**
+	 * 按一级分类上拉获取用户最新报名的消息
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> userApplyUpMsgFilter(@Param("uid")String uid, @Param("msgType")int msgType, @Param("mid")int mid);
+	/**
+	 * 上拉获取用户报名的消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	List<DynamicMsgForService> userApplyUpMsg(@Param("uid")String uid, @Param("mid")int mid);
 
 }

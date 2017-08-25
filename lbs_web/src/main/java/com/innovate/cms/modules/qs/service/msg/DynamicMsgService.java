@@ -128,7 +128,8 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	}
 
 	/**
-	 *  按照一级分类上拉获取用户发布的下一页消息
+	 * 按照一级分类上拉获取用户发布的下一页消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param msgType
@@ -417,6 +418,82 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	 */
 	public List<DynamicMsgApplyForService> applyForList(int mid) {
 		return super.dao.applyForList(mid);
+	}
+
+	/**
+	 * 获取用户报名审核状态获取
+	 * 
+	 * @param mid
+	 * @param uid
+	 * @return
+	 */
+	public DynamicMsgApplyForService applyCheckState(int mid, String uid) {
+		return super.dao.applyCheckState(mid, uid);
+	}
+
+	/**
+	 * 获取用户最新发布的活动类消息 前20条
+	 * 
+	 * @param uid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userLatestEventMsg(String uid) {
+		return super.dao.userLatestEventMsg(uid);
+	}
+
+	/**
+	 * 上拉获取下一页活动类消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userUpLatestEventMsg(String uid, int mid) {
+		return super.dao.userUpLatestEventMsg(uid, mid);
+	}
+
+	/**
+	 * 获取用户最新报名的消息
+	 * 
+	 * @param uid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userApplyMsg(String uid) {
+		return super.dao.userApplyMsg(uid);
+	}
+
+	/**
+	 * 按一级分类获取用户最新报名的消息
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @return
+	 */
+	public List<DynamicMsgForService> userApplyMsgFilter(String uid, int msgType) {
+		return super.dao.userApplyMsgFilter(uid, msgType);
+	}
+
+	/**
+	 * 按一级分类上拉获取用户最新报名的消息
+	 * 
+	 * @param uid
+	 * @param msgType
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userApplyUpMsgFilter(String uid, int msgType, int mid) {
+		return super.dao.userApplyUpMsgFilter(uid, msgType, mid);
+	}
+
+	/**
+	 * 上拉获取用户报名的消息
+	 * 
+	 * @param uid
+	 * @param mid
+	 * @return
+	 */
+	public List<DynamicMsgForService> userApplyUpMsg(String uid, int mid) {
+		return super.dao.userApplyUpMsg(uid, mid);
 	}
 
 }

@@ -728,6 +728,224 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+	/**
+	 * 
+	 * 获取用户最新发布的活动类消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userLatestEventMsg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userLatestEventMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = map.get("uid");
+		
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			// 获取用户最新发布的活动类消息 前20条
+			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestEventMsg(uid);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	/**
+	 * 
+	 * 获取用户最新报名的消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userApplyMsg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userApplyMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			// 获取用户最新报名的消息 前20条
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyMsg(uid);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	/**
+	 * 
+	 * 按一级分类获取用户最新报名的消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userApplyMsgFilter", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userApplyMsgFilter(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = map.get("uid");
+		String msgTypeStr = map.get("msgType");
+		
+		if (StrUtil.isBlank(uid)||StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int msgType = Integer.parseInt(msgTypeStr);
+			//  按一级分类获取用户最新报名的消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyMsgFilter(uid,msgType);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	/**
+	 * 
+	 * 按一级分类上拉获取用户最新报名的消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userApplyUpMsgFilter", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userApplyUpMsgFilter(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = map.get("uid");
+		String msgTypeStr = map.get("msgType");
+		String midStr = map.get("mid");
+		
+		if (StrUtil.isBlank(uid)||StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int msgType = Integer.parseInt(msgTypeStr);
+			int mid = Integer.parseInt(midStr);
+			// 按一级分类上拉获取用户最新报名的消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyUpMsgFilter(uid,msgType,mid);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	/**
+	 * 
+	 * 上拉获取用户报名的消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userApplyUpMsg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userApplyUpMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = map.get("uid");
+		String midStr = map.get("mid");
+		
+		if (StrUtil.isBlank(uid)||StrUtil.isBlank(midStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 上拉获取用户报名的消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyUpMsg(uid,mid);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
 
 	/**
 	 * 
@@ -801,6 +1019,50 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 上拉获取下一页消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid, mid);
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(msgs);
+			// backInfo.setData(filterShieldMsg(uid, msgs));
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	/**
+	 * 
+	 * 上拉获取下一页活动类消息
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/userUpLatestEventMsg", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userUpLatestEventMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = map.get("uid");
+		String midStr = map.get("mid");
+		
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 上拉获取下一页活动类消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestEventMsg(uid, mid);
 			for(DynamicMsgForService dynamicMsgForService:msgs){
 				//获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
@@ -1388,6 +1650,44 @@ public class DynamicMsgController extends BaseController {
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(data);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	
+	/**
+	 * 获取用户报名审核状态获取
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msg/applyCheckState", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo applyCheckState(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String midStr = map.get("mid");
+		String uid = map.get("uid");
+		ItemBackInfo backInfo = new ItemBackInfo();
+		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 获取用户报名审核状态获取
+			DynamicMsgApplyForService applyForService = dynamicMsgService.applyCheckState(mid,uid);
+			if (null==applyForService) {
+				applyForService = new DynamicMsgApplyForService();
+				applyForService.setCheckState(-1);
+			}
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setItem(applyForService);
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);

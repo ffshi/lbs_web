@@ -20,6 +20,7 @@ public class DynamicMsgApplyForService implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int aid;
 	private int mid;
+	//审核状态-1-未报名 0-未审核 1-通过 2-拒绝 
 	@JSONField(name = "check_state")
 	private int checkState;
 	private String uid;
