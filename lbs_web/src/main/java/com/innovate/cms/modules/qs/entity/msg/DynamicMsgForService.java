@@ -7,6 +7,8 @@ import java.util.List;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * 首页动态消息接口输出格式
@@ -104,20 +106,20 @@ public class DynamicMsgForService implements Serializable {
 	// 座位数
 	@JSONField(name = "tribe_id")
 	private int tribeId;
-	//报名审核状态
+	// 报名审核状态
 	@JSONField(name = "check_state")
+	@JsonInclude(Include.NON_EMPTY)
 	private Integer checkState;
-	
 
 	public DynamicMsgForService() {
 		super();
 	}
 
-	public int getCheckState() {
+	public Integer getCheckState() {
 		return checkState;
 	}
 
-	public void setCheckState(int checkState) {
+	public void setCheckState(Integer checkState) {
 		this.checkState = checkState;
 	}
 

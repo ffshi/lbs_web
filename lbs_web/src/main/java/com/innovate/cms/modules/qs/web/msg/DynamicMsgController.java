@@ -1218,7 +1218,7 @@ public class DynamicMsgController extends BaseController {
 
 	/**
 	 * 
-	 * 根据消息类型获取用户好友最新消息
+	 * 根据唯一消息类型获和性别取用户好友最新消息
 	 * 
 	 * 
 	 * @param map
@@ -1231,7 +1231,7 @@ public class DynamicMsgController extends BaseController {
 
 		String uid = map.get("uid");
 		String sexStr = map.get("sex");
-		String msgTypeStr = map.get("msgType");
+		String msgTypeStr = map.get("msgSingleType");
 
 		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(sexStr)) {
 			BaseBackInfo info = new BaseBackInfo();
@@ -1258,7 +1258,12 @@ public class DynamicMsgController extends BaseController {
 				// 好友动态 根据消息类型获取用户好友最新消息
 				msgs = dynamicMsgService.friendLatestMsgByMsgtype(uid, msgType);
 			}
-
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			// backInfo.setData(msgs);
@@ -1331,7 +1336,7 @@ public class DynamicMsgController extends BaseController {
 
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		String msgTypeStr = map.get("msgType");
+		String msgTypeStr = map.get("msgSingleType");
 		String sexStr = map.get("sex");
 
 		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(midStr) || StrUtil.isBlank(sexStr)) {
@@ -1360,7 +1365,12 @@ public class DynamicMsgController extends BaseController {
 				// 好友动态 根据消息类型上拉获取下一页好友动态
 				msgs = dynamicMsgService.friendUpLatestMsgByMsgtype(uid, mid, msgType);
 			}
-
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			// backInfo.setData(msgs);
@@ -1433,7 +1443,7 @@ public class DynamicMsgController extends BaseController {
 
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		String msgTypeStr = map.get("msgType");
+		String msgTypeStr = map.get("msgSingleType");
 		String sexStr = map.get("sex");
 		if (StrUtil.isBlank(uid) || StrUtil.isBlank(msgTypeStr) || StrUtil.isBlank(midStr) || StrUtil.isBlank(sexStr)) {
 			BaseBackInfo info = new BaseBackInfo();
@@ -1461,7 +1471,12 @@ public class DynamicMsgController extends BaseController {
 				// 好友动态 根据消息类型下拉刷新好友的最新消息
 				msgs = dynamicMsgService.friendDownLatestMsgByMsgType(uid, mid, msgType);
 			}
-
+			for(DynamicMsgForService dynamicMsgForService:msgs){
+				//获取最新10个点赞
+				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+				//获取最新3条评论
+				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			}
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			// backInfo.setData(msgs);

@@ -885,7 +885,7 @@
 			f.uid = #{uid}
 			AND f.del_flag = 0
 		AND m.uid = f.follow_uid
-		AND m.msg_type in
+		AND m.msg_single_type in
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
@@ -927,7 +927,7 @@
 			f.uid = #{uid}
 			AND f.del_flag = 0
 		AND m.uid = f.follow_uid
-		AND m.msg_type in
+		AND m.msg_single_type in
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
@@ -1051,7 +1051,7 @@
 			AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &lt; #{mid}
-		AND m.msg_type in
+		AND m.msg_single_type in
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
@@ -1094,7 +1094,7 @@
 			AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &lt; #{mid}
-		AND m.msg_type in
+		AND m.msg_single_type in
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
@@ -1220,7 +1220,7 @@
 		AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &gt; #{mid}
-		AND m.msg_type in
+		AND m.msg_single_type in
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
@@ -1263,7 +1263,7 @@
 		AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &gt; #{mid}
-		AND m.msg_type in
+		AND m.msg_single_type in
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
