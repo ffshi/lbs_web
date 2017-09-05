@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.innovate.cms.common.service.CrudService;
 import com.innovate.cms.common.utils.StringUtils;
+import com.innovate.cms.modules.push.PushContent2DB;
 import com.innovate.cms.modules.qs.dao.push.QxPushInfoDao;
+import com.innovate.cms.modules.qs.entity.msg.NoticeUserForService;
 import com.innovate.cms.modules.qs.entity.push.QxPushInfo;
 
 /**
@@ -90,6 +92,44 @@ public class QxPushInfoService extends CrudService<QxPushInfoDao, QxPushInfo> {
 			super.dao.insert(pushInfo);
 		}
 		
+	}
+
+	/**
+	 * 保存推送记录
+	 * @param pushContent2DB
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public int savePushContent(PushContent2DB pushContent2DB) {
+		return super.dao.savePushContent(pushContent2DB);
+	}
+
+	/**
+	 * 获取用户通知列表
+	 * @param uid
+	 * @return
+	 */
+	public List<PushContent2DB> userNotices(String uid) {
+		return super.dao.userNotices(uid);
+	}
+
+	/**
+	 * 上拉获取用户通知列表
+	 * @param uid
+	 * @param pushConId
+	 * @return
+	 */
+	public List<PushContent2DB> userUpNotices(String uid, int pushConId) {
+		return super.dao.userUpNotices(uid,pushConId);
+	}
+
+	/**
+	 * 获取消息报名通知用户列表
+	 * @param mid
+	 * @return
+	 */
+	public List<NoticeUserForService> msgNoticeUsers(int mid) {
+		return super.dao.msgNoticeUsers(mid);
 	}
 	
 }

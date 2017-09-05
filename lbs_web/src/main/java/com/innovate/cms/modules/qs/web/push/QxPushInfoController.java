@@ -6,6 +6,7 @@ package com.innovate.cms.modules.qs.web.push;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +27,11 @@ import com.innovate.cms.common.utils.ReUtil;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.web.BaseController;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
+import com.innovate.cms.modules.common.entity.DataBackInfo;
 import com.innovate.cms.modules.push.PushClient;
 import com.innovate.cms.modules.push.PushContent;
+import com.innovate.cms.modules.push.PushContent2DB;
+import com.innovate.cms.modules.qs.entity.msg.NoticeUserForService;
 import com.innovate.cms.modules.qs.entity.push.QxPushInfo;
 import com.innovate.cms.modules.qs.service.push.QxPushInfoService;
 
@@ -321,6 +325,196 @@ public class QxPushInfoController extends BaseController {
 			// 定时推送通知
 			PushClient.pushContentNotice(pushContent);
 
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 批量推送 普通推送调用接口，注意type和jumpId的配置
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/pushInfos", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo pushInfos(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		// 那个报名类消息相关的推送
+		final String midStr = map.get("mid");
+		// 发通知的人
+		final String puid = map.get("puid");
+		// 接收人，接到通知的人,可能是一批人用英文逗号分开
+		final String uidStr = map.get("uid");
+		// String umid = map.get("umid");
+		// 摘要，描述，通知栏要展示的内容展示
+		String summary = map.get("summary");
+		// //用户自定义1 跳到用户主页
+		// public static final int toUserMainpage = 5;
+		// 用户自定义1 跳到指定专题
+		// public static final int toQuestion = 6;
+		// 打开应用首页 打开首页:7
+		String ptype = map.get("ptype");
+		// 只需要打开app，可以不需要jumpID
+		String jumpId = map.get("jumpId");
+
+		// 如果跳转到专题的时候，必须要
+		String template = map.get("template");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(summary) || StrUtil.isBlank(ptype) || StrUtil.isBlank(uidStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+
+		try {
+			String[] uids = uidStr.split(",");
+			for (String uid : uids) {
+				PushContent2DB pushContent2DB = new PushContent2DB(puid, uid, summary, Integer.parseInt(ptype), Integer.parseInt(midStr), jumpId);
+				// 保存推送记录
+				qxPushInfoService.savePushContent(pushContent2DB);
+				// 优化 后期改为别名推送 uid（别名）绑定设备
+				QxPushInfo device = qxPushInfoService.getPushInfoByUid(uid);
+
+				PushContent pushContent = new PushContent();
+				pushContent.setDeviceType(device.getDeviceType());
+				pushContent.setTargetValue(device.getDeviceId());
+
+				// 设置内容，可以不设置
+				pushContent.setBody(summary);
+				// 摘要，描述，通知栏要展示的内容展示
+				pushContent.setSummary(summary);
+
+				// 设置自定义json扩展属性，等待新推送信息格式
+				JsonObject extParameters = new JsonObject();
+				extParameters.addProperty("type", Integer.parseInt(ptype));
+				if (null != jumpId) {
+					extParameters.addProperty("jumpId", jumpId);
+				}
+				if (null != template) {
+					extParameters.addProperty("template", template);
+				}
+
+				pushContent.setExtParameters(extParameters);
+				// PushClient.pushContentNotice(pushContent);
+				// 定时推送通知
+				PushClient.pushContentNotice(pushContent);
+			}
+
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 获取用户通知列表
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/userNotices", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userNotices(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+
+		DataBackInfo<PushContent2DB> backInfo = new DataBackInfo<>();
+		if (StrUtil.isBlank(uid)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			// 获取用户通知列表
+			List<PushContent2DB> data = qxPushInfoService.userNotices(uid);
+			backInfo.setData(data);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 上拉获取用户通知列表
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/userUpNotices", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo userUpNotices(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String uid = map.get("uid");
+		String pushConIdStr = map.get("pushConId");
+
+		DataBackInfo<PushContent2DB> backInfo = new DataBackInfo<>();
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(pushConIdStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int pushConId = Integer.parseInt(pushConIdStr);
+			// 上拉获取用户通知列表
+			List<PushContent2DB> data = qxPushInfoService.userUpNotices(uid, pushConId);
+			backInfo.setData(data);
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 获取消息报名通知用户列表
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/msgNoticeUsers", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo msgNoticeUsers(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+
+		DataBackInfo<NoticeUserForService> backInfo = new DataBackInfo<>();
+		if (StrUtil.isBlank(midStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			// 获取消息报名通知用户列表
+			List<NoticeUserForService> data = qxPushInfoService.msgNoticeUsers(mid);
+			backInfo.setData(data);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {

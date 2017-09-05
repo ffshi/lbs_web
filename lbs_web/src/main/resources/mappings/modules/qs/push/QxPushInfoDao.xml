@@ -173,5 +173,68 @@
 			create_time = #{createTime}
 		WHERE device_id = #{deviceId}
 	</update>
+	<insert id="savePushContent">
+		INSERT INTO `push_content` (
+			`puid`,
+			`uid`,
+			`mid`,
+			`content`,
+			`ptype`,
+			`jump_id`
+		)
+		VALUES
+			(
+				#{puid},
+				#{uid},
+				#{mid},
+				#{content},
+				#{ptype},
+				#{jumpId}
+			)
+	</insert>
+	<select id="userNotices" resultType="com.innovate.cms.modules.push.PushContent2DB">
+		SELECT
+			`push_con_id`,
+			`puid`,
+			`uid`,
+			`mid`,
+			`content`,
+			`ptype`,
+			`jump_id`,
+			`create_time`
+		FROM
+			push_content c
+		WHERE
+			c.uid = #{uid}
+	</select>
+	<select id="userUpNotices" resultType="com.innovate.cms.modules.push.PushContent2DB">
+		SELECT
+			`push_con_id`,
+			`puid`,
+			`uid`,
+			`mid`,
+			`content`,
+			`ptype`,
+			`jump_id`,
+			`create_time`
+		FROM
+			push_content c
+		WHERE
+			c.uid =  #{uid}
+		AND c.push_con_id &lt; #{pushConId}
+	</select>
+	<select id="msgNoticeUsers" resultType="com.innovate.cms.modules.qs.entity.msg.NoticeUserForService">
+		SELECT
+			c.uid,
+			u.headimgurl,
+			u.nickname
+		FROM
+			push_content c,
+			system_user u
+		WHERE
+			c.mid = #{mid}
+		AND c.ptype=3
+		AND c.uid = u.uid
+	</select>
 	
 </mapper>
