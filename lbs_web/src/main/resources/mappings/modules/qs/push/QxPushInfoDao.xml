@@ -194,34 +194,45 @@
 	</insert>
 	<select id="userNotices" resultType="com.innovate.cms.modules.push.PushContent2DB">
 		SELECT
-			`push_con_id`,
-			`puid`,
-			`uid`,
-			`mid`,
-			`content`,
-			`ptype`,
-			`jump_id`,
-			`create_time`
+			c.push_con_id,
+			c.puid,
+			c.uid,
+			c.mid,
+			c.content,
+			c.ptype,
+			c.jump_id,
+			c.create_time,
+			u.headimgurl,
+			u.nickname
 		FROM
-			push_content c
+			push_content c,
+			system_user u
 		WHERE
 			c.uid = #{uid}
+		AND c.puid = u.uid
+	
+	
 	</select>
 	<select id="userUpNotices" resultType="com.innovate.cms.modules.push.PushContent2DB">
 		SELECT
-			`push_con_id`,
-			`puid`,
-			`uid`,
-			`mid`,
-			`content`,
-			`ptype`,
-			`jump_id`,
-			`create_time`
+			c.push_con_id,
+			c.puid,
+			c.uid,
+			c.mid,
+			c.content,
+			c.ptype,
+			c.jump_id,
+			c.create_time,
+			u.headimgurl,
+			u.nickname
 		FROM
-			push_content c
+			push_content c,
+			system_user u
 		WHERE
-			c.uid =  #{uid}
+			c.uid = #{uid}
+		AND c.puid = u.uid
 		AND c.push_con_id &lt; #{pushConId}
+		
 	</select>
 	<select id="msgNoticeUsers" resultType="com.innovate.cms.modules.qs.entity.msg.NoticeUserForService">
 		SELECT

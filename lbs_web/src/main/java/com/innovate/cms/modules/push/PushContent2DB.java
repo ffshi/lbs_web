@@ -53,6 +53,9 @@ public class PushContent2DB implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JSONField(name = "create_time")
 	private Date createTime;
+	
+	private  String headimgurl;
+	private  String nickname;
 
 	public PushContent2DB() {
 		super();
@@ -66,6 +69,22 @@ public class PushContent2DB implements Serializable {
 		this.ptype = ptype;
 		this.mid = mid;
 		this.jumpId = jumpId;
+	}
+
+	public String getHeadimgurl() {
+		return headimgurl;
+	}
+
+	public void setHeadimgurl(String headimgurl) {
+		this.headimgurl = headimgurl;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 	public int getPushConId() {
