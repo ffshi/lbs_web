@@ -209,7 +209,7 @@
 			system_user u
 		WHERE
 			c.uid = #{uid}
-		AND c.puid = u.uid
+		AND c.puid = u.uid limit 20
 	
 	
 	</select>
@@ -231,7 +231,7 @@
 		WHERE
 			c.uid = #{uid}
 		AND c.puid = u.uid
-		AND c.push_con_id &lt; #{pushConId}
+		AND c.push_con_id &lt; #{pushConId}  limit 20
 		
 	</select>
 	<select id="msgNoticeUsers" resultType="com.innovate.cms.modules.qs.entity.msg.NoticeUserForService">

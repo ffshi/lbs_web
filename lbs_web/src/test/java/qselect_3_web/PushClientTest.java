@@ -9,7 +9,8 @@ public class PushClientTest {
 	public static final int IOS = 0;
 
 	public static void main(String[] args) {
-		testPush(IOS, "34d96cdab0fc4f26aa3eab40c67ebaa0");
+		//b902b2a7ded24ec48d2e608299d208c2
+		testPush(IOS, "b902b2a7ded24ec48d2e608299d208c2");
 	}
 
 	public static void testPush(int deviceType, String deviceId) {
