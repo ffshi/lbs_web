@@ -378,8 +378,9 @@ public class QxPushInfoController extends BaseController {
 
 		try {
 			String[] uids = uidStr.split(",");
+			long massId = System.nanoTime();
 			for (String uid : uids) {
-				PushContent2DB pushContent2DB = new PushContent2DB(puid, uid, summary, Integer.parseInt(ptype), Integer.parseInt(midStr), jumpId, System.nanoTime());
+				PushContent2DB pushContent2DB = new PushContent2DB(puid, uid, summary, Integer.parseInt(ptype), Integer.parseInt(midStr), jumpId, massId);
 				// 保存推送记录
 				qxPushInfoService.savePushContent(pushContent2DB);
 				// 优化 后期改为别名推送 uid（别名）绑定设备
