@@ -379,7 +379,7 @@ public class QxPushInfoController extends BaseController {
 		try {
 			String[] uids = uidStr.split(",");
 			for (String uid : uids) {
-				PushContent2DB pushContent2DB = new PushContent2DB(puid, uid, summary, Integer.parseInt(ptype), Integer.parseInt(midStr), jumpId);
+				PushContent2DB pushContent2DB = new PushContent2DB(puid, uid, summary, Integer.parseInt(ptype), Integer.parseInt(midStr), jumpId, System.nanoTime());
 				// 保存推送记录
 				qxPushInfoService.savePushContent(pushContent2DB);
 				// 优化 后期改为别名推送 uid（别名）绑定设备
@@ -501,19 +501,19 @@ public class QxPushInfoController extends BaseController {
 	@RequestMapping(value = "/v1/msgNoticeUsers", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo msgNoticeUsers(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
-		String midStr = map.get("mid");
+		String massPushIdStr = map.get("massPushId");
 
 		DataBackInfo<NoticeUserForService> backInfo = new DataBackInfo<>();
-		if (StrUtil.isBlank(midStr)) {
+		if (StrUtil.isBlank(massPushIdStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
 			return info;
 		}
 		try {
-			int mid = Integer.parseInt(midStr);
+			long massPushId = Integer.parseInt(massPushIdStr);
 			// 获取消息报名通知用户列表
-			List<NoticeUserForService> data = qxPushInfoService.msgNoticeUsers(mid);
+			List<NoticeUserForService> data = qxPushInfoService.msgNoticeUsers(massPushId);
 			backInfo.setData(data);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);

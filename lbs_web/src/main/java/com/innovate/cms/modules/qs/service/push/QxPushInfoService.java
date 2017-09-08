@@ -128,8 +128,8 @@ public class QxPushInfoService extends CrudService<QxPushInfoDao, QxPushInfo> {
 	 * @param mid
 	 * @return
 	 */
-	public List<NoticeUserForService> msgNoticeUsers(int mid) {
-		return super.dao.msgNoticeUsers(mid);
+	public List<NoticeUserForService> msgNoticeUsers(long massPushId) {
+		return super.dao.msgNoticeUsers(massPushId);
 	}
 	
 }

@@ -174,13 +174,14 @@
 		WHERE device_id = #{deviceId}
 	</update>
 	<insert id="savePushContent">
-		INSERT INTO `push_content` (
-			`puid`,
-			`uid`,
-			`mid`,
-			`content`,
-			`ptype`,
-			`jump_id`
+		INSERT INTO push_content (
+			puid,
+			uid,
+			mid,
+			content,
+			ptype,
+			jump_id,
+			mass_push_id
 		)
 		VALUES
 			(
@@ -189,7 +190,8 @@
 				#{mid},
 				#{content},
 				#{ptype},
-				#{jumpId}
+				#{jumpId},
+				#{massPushId}
 			)
 	</insert>
 	<select id="userNotices" resultType="com.innovate.cms.modules.push.PushContent2DB">
@@ -202,6 +204,7 @@
 			c.ptype,
 			c.jump_id,
 			c.create_time,
+			mass_push_id,
 			u.headimgurl,
 			u.nickname
 		FROM
@@ -209,7 +212,8 @@
 			system_user u
 		WHERE
 			c.uid = #{uid}
-		AND c.puid = u.uid limit 20
+		AND c.puid = u.uid 
+		ORDER BY c.push_con_id desc  limit 20
 	
 	
 	</select>
@@ -223,6 +227,7 @@
 			c.ptype,
 			c.jump_id,
 			c.create_time,
+			mass_push_id,
 			u.headimgurl,
 			u.nickname
 		FROM
@@ -231,7 +236,8 @@
 		WHERE
 			c.uid = #{uid}
 		AND c.puid = u.uid
-		AND c.push_con_id &lt; #{pushConId}  limit 20
+		AND c.push_con_id &lt; #{pushConId}
+		ORDER BY c.push_con_id desc   limit 20
 		
 	</select>
 	<select id="msgNoticeUsers" resultType="com.innovate.cms.modules.qs.entity.msg.NoticeUserForService">
@@ -243,9 +249,9 @@
 			push_content c,
 			system_user u
 		WHERE
-			c.mid = #{mid}
+			c.mass_push_id = #{massPushId}
 		AND c.ptype=3
-		AND c.uid = u.uid
+		AND c.uid = u.uid  ORDER BY c.push_con_id desc 
 	</select>
 	
 </mapper>

@@ -77,6 +77,6 @@ public interface QxPushInfoDao extends CrudDao<QxPushInfo> {
 	 * @param mid
 	 * @return
 	 */
-	public List<NoticeUserForService> msgNoticeUsers(@Param("mid")int mid);
+	public List<NoticeUserForService> msgNoticeUsers(@Param("massPushId")long massPushId);
 
 }
