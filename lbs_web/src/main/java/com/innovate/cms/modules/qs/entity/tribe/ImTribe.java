@@ -44,7 +44,9 @@ public class ImTribe extends DataEntity<ImTribe> {
 	private String coordType;
 	@JSONField(name = "location_name")
 	private String locationName;
-
+	//建群后是否对报名人自动发出邀请 0-默认 1-不发 2-自动发
+	@JSONField(name = "auto_invite")
+	private int autoInvite;
 	// `tid` int(11) NOT NULL AUTO_INCREMENT COMMENT '本平台群id',
 	// `tribe_id` int(11) DEFAULT '0' COMMENT '群id,阿里的IM群id',
 	// `tribe_img` varchar(255) DEFAULT '' COMMENT '群头像',
@@ -60,6 +62,14 @@ public class ImTribe extends DataEntity<ImTribe> {
 
 	public String getTribeImg() {
 		return tribeImg;
+	}
+
+	public int getAutoInvite() {
+		return autoInvite;
+	}
+
+	public void setAutoInvite(int autoInvite) {
+		this.autoInvite = autoInvite;
 	}
 
 	public String getOwnerName() {

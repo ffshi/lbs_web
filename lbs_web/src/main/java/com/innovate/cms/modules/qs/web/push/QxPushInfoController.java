@@ -512,7 +512,7 @@ public class QxPushInfoController extends BaseController {
 			return info;
 		}
 		try {
-			long massPushId = Integer.parseInt(massPushIdStr);
+			long massPushId = Long.parseLong(massPushIdStr);
 			// 获取消息报名通知用户列表
 			List<NoticeUserForService> data = qxPushInfoService.msgNoticeUsers(massPushId);
 			backInfo.setData(data);

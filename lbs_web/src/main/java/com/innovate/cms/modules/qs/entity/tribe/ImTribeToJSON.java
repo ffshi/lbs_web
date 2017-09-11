@@ -45,6 +45,9 @@ public class ImTribeToJSON implements Serializable {
 	private String locationName;
 	//活动类消息id 为了报名而建立的群组
 	private int mid;
+	//建群后是否对报名人自动发出邀请 0-默认 1-不发 2-自动发
+	@JSONField(name = "auto_invite")
+	private int autoInvite;
 
 	// `tid` int(11) NOT NULL AUTO_INCREMENT COMMENT '本平台群id',
 	// `tribe_id` int(11) DEFAULT '0' COMMENT '群id,阿里的IM群id',
@@ -79,6 +82,14 @@ public class ImTribeToJSON implements Serializable {
 		this.createTime = createTime;
 		this.coordType = coordType;
 		this.locationName = locationName;
+	}
+
+	public int getAutoInvite() {
+		return autoInvite;
+	}
+
+	public void setAutoInvite(int autoInvite) {
+		this.autoInvite = autoInvite;
 	}
 
 	public int getMid() {

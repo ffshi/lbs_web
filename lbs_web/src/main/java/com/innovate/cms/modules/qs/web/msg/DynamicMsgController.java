@@ -23,8 +23,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.innovate.cms.common.config.Global;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.web.BaseController;
+import com.innovate.cms.modules.common.entity.AutoInviteBackInfo;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
+import com.innovate.cms.modules.common.entity.DynamicMsgBackInfo;
 import com.innovate.cms.modules.common.entity.ItemBackInfo;
 import com.innovate.cms.modules.data.entity.DynamicMsgToJson;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService;
@@ -33,10 +35,12 @@ import com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgInfo;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgPrise;
 import com.innovate.cms.modules.qs.entity.msg.DynamicMsgPriseForService;
+import com.innovate.cms.modules.qs.entity.tribe.ImTribe;
 import com.innovate.cms.modules.qs.entity.user.SystemUser;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgCommentService;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgPriseService;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgService;
+import com.innovate.cms.modules.qs.service.tribe.ImTribeService;
 import com.innovate.cms.modules.qs.service.user.SystemUserService;
 
 /**
@@ -56,7 +60,8 @@ public class DynamicMsgController extends BaseController {
 	private DynamicMsgCommentService dynamicMsgCommentService;
 	@Autowired
 	private SystemUserService systemUserService;
-
+	@Autowired
+	private ImTribeService imTribeService;
 	/**
 	 * 存储消息动态
 	 * 
@@ -399,7 +404,7 @@ public class DynamicMsgController extends BaseController {
 
 		String midStr = map.get("mid");
 
-		ItemBackInfo backInfo = new ItemBackInfo();
+		DynamicMsgBackInfo backInfo = new DynamicMsgBackInfo();
 		if (StrUtil.isBlank(midStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -411,6 +416,9 @@ public class DynamicMsgController extends BaseController {
 			DynamicMsgInfo msgInfo = new DynamicMsgInfo();
 			msgInfo.setMsgComments(dynamicMsgCommentService.latestCommentList(mid));
 			msgInfo.setMsgPrises(dynamicMsgPriseService.priseList(mid));
+			//获取消息详情
+			DynamicMsgForService msg = dynamicMsgService.msgInfo(mid);
+			backInfo.setMsg(msg);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setItem(msgInfo);
@@ -1650,8 +1658,10 @@ public class DynamicMsgController extends BaseController {
 	public @ResponseBody BaseBackInfo applyForList(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String midStr = map.get("mid");
+		//没有的传0
+		String tribeIdStr = map.get("tribeId");
 
-		DataBackInfo<DynamicMsgApplyForService> backInfo = new DataBackInfo<DynamicMsgApplyForService>();
+		AutoInviteBackInfo<DynamicMsgApplyForService> backInfo = new AutoInviteBackInfo<DynamicMsgApplyForService>();
 		if (StrUtil.isBlank(midStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -1660,8 +1670,15 @@ public class DynamicMsgController extends BaseController {
 		}
 		try {
 			int mid = Integer.parseInt(midStr);
+			long tribeId = Long.parseLong(tribeIdStr);
 			// 获取活动类消息报名用户列表
 			List<DynamicMsgApplyForService> data = dynamicMsgService.applyForList(mid);
+			if (tribeId>0) {
+				// 获取群信息
+				ImTribe tribe = imTribeService.tribeInfo(tribeId);
+				backInfo.setAutoInvite(tribe.getAutoInvite());
+			}
+		
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(data);

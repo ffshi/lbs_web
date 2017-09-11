@@ -89,6 +89,40 @@
 		m.mid desc
 		LIMIT 20
 	</select>
+	<select id="msgInfo" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
+		SELECT
+		m.mid,
+		m.uid,
+		m.user_name ,
+		m.headimgurl,
+		m.msg_type ,
+		m.anonymity,
+		m.title,
+		m.description,
+		m.business_address ,
+		m.business_name ,
+		m.price,
+		m.reward,
+		m.requirements,
+		m.pics,
+		m.publish_time,
+		m.location,
+		m.coord_type ,
+		m.msg_date,m.msg_end_date,m.msg_2level_type,m.msg_single_type,m.price_des,m.msg_state,m.apply_num,m.seat_num,m.start_place,m.aim_place,m.tribe_id,
+		s.prise_num ,
+		s.comment_num,
+		s.share_num,
+		s.apply_for_num
+		FROM
+		dynamic_msg AS m,
+		dynamic_msg_statistic AS s
+		WHERE
+		m.mid = #{mid} AND
+		m.mid = s.mid
+
+	</select>
+	
+	
 	
 	<select id="virtualMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT

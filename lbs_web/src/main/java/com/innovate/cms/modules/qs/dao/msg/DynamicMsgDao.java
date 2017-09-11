@@ -369,5 +369,11 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @return
 	 */
 	List<DynamicMsgForService> userApplyUpMsg(@Param("uid")String uid, @Param("mid")int mid);
+	/**
+	 * 获取消息详情
+	 * @param mid
+	 * @return
+	 */
+	DynamicMsgForService msgInfo(@Param("mid")int mid);
 
 }

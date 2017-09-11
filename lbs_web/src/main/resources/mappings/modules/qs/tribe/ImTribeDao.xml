@@ -28,7 +28,8 @@
 		name,
 		introduction,
 		location,
-		location_name
+		location_name,
+		auto_invite
 		) SELECT
 		u.uid,
 		u.nickname,
@@ -40,7 +41,8 @@
 		#{name},
 		#{introduction},
 		#{location},
-		#{locationName}
+		#{locationName},
+		#{autoInvite}
 		FROM
 		system_user u
 		WHERE
@@ -92,7 +94,8 @@
 		location,
 		coord_type,
 		location_name,
-		create_time
+		create_time,
+		auto_invite
 		FROM
 		im_tribe
 		WHERE
