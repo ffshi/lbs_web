@@ -908,7 +908,7 @@ public class SystemUserInfoController extends BaseController {
 	@RequestMapping(value = "/v1/user/userMainPage", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userMainPage(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 		String uid = map.get("uid");
-		//当前登录用户uid
+		// 当前登录用户uid
 		String curUid = request.getHeader("Uid");
 		MainPageBackInfo<DynamicMsgForService> backInfo = new MainPageBackInfo<DynamicMsgForService>();
 		if (StrUtil.isBlank(uid)) {
@@ -919,26 +919,29 @@ public class SystemUserInfoController extends BaseController {
 		}
 		try {
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsg(uid);
-			//主页不需要列表
+			// 主页不需要列表
 			// for(DynamicMsgForService dynamicMsgForService:msgs){
 			// //获取最新10个点赞
 			// dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
 			// //获取最新3条评论
 			// dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			// }
-			
-			//获取用户报名状态
-			for(DynamicMsgForService msg:msgs){
-				if (msg.getMsgType()==2||msg.getMsgType()==6||msg.getMsgType()==9) {
-					//获取用户报名信息
-					DynamicMsgApplyForService applyInfo = dynamicMsgService.getApplyInfo(curUid,msg.getMid());
-					if (null!=applyInfo) {
-						msg.setCheckState(applyInfo.getCheckState());
-					}else {
+
+			// 获取用户报名状态
+			// 如果是别人主页获取用户报名状态
+			if (!curUid.equals(uid)) {
+				for (DynamicMsgForService msg : msgs) {
+					if (msg.getMsgType() == 2 || msg.getMsgType() == 6 || msg.getMsgType() == 9) {
+						// 获取用户报名信息
+						DynamicMsgApplyForService applyInfo = dynamicMsgService.getApplyInfo(curUid, msg.getMid());
+						if (null != applyInfo) {
+							msg.setCheckState(applyInfo.getCheckState());
+						} else {
+							msg.setCheckState(-1);
+						}
+					} else {
 						msg.setCheckState(-1);
 					}
-				}else {
-					msg.setCheckState(-1);
 				}
 			}
 			backInfo.setData(msgs);

@@ -62,6 +62,7 @@ public class DynamicMsgController extends BaseController {
 	private SystemUserService systemUserService;
 	@Autowired
 	private ImTribeService imTribeService;
+
 	/**
 	 * 存储消息动态
 	 * 
@@ -416,7 +417,7 @@ public class DynamicMsgController extends BaseController {
 			DynamicMsgInfo msgInfo = new DynamicMsgInfo();
 			msgInfo.setMsgComments(dynamicMsgCommentService.latestCommentList(mid));
 			msgInfo.setMsgPrises(dynamicMsgPriseService.priseList(mid));
-			//获取消息详情
+			// 获取消息详情
 			DynamicMsgForService msg = dynamicMsgService.msgInfo(mid);
 			backInfo.setMsg(msg);
 			backInfo.setStateCode(Global.intYES);
@@ -488,10 +489,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 未获取用户位置信息时获取首页信息接口
 			List<DynamicMsgForService> msgs = dynamicMsgService.lastesMsg();
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -548,10 +549,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 获取虚拟消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.virtualMsg();
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -643,10 +644,10 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 根据消息id获取消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -677,10 +678,10 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 根据消息id获取消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.getMsgByMid(mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -719,10 +720,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 获取用户最新发布的消息 前20条
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsg(uid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -736,6 +737,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 获取用户最新发布的活动类消息
@@ -748,9 +750,9 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userLatestEventMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userLatestEventMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -761,10 +763,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 获取用户最新发布的活动类消息 前20条
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestEventMsg(uid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -778,6 +780,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 获取用户最新报名的消息
@@ -803,10 +806,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 获取用户最新报名的消息 前20条
 			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyMsg(uid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -820,6 +823,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 按一级分类获取用户最新报名的消息
@@ -832,11 +836,11 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userApplyMsgFilter", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userApplyMsgFilter(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String msgTypeStr = map.get("msgType");
-		
-		if (StrUtil.isBlank(uid)||StrUtil.isBlank(uid)) {
+
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -845,12 +849,12 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int msgType = Integer.parseInt(msgTypeStr);
-			//  按一级分类获取用户最新报名的消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyMsgFilter(uid,msgType);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			// 按一级分类获取用户最新报名的消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyMsgFilter(uid, msgType);
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -864,6 +868,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 按一级分类上拉获取用户最新报名的消息
@@ -876,12 +881,12 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userApplyUpMsgFilter", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userApplyUpMsgFilter(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String msgTypeStr = map.get("msgType");
 		String midStr = map.get("mid");
-		
-		if (StrUtil.isBlank(uid)||StrUtil.isBlank(uid)) {
+
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -892,11 +897,11 @@ public class DynamicMsgController extends BaseController {
 			int msgType = Integer.parseInt(msgTypeStr);
 			int mid = Integer.parseInt(midStr);
 			// 按一级分类上拉获取用户最新报名的消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyUpMsgFilter(uid,msgType,mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyUpMsgFilter(uid, msgType, mid);
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -910,6 +915,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 上拉获取用户报名的消息
@@ -922,11 +928,11 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userApplyUpMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userApplyUpMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		
-		if (StrUtil.isBlank(uid)||StrUtil.isBlank(midStr)) {
+
+		if (StrUtil.isBlank(uid) || StrUtil.isBlank(midStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -936,11 +942,11 @@ public class DynamicMsgController extends BaseController {
 		try {
 			int mid = Integer.parseInt(midStr);
 			// 上拉获取用户报名的消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyUpMsg(uid,mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			List<DynamicMsgForService> msgs = dynamicMsgService.userApplyUpMsg(uid, mid);
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -982,10 +988,10 @@ public class DynamicMsgController extends BaseController {
 			int msgType = Integer.parseInt(msgTypeStr);
 			// 获取用户最新发布的消息 前20条
 			List<DynamicMsgForService> msgs = dynamicMsgService.userLatestMsgType(uid, msgType);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1015,6 +1021,8 @@ public class DynamicMsgController extends BaseController {
 
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
+		// 当前登录用户uid
+		String curUid = request.getHeader("Uid");
 
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
@@ -1027,11 +1035,28 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 上拉获取下一页消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid, mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
-				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
-				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			// for(DynamicMsgForService dynamicMsgForService:msgs){
+			// //获取最新10个点赞
+			// dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
+			// //获取最新3条评论
+			// dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
+			// }
+			// 如果是别人主页获取用户报名状态
+			if (!curUid.equals(uid)) {
+
+				for (DynamicMsgForService msg : msgs) {
+					if (msg.getMsgType() == 2 || msg.getMsgType() == 6 || msg.getMsgType() == 9) {
+						// 获取用户报名信息
+						DynamicMsgApplyForService applyInfo = dynamicMsgService.getApplyInfo(curUid, msg.getMid());
+						if (null != applyInfo) {
+							msg.setCheckState(applyInfo.getCheckState());
+						} else {
+							msg.setCheckState(-1);
+						}
+					} else {
+						msg.setCheckState(-1);
+					}
+				}
 			}
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
@@ -1044,6 +1069,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 
 	 * 上拉获取下一页活动类消息
@@ -1056,10 +1082,10 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/userUpLatestEventMsg", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo userUpLatestEventMsg(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
-		
+
 		if (StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -1071,10 +1097,10 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 上拉获取下一页活动类消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestEventMsg(uid, mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1116,15 +1142,16 @@ public class DynamicMsgController extends BaseController {
 		try {
 			int mid = Integer.parseInt(midStr);
 			int msgType = Integer.parseInt(msgTypeStr);
-			//  按照一级分类上拉获取用户发布下一页消息
+			// 按照一级分类上拉获取用户发布下一页消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsgType(uid, mid, msgType);
-			
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
-			}backInfo.setStateCode(Global.intYES);
+			}
+			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(msgs);
 			// backInfo.setData(filterShieldMsg(uid, msgs));
@@ -1163,10 +1190,10 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 下拉刷新获取最新
 			List<DynamicMsgForService> msgs = dynamicMsgService.userDownLatestMsg(uid, mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1206,10 +1233,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 好友动态 获取用户好友最新消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.friendLatestMsg(uid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1266,10 +1293,10 @@ public class DynamicMsgController extends BaseController {
 				// 好友动态 根据消息类型获取用户好友最新消息
 				msgs = dynamicMsgService.friendLatestMsgByMsgtype(uid, msgType);
 			}
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1311,10 +1338,10 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 好友动态 上拉获取下一页好友动态
 			List<DynamicMsgForService> msgs = dynamicMsgService.friendUpLatestMsg(uid, mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1373,10 +1400,10 @@ public class DynamicMsgController extends BaseController {
 				// 好友动态 根据消息类型上拉获取下一页好友动态
 				msgs = dynamicMsgService.friendUpLatestMsgByMsgtype(uid, mid, msgType);
 			}
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1418,10 +1445,10 @@ public class DynamicMsgController extends BaseController {
 			int mid = Integer.parseInt(midStr);
 			// 好友动态 下拉刷新获取最新
 			List<DynamicMsgForService> msgs = dynamicMsgService.friendDownLatestMsg(uid, mid);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1479,10 +1506,10 @@ public class DynamicMsgController extends BaseController {
 				// 好友动态 根据消息类型下拉刷新好友的最新消息
 				msgs = dynamicMsgService.friendDownLatestMsgByMsgType(uid, mid, msgType);
 			}
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1527,10 +1554,10 @@ public class DynamicMsgController extends BaseController {
 		try {
 			// 根据指定的消息mid获取一批消息
 			List<DynamicMsgForService> msgs = dynamicMsgService.nearMsg(mids);
-			for(DynamicMsgForService dynamicMsgForService:msgs){
-				//获取最新10个点赞
+			for (DynamicMsgForService dynamicMsgForService : msgs) {
+				// 获取最新10个点赞
 				dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
-				//获取最新3条评论
+				// 获取最新3条评论
 				dynamicMsgForService.setCommentList(dynamicMsgCommentService.latestCommentListLimit3(dynamicMsgForService.getMid()));
 			}
 			backInfo.setStateCode(Global.intYES);
@@ -1658,11 +1685,11 @@ public class DynamicMsgController extends BaseController {
 	public @ResponseBody BaseBackInfo applyForList(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
 		String midStr = map.get("mid");
-		//没有的传0
+		// 没有的传0
 		String tribeIdStr = map.get("tribeId");
 
 		AutoInviteBackInfo<DynamicMsgApplyForService> backInfo = new AutoInviteBackInfo<DynamicMsgApplyForService>();
-		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(tribeIdStr)) {
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(tribeIdStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -1673,12 +1700,12 @@ public class DynamicMsgController extends BaseController {
 			long tribeId = Long.parseLong(tribeIdStr);
 			// 获取活动类消息报名用户列表
 			List<DynamicMsgApplyForService> data = dynamicMsgService.applyForList(mid);
-			if (tribeId>0) {
+			if (tribeId > 0) {
 				// 获取群信息
 				ImTribe tribe = imTribeService.tribeInfo(tribeId);
 				backInfo.setAutoInvite(tribe.getAutoInvite());
 			}
-		
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(data);
@@ -1689,9 +1716,10 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 获取用户报名审核状态获取
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
@@ -1699,11 +1727,11 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/applyCheckState", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo applyCheckState(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String midStr = map.get("mid");
 		String uid = map.get("uid");
 		ItemBackInfo backInfo = new ItemBackInfo();
-		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(uid)) {
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(uid)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -1712,8 +1740,8 @@ public class DynamicMsgController extends BaseController {
 		try {
 			int mid = Integer.parseInt(midStr);
 			// 获取用户报名审核状态获取
-			DynamicMsgApplyForService applyForService = dynamicMsgService.applyCheckState(mid,uid);
-			if (null==applyForService) {
+			DynamicMsgApplyForService applyForService = dynamicMsgService.applyCheckState(mid, uid);
+			if (null == applyForService) {
 				applyForService = new DynamicMsgApplyForService();
 				applyForService.setCheckState(-1);
 			}
