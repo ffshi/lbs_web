@@ -132,6 +132,9 @@
 		<if test="locationName != null and locationName != ''">
 			location_name = #{locationName},
 		</if>
+		<if test="autoInvite != null and autoInvite != ''">
+			auto_invite = #{autoInvite},
+		</if>
 			tribe_id = #{tribeId}
 		WHERE tribe_id = #{tribeId}
 	</update>
