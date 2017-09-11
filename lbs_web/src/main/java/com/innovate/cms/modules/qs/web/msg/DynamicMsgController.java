@@ -1662,7 +1662,7 @@ public class DynamicMsgController extends BaseController {
 		String tribeIdStr = map.get("tribeId");
 
 		AutoInviteBackInfo<DynamicMsgApplyForService> backInfo = new AutoInviteBackInfo<DynamicMsgApplyForService>();
-		if (StrUtil.isBlank(midStr)) {
+		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(tribeIdStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
