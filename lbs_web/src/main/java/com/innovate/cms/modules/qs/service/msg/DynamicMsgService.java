@@ -498,11 +498,23 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 
 	/**
 	 * 获取消息详情
+	 * 
 	 * @param mid
 	 * @return
 	 */
 	public DynamicMsgForService msgInfo(int mid) {
 		return super.dao.msgInfo(mid);
+	}
+
+	/**
+	 * 获取用户报名信息
+	 * 
+	 * @param curUid
+	 * @param mid
+	 * @return
+	 */
+	public DynamicMsgApplyForService getApplyInfo(String uid, int mid) {
+		return super.dao.getApplyInfo(uid, mid);
 	}
 
 }

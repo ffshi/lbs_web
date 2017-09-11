@@ -1457,6 +1457,21 @@
 		ORDER BY
 			a.aid DESC
 	</select>
+	<select id="getApplyInfo" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService">
+		SELECT
+			a.aid,
+			a.check_state,
+			a.create_time,
+			a.headimgurl,
+			a.uid,
+			a.nickname,
+			a.mid
+		FROM
+			msg_apply a
+		WHERE
+			uid = #{uid} and
+			mid = #{mid} 
+	</select>
 	<select id="applyCheckState" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgApplyForService">
 		SELECT
 			a.aid,
