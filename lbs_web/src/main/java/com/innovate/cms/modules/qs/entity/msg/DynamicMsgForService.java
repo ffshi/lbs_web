@@ -105,7 +105,7 @@ public class DynamicMsgForService implements Serializable {
 	private List<DynamicMsgComment> commentList;
 	// 座位数
 	@JSONField(name = "tribe_id")
-	private int tribeId;
+	private long tribeId;
 	// 报名审核状态
 	@JSONField(name = "check_state")
 	@JsonInclude(Include.NON_EMPTY)
@@ -123,11 +123,11 @@ public class DynamicMsgForService implements Serializable {
 		this.checkState = checkState;
 	}
 
-	public int getTribeId() {
+	public long getTribeId() {
 		return tribeId;
 	}
 
-	public void setTribeId(int tribeId) {
+	public void setTribeId(long tribeId) {
 		this.tribeId = tribeId;
 	}
 
