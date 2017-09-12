@@ -50,7 +50,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<downloadSources>true</downloadSources>
 		<!-- push -->
-		<aliyun.push.version>2.1.0</aliyun.push.version>
+		<aliyun.push.version>2.2.4</aliyun.push.version>
 	</properties>
 	<!-- ########## 设定主仓库，按设定顺序进行查找 ########## -->
 	<repositories>

@@ -77,7 +77,7 @@ public class PushClient extends BasePushClient {
 	}
 
 	/**
-	 * 推送通知
+	 * 推送通知 默认推送到开发DEV
 	 * 
 	 * @param pushContent
 	 */
@@ -85,10 +85,38 @@ public class PushClient extends BasePushClient {
 		try {
 			// 设备类型0:iOS设备,1:Andriod设备长度必须介于 1 和 3 之间
 			if (pushContent.getDeviceType() == 0) {
-				//logger.info("push to ios : " + new Gson().toJson(pushContent).toString());
-				PushClient.PushNoticeToiOS(PushGlobal.device, pushContent.getTargetValue(), pushContent.getTitle(), pushContent.getBody(), pushContent.getSummary(), pushContent.getExtParameters().toString());
+				// logger.info("push to ios : " + new
+				// Gson().toJson(pushContent).toString());
+				PushClient.PushNoticeToiOSDEV(PushGlobal.device, pushContent.getTargetValue(), pushContent.getTitle(), pushContent.getBody(), pushContent.getSummary(), pushContent.getExtParameters().toString());
 			} else if (pushContent.getDeviceType() == 1) {
-				//logger.info("push to andriod : " + new Gson().toJson(pushContent).toString());
+				// logger.info("push to andriod : " + new
+				// Gson().toJson(pushContent).toString());
+				PushClient.PushNoticeToAndroid(PushGlobal.device, pushContent.getTargetValue(), pushContent.getTitle(), pushContent.getBody(), pushContent.getSummary(), pushContent.getExtParameters().toString());
+			}
+
+		} catch (ServerException e) {
+			e.printStackTrace();
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * @param pushContent
+	 * @param pushEnvironment
+	 *            推送环境 DEV PRODUCT
+	 */
+	public static void pushContentNoticeProduct(PushContent pushContent) {
+		try {
+			// 设备类型0:iOS设备,1:Andriod设备长度必须介于 1 和 3 之间
+			if (pushContent.getDeviceType() == 0) {
+				// logger.info("push to ios : " + new
+				// Gson().toJson(pushContent).toString());
+				PushClient.PushNoticeToiOSProduct(PushGlobal.device, pushContent.getTargetValue(), pushContent.getTitle(), pushContent.getBody(), pushContent.getSummary(), pushContent.getExtParameters().toString());
+			} else if (pushContent.getDeviceType() == 1) {
+				// logger.info("push to andriod : " + new
+				// Gson().toJson(pushContent).toString());
 				PushClient.PushNoticeToAndroid(PushGlobal.device, pushContent.getTargetValue(), pushContent.getTitle(), pushContent.getBody(), pushContent.getSummary(), pushContent.getExtParameters().toString());
 			}
 
@@ -322,8 +350,17 @@ public class PushClient extends BasePushClient {
 	 *             返回类型 void
 	 *
 	 */
+	public static void PushNoticeToiOSDEV(String target, String targetValue, String title, String body, String summary, String extParameters) throws ServerException, ClientException {
+		// 默认推送到dev
+		PushNoticeToiOS(target, targetValue, title, body, summary, extParameters, PushGlobal.DEV);
+	}
 
-	public static void PushNoticeToiOS(String target, String targetValue, String title, String body, String summary, String extParameters) throws ServerException, ClientException {
+	public static void PushNoticeToiOSProduct(String target, String targetValue, String title, String body, String summary, String extParameters) throws ServerException, ClientException {
+		// 默认推送到PRODUCT
+		PushNoticeToiOS(target, targetValue, title, body, summary, extParameters, PushGlobal.PRODUCT);
+	}
+
+	public static void PushNoticeToiOS(String target, String targetValue, String title, String body, String summary, String extParameters, String pushEnvironment) throws ServerException, ClientException {
 		init();
 		PushRequest pushRequest = new PushRequest();
 		// 推送目标
@@ -343,8 +380,8 @@ public class PushClient extends BasePushClient {
 		pushRequest.setiOSMusic("default"); // iOS通知声音
 		pushRequest.setiOSExtParameters(extParameters); // 自定义的kv结构,开发者扩展用
 		// 针对iOS设备
-		pushRequest.setApnsEnv(PushGlobal.DEV);
-//		pushRequest.setApnsEnv(PushGlobal.PRODUCT);
+		pushRequest.setApnsEnv(pushEnvironment);
+		// pushRequest.setApnsEnv(PushGlobal.PRODUCT);
 		pushRequest.setRemind(false); // 当APP不在线时候，是否通过通知提醒
 		pushRequest.setStoreOffline(true);
 		PushResponse pushResponse = client.getAcsResponse(pushRequest);
