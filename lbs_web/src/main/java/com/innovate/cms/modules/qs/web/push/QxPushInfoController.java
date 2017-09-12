@@ -31,7 +31,6 @@ import com.innovate.cms.modules.common.entity.DataBackInfo;
 import com.innovate.cms.modules.push.PushClient;
 import com.innovate.cms.modules.push.PushContent;
 import com.innovate.cms.modules.push.PushContent2DB;
-import com.innovate.cms.modules.push.aliyun.PushGlobal;
 import com.innovate.cms.modules.qs.entity.msg.NoticeUserForService;
 import com.innovate.cms.modules.qs.entity.push.QxPushInfo;
 import com.innovate.cms.modules.qs.service.push.QxPushInfoService;
