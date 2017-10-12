@@ -522,7 +522,7 @@
 		<if test="headimgurl != null and headimgurl != ''">
 			headimgurl = #{headimgurl},
 		</if>
-		<if test="personalSignature != null and personalSignature != ''">
+		<if test="personalSignature != null">
 			personal_signature = #{personalSignature},
 		</if>
 		uid=#{uid}

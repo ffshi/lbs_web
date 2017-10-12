@@ -330,8 +330,8 @@ public class SystemUserInfoController extends BaseController {
 					systemUser.setProvince(userInfoToJson.getProvince());
 					systemUser.setCity(userInfoToJson.getCity());
 					systemUser.setCountry(userInfoToJson.getCountry());
-					if (userInfoToJson.getPersonalSignature() == null || userInfoToJson.getPersonalSignature().trim().equals("")) {
-						userInfoToJson.setPersonalSignature("-1");
+					if (userInfoToJson.getPersonalSignature() == null ) {
+						userInfoToJson.setPersonalSignature("");
 					}
 					systemUser.setPersonalSignature(userInfoToJson.getPersonalSignature());
 					logger.debug("保存的头像={}", systemUser.getHeadimgurl());

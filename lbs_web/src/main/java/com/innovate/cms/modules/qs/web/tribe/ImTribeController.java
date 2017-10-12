@@ -253,6 +253,9 @@ public class ImTribeController extends BaseController {
 			long tribeId = Long.parseLong(tribeIdStr);
 			// 解散群组
 			imTribeService.delTribe(tribeId);
+			//删除群组后dynamic_msg的关联tibleid设置为0
+			imTribeService.delTribleId(tribeId);
+			
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {

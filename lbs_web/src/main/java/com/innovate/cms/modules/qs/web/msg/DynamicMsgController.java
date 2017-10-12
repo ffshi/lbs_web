@@ -1703,7 +1703,9 @@ public class DynamicMsgController extends BaseController {
 			if (tribeId > 0) {
 				// 获取群信息
 				ImTribe tribe = imTribeService.tribeInfo(tribeId);
-				backInfo.setAutoInvite(tribe.getAutoInvite());
+				if (null!=tribe) {
+					backInfo.setAutoInvite(tribe.getAutoInvite());
+				}
 			}
 
 			backInfo.setStateCode(Global.intYES);

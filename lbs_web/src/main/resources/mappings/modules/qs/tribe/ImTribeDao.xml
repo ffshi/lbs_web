@@ -141,5 +141,10 @@
 	<update id="connectMsgWithTribeId">
 		UPDATE dynamic_msg set tribe_id=#{tribeId} WHERE mid=#{mid}
 	</update>
+	<update id="delTribleId">
+		UPDATE dynamic_msg SET tribe_id=0 where tribe_id=#{tribeId}
+	</update>
+	
+	
 
 </mapper>

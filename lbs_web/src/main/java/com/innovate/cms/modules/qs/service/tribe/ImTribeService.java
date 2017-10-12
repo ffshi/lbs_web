@@ -77,4 +77,13 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 		return super.dao.connectMsgWithTribeId(tribeId,mid);
 	}
 
+	/**
+	 * 删除群组后dynamic_msg的关联tibleid设置为0
+	 * @param tribeId
+	 */
+	@Transactional(readOnly = false)
+	public int delTribleId(long tribeId) {
+		return super.dao.delTribleId(tribeId);
+	}
+
 }

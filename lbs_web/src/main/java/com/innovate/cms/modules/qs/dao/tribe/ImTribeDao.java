@@ -53,5 +53,11 @@ public interface ImTribeDao extends CrudDao<ImTribe> {
 	 * @param mid
 	 */
 	int connectMsgWithTribeId(@Param("tribeId")long tribeId,@Param("mid")int mid);
+
+	/**
+	 * 删除群组后dynamic_msg的关联tibleid设置为0
+	 * @param tribeId
+	 */
+	int delTribleId(@Param("tribeId")long tribeId);
 	
 }
