@@ -268,6 +268,12 @@ public class SystemUserController extends BaseController {
 					logger.debug("backBody = {}", body);
 					body = Cryptos.aesEncryptToBase64(body, secretKey, Global.IV.getBytes());
 				} else {
+					//设置手机用户注册的默认用户名
+					if (null==nickname || nickname.length()<1) {
+						if (null!=mobile && mobile.length()>0) {
+							nickname = defaultMobileName(mobile);
+						}
+					}
 					// 主对象-----如果不存在 ---new一个新对象 -新增一个用户
 					systemUser = new SystemUser(unionid, openid, nickname, sex, constellation, birthday, province, city, country, headimgurl, lang, os, userType, new Date(), mobile, Digests.md5(password));
 					systemUser.setTokenLocal(tokenLocal);// 给新对象赋值token
@@ -312,6 +318,18 @@ public class SystemUserController extends BaseController {
 		}
 		logger.debug("加密后字符串 = {}", body);
 		return body;
+	}
+
+	/**
+	 * 手机用户默认用户名
+	 * @param mobile
+	 * @return
+	 */
+	public static String defaultMobileName(String mobile) {
+		if (null != mobile && mobile.length() >= 11) {
+			return mobile.substring(0, 3) + "****" + mobile.substring(8);
+		}
+		return "default";
 	}
 
 	/**
