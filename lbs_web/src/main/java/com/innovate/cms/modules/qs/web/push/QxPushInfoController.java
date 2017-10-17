@@ -474,31 +474,31 @@ public class QxPushInfoController extends BaseController {
 				qxPushInfoService.savePushContent(pushContent2DB);
 				// 优化 后期改为别名推送 uid（别名）绑定设备
 				QxPushInfo device = qxPushInfoService.getPushInfoByUid(uid);
+				if (null != device && null != device.getDeviceId() && device.getDeviceId().length() > 0) {
+					PushContent pushContent = new PushContent();
+					pushContent.setDeviceType(device.getDeviceType());
+					pushContent.setTargetValue(device.getDeviceId());
 
-				PushContent pushContent = new PushContent();
-				pushContent.setDeviceType(device.getDeviceType());
-				pushContent.setTargetValue(device.getDeviceId());
+					// 设置内容，可以不设置
+					pushContent.setBody(summary);
+					// 摘要，描述，通知栏要展示的内容展示
+					pushContent.setSummary(summary);
 
-				// 设置内容，可以不设置
-				pushContent.setBody(summary);
-				// 摘要，描述，通知栏要展示的内容展示
-				pushContent.setSummary(summary);
+					// 设置自定义json扩展属性，等待新推送信息格式
+					JsonObject extParameters = new JsonObject();
+					extParameters.addProperty("type", Integer.parseInt(ptype));
+					if (null != jumpId) {
+						extParameters.addProperty("jumpId", jumpId);
+					}
+					if (null != template) {
+						extParameters.addProperty("template", template);
+					}
 
-				// 设置自定义json扩展属性，等待新推送信息格式
-				JsonObject extParameters = new JsonObject();
-				extParameters.addProperty("type", Integer.parseInt(ptype));
-				if (null != jumpId) {
-					extParameters.addProperty("jumpId", jumpId);
+					pushContent.setExtParameters(extParameters);
+					// 推送到生产环境
+					PushClient.pushContentNoticeProduct(pushContent);
 				}
-				if (null != template) {
-					extParameters.addProperty("template", template);
-				}
-
-				pushContent.setExtParameters(extParameters);
-				// 推送到生产环境
-				PushClient.pushContentNoticeProduct(pushContent);
 			}
-
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {

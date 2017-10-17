@@ -517,4 +517,14 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 		return super.dao.getApplyInfo(uid, mid);
 	}
 
+	/**
+	 * 删除消息
+	 * @param mid
+	 * @return
+	 */
+	@Transactional(readOnly = false)
+	public int deleteMsg(int mid) {
+		return super.dao.deleteMsg(mid);
+	}
+
 }

@@ -514,6 +514,13 @@
 			<version>2.9.9</version>
 		</dependency>
 
+		<!-- ali SMS -->
+		<dependency>
+			<groupId>com.aliyun.mns</groupId>
+			<artifactId>aliyun-sdk-mns</artifactId>
+			<version>1.1.8</version>
+			<classifier>jar-with-dependencies</classifier>
+		</dependency>
 
 	</dependencies>
 	<build>

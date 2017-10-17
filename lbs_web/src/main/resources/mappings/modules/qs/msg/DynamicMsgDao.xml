@@ -55,6 +55,9 @@
 		WHERE
 		u.uid = #{uid}
 	</insert>
+	<delete id="delete">
+		DELETE FROM dynamic_msg WHERE mid=#{mid}
+	</delete>
 
 	<select id="lastesMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT
