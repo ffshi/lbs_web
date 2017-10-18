@@ -457,16 +457,19 @@
 		s.prise_num ,
 		s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 		dynamic_msg AS m,
-		dynamic_msg_statistic AS s
+		dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 		m.mid = s.mid and
 		m.mid in
 		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
 			#{item}
 		</foreach>
+		 AND m.uid = u.uid
 		ORDER BY
 		m.mid desc
 	</select>
@@ -497,13 +500,15 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+			system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
-			m.mid = s.mid
+			m.mid = s.mid AND m.uid = u.uid
 		
 		order by m.mid desc LIMIT 20
 	</select>
@@ -530,14 +535,16 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND m.msg_type &gt; 0
-		
+			 AND m.uid = u.uid
 		order by m.mid desc LIMIT 20
 	</select>
 	<select id="userApplyMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
@@ -599,16 +606,18 @@
 			s.comment_num,
 		s.share_num ,
 		s.apply_for_num,
-		a.check_state
+		a.check_state,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			msg_apply a
+			msg_apply a,
+		system_user AS u
 		WHERE
 			a.uid=#{uid} AND
 			a.mid = m.mid and 
 			m.msg_type=#{msgType} AND
-			m.mid=s.mid
+			m.mid=s.mid AND m.uid = u.uid
 		order by m.mid desc LIMIT 20
 
 	</select>
@@ -709,15 +718,17 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
 			m.msg_type=#{msgType} AND
 			m.mid = s.mid
-			
+			 AND m.uid = u.uid
 		
 		order by m.mid desc LIMIT 20
 	</select>
@@ -745,14 +756,17 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND 
-			m.mid &lt; #{mid}
+			m.mid &lt; #{mid} AND m.uid = u.uid
+			
 		order by m.mid desc LIMIT 20
 	</select>
 	<select id="userUpLatestEventMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
@@ -778,14 +792,16 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND m.msg_type &gt; 0 AND
-			m.mid &lt; #{mid}
+			m.mid &lt; #{mid} AND m.uid = u.uid
 		order by m.mid desc LIMIT 20
 	</select>
 	<select id="userUpLatestMsgType" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
@@ -811,15 +827,17 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND 
 			m.msg_type=#{msgType} AND
-			m.mid &lt; #{mid}
+			m.mid &lt; #{mid} AND m.uid = u.uid
 		order by m.mid desc LIMIT 20
 	</select>
 	
@@ -846,14 +864,16 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
-			dynamic_msg_statistic AS s
+			dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND 
-			m.mid &gt; #{mid}
+			m.mid &gt; #{mid} AND m.uid = u.uid
 		order by m.mid desc LIMIT 20
 	</select>
 	
@@ -880,17 +900,19 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			qx_follow AS f
+			qx_follow AS f,
+		system_user AS u
 		WHERE
 			f.uid = #{uid}
 			AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		
-		AND m.mid = s.mid
+		AND m.mid = s.mid AND m.uid = u.uid
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
@@ -918,11 +940,13 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			qx_follow AS f
+			qx_follow AS f,
+		system_user AS u
 		WHERE
 			f.uid = #{uid}
 			AND f.del_flag = 0
@@ -931,7 +955,7 @@
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
-		AND m.mid = s.mid
+		AND m.mid = s.mid AND m.uid = u.uid
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
@@ -1044,17 +1068,19 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			qx_follow AS f
+			qx_follow AS f,
+		system_user AS u
 		WHERE
 			f.uid = #{uid}
 			AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &lt; #{mid}
-		AND m.mid = s.mid
+		AND m.mid = s.mid AND m.uid = u.uid
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
@@ -1083,11 +1109,13 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			qx_follow AS f
+			qx_follow AS f,
+		system_user AS u
 		WHERE
 			f.uid = #{uid}
 			AND f.del_flag = 0
@@ -1097,7 +1125,7 @@
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
-		AND m.mid = s.mid
+		AND m.mid = s.mid AND m.uid = u.uid
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
@@ -1212,18 +1240,20 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			qx_follow AS f
+			qx_follow AS f,
+		system_user AS u
 		WHERE
 			f.uid = #{uid}
 		AND f.del_flag = 0
 		AND m.uid = f.follow_uid
 		AND m.mid &gt; #{mid}
 		
-		AND m.mid = s.mid
+		AND m.mid = s.mid AND m.uid = u.uid
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
@@ -1252,11 +1282,13 @@
 			s.prise_num,
 			s.comment_num,
 		s.share_num ,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 			dynamic_msg AS m,
 			dynamic_msg_statistic AS s,
-			qx_follow AS f
+			qx_follow AS f,
+		system_user AS u
 		WHERE
 			f.uid = #{uid}
 		AND f.del_flag = 0
@@ -1266,7 +1298,7 @@
 		<foreach item="item" index="index" collection="msgType" open="(" separator="," close=")">  
 		 #{item}  
 		</foreach>  
-		AND m.mid = s.mid
+		AND m.mid = s.mid AND m.uid = u.uid
 		ORDER BY
 			m.mid DESC
 		LIMIT 20
