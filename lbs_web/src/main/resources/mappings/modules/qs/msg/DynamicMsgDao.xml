@@ -55,7 +55,7 @@
 		WHERE
 		u.uid = #{uid}
 	</insert>
-	<delete id="delete">
+	<delete id="deleteMsg">
 		DELETE FROM dynamic_msg WHERE mid=#{mid}
 	</delete>
 
