@@ -26,7 +26,7 @@ public class SystemUser extends DataEntity<SystemUser> {
 	private String unionid;		// 获取用户个人信息（UnionID机制）
 	private String openid;		// 当前来源渠道唯一标识
 	private String nickname="";		// 昵称
-	private String sex;		// 用户的性别，值为1时是男性，值为2时是女性，默认值为0时是未知
+	private String sex="-1";		// 用户的性别，值为1时是男性，值为2时是女性，默认值为-1时是未知
 	private String tokenLocal;		// 本地系统登陆认证token，退出登录删除该token
 	private String loginName;		// 登录名-可为账号
 	private String mobile;		// 手机-可为账号

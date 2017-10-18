@@ -82,12 +82,15 @@
 		s.prise_num ,
 		s.comment_num,
 		s.share_num,
-		s.apply_for_num
+		s.apply_for_num,
+		u.sex
 		FROM
 		dynamic_msg AS m,
-		dynamic_msg_statistic AS s
+		dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
-		m.mid = s.mid
+		m.mid = s.mid 
+		AND m.uid = u.uid
 		ORDER BY
 		m.mid desc
 		LIMIT 20
@@ -420,14 +423,16 @@
 		s.prise_num ,
 		s.comment_num,
 		s.share_num,
-		s.apply_for_num 
+		s.apply_for_num ,
+		u.sex
 		FROM
 		dynamic_msg AS m,
-		dynamic_msg_statistic AS s
+		dynamic_msg_statistic AS s,
+		system_user AS u
 		WHERE
 		m.mid = #{mid} AND 
-		m.mid = s.mid
-		
+		m.mid = s.mid 
+		AND m.uid = u.uid
 	</select>
 	<select id="nearMsg" resultType="com.innovate.cms.modules.qs.entity.msg.DynamicMsgForService">
 		SELECT

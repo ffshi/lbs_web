@@ -110,9 +110,20 @@ public class DynamicMsgForService implements Serializable {
 	@JSONField(name = "check_state")
 	@JsonInclude(Include.NON_EMPTY)
 	private Integer checkState;
+	
+	//用户调研后添加，导致架构更改，冗余到msg表内的用户信息不够用，仍然要关联System_user
+	private int sex=-1;
 
 	public DynamicMsgForService() {
 		super();
+	}
+
+	public int getSex() {
+		return sex;
+	}
+
+	public void setSex(int sex) {
+		this.sex = sex;
 	}
 
 	public Integer getCheckState() {
