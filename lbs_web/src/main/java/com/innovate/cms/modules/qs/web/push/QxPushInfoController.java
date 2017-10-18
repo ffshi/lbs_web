@@ -21,13 +21,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.google.gson.JsonObject;
 import com.innovate.cms.common.config.Global;
 import com.innovate.cms.common.utils.ReUtil;
 import com.innovate.cms.common.utils.StrUtil;
 import com.innovate.cms.common.web.BaseController;
+import com.innovate.cms.modules.aliIM.SmsUtil;
 import com.innovate.cms.modules.common.entity.BaseBackInfo;
 import com.innovate.cms.modules.common.entity.DataBackInfo;
+import com.innovate.cms.modules.common.entity.ItemBackInfo;
 import com.innovate.cms.modules.push.PushClient;
 import com.innovate.cms.modules.push.PushContent;
 import com.innovate.cms.modules.push.PushContent2DB;
@@ -606,6 +609,49 @@ public class QxPushInfoController extends BaseController {
 			backInfo.setData(data);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+
+	/**
+	 * 用户验证码服务
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/sendVerifyCode", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo sendVerifyCode(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String mobile = map.get("mobile");
+
+		ItemBackInfo backInfo = new ItemBackInfo();
+		
+		if (StrUtil.isBlank(mobile)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			//生成验证码
+			String code = SmsUtil.getRandNum();
+			// 发短信
+			SendSmsResponse res = SmsUtil.sendVerifyCode(code,mobile);
+			//发送成功
+			if (null!=res.getCode()&&res.getCode().toUpperCase().equals("OK")) {
+				backInfo.setStateCode(Global.intYES);
+				backInfo.setRetMsg(Global.SUCCESS);
+				backInfo.setItem(code);
+			}else {
+				backInfo.setStateCode(Global.intNO);
+				backInfo.setRetMsg(Global.ERROR);
+			}
+			
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
