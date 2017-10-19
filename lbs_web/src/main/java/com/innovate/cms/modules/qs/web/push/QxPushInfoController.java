@@ -619,6 +619,7 @@ public class QxPushInfoController extends BaseController {
 
 	/**
 	 * 用户验证码服务
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
@@ -630,7 +631,7 @@ public class QxPushInfoController extends BaseController {
 		String mobile = map.get("mobile");
 
 		ItemBackInfo backInfo = new ItemBackInfo();
-		
+
 		if (StrUtil.isBlank(mobile)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
@@ -638,20 +639,20 @@ public class QxPushInfoController extends BaseController {
 			return info;
 		}
 		try {
-			//生成验证码
+			// 生成验证码
 			String code = SmsUtil.getRandNum();
 			// 发短信
-			SendSmsResponse res = SmsUtil.sendVerifyCode(code,mobile);
-			//发送成功
-			if (null!=res.getCode()&&res.getCode().toUpperCase().equals("OK")) {
+			SendSmsResponse res = SmsUtil.sendVerifyCode(code, mobile);
+			// 发送成功
+			if (null != res.getCode() && res.getCode().toUpperCase().equals("OK")) {
 				backInfo.setStateCode(Global.intYES);
 				backInfo.setRetMsg(Global.SUCCESS);
 				backInfo.setItem(code);
-			}else {
+			} else {
 				backInfo.setStateCode(Global.intNO);
 				backInfo.setRetMsg(Global.ERROR);
 			}
-			
+
 		} catch (Exception e) {
 			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
 			backInfo.setRetMsg(Global.ERROR);
