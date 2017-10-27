@@ -216,5 +216,32 @@ public class QxFollowController extends BaseController {
 		}
 		return backInfo;
 	}
+	
+	@RequestMapping(value = "/v1/sns/robotFollow", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo robotFollow(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String uid = map.get("uid");
+		String numStr = map.get("num");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(uid)||StrUtil.isBlank(numStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			
+			int num=Integer.parseInt(numStr);
+
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
 
 }

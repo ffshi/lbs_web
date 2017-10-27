@@ -81,6 +81,7 @@ public class SystemUser extends DataEntity<SystemUser> {
 		this.mobile = mobile;
 		this.password = password;
 	}
+	
 	public SystemUser(String unionid, String openid, String nickname, String sex, String constellation, Date birthday,
 			String province, String city, String country, String headimgurl, String lang, String os, String userType,
 			Date createTime)

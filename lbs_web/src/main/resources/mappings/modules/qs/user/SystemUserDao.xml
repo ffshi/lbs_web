@@ -423,7 +423,7 @@
 		os,
 		user_groups,
 		user_type,
-		create_time
+		create_time,background_image,personal_signature
 		) VALUES (
 		#{uid},
 		#{unionid},
@@ -445,7 +445,7 @@
 		#{os},
 		#{userGroups},
 		#{userType},
-		#{createTime}
+		#{createTime},#{backgroundImage},#{personalSignature}
 		)
 	</insert>
 

@@ -33,7 +33,8 @@
 		pics,
 		location,
 		geo_id,
-		msg_date,msg_end_date,msg_2level_type,msg_single_type,price_des,msg_state,apply_num,seat_num,start_place,aim_place
+		msg_date,msg_end_date,msg_2level_type,msg_single_type,price_des,
+		msg_state,apply_num,seat_num,start_place,aim_place,is_virtual
 		) SELECT
 		u.uid,
 		u.nickname,
@@ -49,7 +50,8 @@
 		#{requirements},
 		#{pics},
 		#{location},
-		#{geoId},#{msgDate},#{msgEndDate},#{msg2levelType},#{msgSingleType},#{priceDes},#{msgState},#{applyNum},#{seatNum},#{startPlace},#{aimPlace}
+		#{geoId},#{msgDate},#{msgEndDate},#{msg2levelType},#{msgSingleType},#{priceDes},
+		#{msgState},#{applyNum},#{seatNum},#{startPlace},#{aimPlace},#{isVirtual}
 		FROM
 		system_user AS u
 		WHERE

@@ -268,14 +268,20 @@ public class SystemUserController extends BaseController {
 					logger.debug("backBody = {}", body);
 					body = Cryptos.aesEncryptToBase64(body, secretKey, Global.IV.getBytes());
 				} else {
-					//设置手机用户注册的默认用户名
-					if (null==nickname || nickname.length()<1) {
-						if (null!=mobile && mobile.length()>0) {
+					// 设置手机用户注册的默认用户名
+					if (null == nickname || nickname.length() < 1) {
+						if (null != mobile && mobile.length() > 0) {
 							nickname = defaultMobileName(mobile);
 						}
 					}
 					// 主对象-----如果不存在 ---new一个新对象 -新增一个用户
 					systemUser = new SystemUser(unionid, openid, nickname, sex, constellation, birthday, province, city, country, headimgurl, lang, os, userType, new Date(), mobile, Digests.md5(password));
+					if (null != postLoginJson.getBackgroundImage()) {
+						systemUser.setBackgroundImage(postLoginJson.getBackgroundImage());
+					}
+					if (null!=postLoginJson.getPersonalSignature()) {
+						systemUser.setPersonalSignature(postLoginJson.getPersonalSignature());
+					}
 					systemUser.setTokenLocal(tokenLocal);// 给新对象赋值token
 
 					if (userType.charAt(0) == '3') {
@@ -288,8 +294,11 @@ public class SystemUserController extends BaseController {
 					// 同步阿里IM用户
 					try {
 						if (StrUtil.isNotBlank(_uid) && "1".equals(Global.getSycnAliIM())) {
-							systemUser.setUid(_uid);
-							IMUtils.addUser(systemUser);
+							// 机器人注册不同步阿里云
+							if (null != postLoginJson.getOs() && !postLoginJson.getOs().equals("robot")) {
+								systemUser.setUid(_uid);
+								IMUtils.addUser(systemUser);
+							}
 						}
 					} catch (Exception e) {
 						logger.debug("/v1/login IMUtils.addUser(systemUser)出错 {}", e.getMessage());
@@ -322,6 +331,7 @@ public class SystemUserController extends BaseController {
 
 	/**
 	 * 手机用户默认用户名
+	 * 
 	 * @param mobile
 	 * @return
 	 */

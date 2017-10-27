@@ -42,13 +42,17 @@ public class SignFilter extends OncePerRequestFilter {
 		// String[] notFilter = new String[] {"/config/channel", "/config/time",
 		// "/user/report", "/isToken","/opt/openQuestions"};
 		// boolean doFilter = true; // 是否过滤
-		
-//		response.setHeader("Access-Control-Allow-Origin", "*");
-////		response.setHeader("Access-Control-Allow-Origin", DictionaryParam.get(Constant2.DICTIONARY_GROUP_GLOBAL_SETTING, "AccessControlAllowOrigin"));  
-//        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");  
-//        response.setHeader("Access-Control-Max-Age", "3600");  
-//        response.setHeader("Access-Control-Allow-Headers", "x-requested-with");  
-		
+
+		// response.setHeader("Access-Control-Allow-Origin", "*");
+		// // response.setHeader("Access-Control-Allow-Origin",
+		// DictionaryParam.get(Constant2.DICTIONARY_GROUP_GLOBAL_SETTING,
+		// "AccessControlAllowOrigin"));
+		// response.setHeader("Access-Control-Allow-Methods",
+		// "POST, GET, OPTIONS, DELETE");
+		// response.setHeader("Access-Control-Max-Age", "3600");
+		// response.setHeader("Access-Control-Allow-Headers",
+		// "x-requested-with");
+
 		String url = request.getRequestURI(); // 请求的url
 
 		// 头文件中参数
@@ -61,12 +65,12 @@ public class SignFilter extends OncePerRequestFilter {
 
 		// 方便调试测试，测试时候用这个一header就可以了
 		String ff = request.getHeader("_");
-	
+
 		// 新增日志内容
 		String ip = StringUtils.getRemoteAddr(request);
 		MDC.put("ip", ip);
-		//nginx负载均衡https跳转不需要多余的加密验证
-		if (ip.equals("123.56.251.16") || ip.equals("123.56.242.51") || ip.equals("123.56.248.173") || ip.equals("123.57.50.235")|| ip.equals("127.0.0.1")) {
+		// nginx负载均衡https跳转不需要多余的加密验证
+		if (ip.equals("123.56.251.16") || ip.equals("123.56.242.51") || ip.equals("123.56.248.173") || ip.equals("123.57.50.235") || ip.equals("124.207.11.41") || ip.equals("127.0.0.1")) {
 			chain.doFilter(request, response);
 		} else {
 			// 1.看数据是否被篡改 （列表内的只看篡改） POST 或者 PUT 有body数据

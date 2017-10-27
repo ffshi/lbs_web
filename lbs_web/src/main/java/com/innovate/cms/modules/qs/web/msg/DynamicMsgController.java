@@ -1790,4 +1790,60 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+	
+	@RequestMapping(value = "/v1/msg/robotPrise", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo robotPrise(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+
+		String midStr = map.get("mid");
+		String numStr = map.get("num");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(numStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			int num=Integer.parseInt(numStr);
+
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	
+	@RequestMapping(value = "/v1/msg/robotComment", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo robotComment(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String midStr = map.get("mid");
+		String numStr = map.get("num");
+
+		BaseBackInfo backInfo = new BaseBackInfo();
+		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(numStr)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		try {
+			int mid = Integer.parseInt(midStr);
+			int num=Integer.parseInt(numStr);
+
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
+	
+
 }

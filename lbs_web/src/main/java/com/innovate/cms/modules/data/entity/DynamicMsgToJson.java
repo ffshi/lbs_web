@@ -27,9 +27,9 @@ public class DynamicMsgToJson implements Serializable {
 	private String description = "";
 	private String businessAddress = "";
 	private String businessName = "";
-	//价格收费
+	// 价格收费
 	private float price;
-	//报酬
+	// 报酬
 	private float reward;
 	private String requirements = "";
 	private String geoId = "";
@@ -40,30 +40,31 @@ public class DynamicMsgToJson implements Serializable {
 	private int coordType;
 
 	// 三期新增属性
-	//活动时间/开始时间
+	// 活动时间/开始时间
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date msgDate;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date msgEndDate;
-	//二级消息类型
+	// 二级消息类型
 	private int msg2levelType;
 	// 方便所有类型筛选
 	private int msgSingleType;
-	//价格描述：比如一顿饭代表价格
-	private String priceDes="";
-	//消息状态0-未完成(默认) 1-完成
+	// 价格描述：比如一顿饭代表价格
+	private String priceDes = "";
+	// 消息状态0-未完成(默认) 1-完成
 	private int msgState;
-	//允许报名人数/参与人数/拼单人数
+	// 允许报名人数/参与人数/拼单人数
 	private int applyNum;
-	//座位数
+	// 座位数
 	private int seatNum;
-	//出发地
-	private String startPlace="";
-	//目的地
-	private String aimPlace="";
-	
-	
-	
+	// 出发地
+	private String startPlace = "";
+	// 目的地
+	private String aimPlace = "";
+
+	// 虚拟消息 0-不是 1-是
+	private int isVirtual;
+
 	public DynamicMsgToJson() {
 		super();
 	}
@@ -83,6 +84,14 @@ public class DynamicMsgToJson implements Serializable {
 		this.requirements = requirements;
 		this.geoId = geoId;
 		this.pics = pics;
+	}
+
+	public int getIsVirtual() {
+		return isVirtual;
+	}
+
+	public void setIsVirtual(int isVirtual) {
+		this.isVirtual = isVirtual;
 	}
 
 	public int getSeatNum() {

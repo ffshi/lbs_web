@@ -3,8 +3,12 @@ package com.innovate.cms.modules.data.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-public class PostLoginJson implements Serializable
-{
+/**
+ * 
+ * @author shifangfang
+ * @date 2017年10月26日 下午2:51:52
+ */
+public class PostLoginJson implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private String unionid; // 获取用户个人信息（UnionID机制）
@@ -27,18 +31,33 @@ public class PostLoginJson implements Serializable
 	private String password; // 登录密码
 	private String mobile; // 手机-可为账号
 	private String version; // 临时参数
-	//用户手机号调用登录接口时候需要告知是登录还是注册 0:注册 1:登录
+	// 用户手机号调用登录接口时候需要告知是登录还是注册 0:注册 1:登录
 	private int isLogin;
+	// 用户背景图
+	private String backgroundImage = "";
+	private String personalSignature="";
 
-
-	public PostLoginJson()
-	{
+	public PostLoginJson() {
 		super();
 	}
 
-	public PostLoginJson(String unionid, String openid, String accessToken, String refreshToken, Integer expiresIn,
-			String nickname, String sex, String headimgurl, String os, String userType)
-	{
+	public String getPersonalSignature() {
+		return personalSignature;
+	}
+
+	public void setPersonalSignature(String personalSignature) {
+		this.personalSignature = personalSignature;
+	}
+
+	public String getBackgroundImage() {
+		return backgroundImage;
+	}
+
+	public void setBackgroundImage(String backgroundImage) {
+		this.backgroundImage = backgroundImage;
+	}
+
+	public PostLoginJson(String unionid, String openid, String accessToken, String refreshToken, Integer expiresIn, String nickname, String sex, String headimgurl, String os, String userType) {
 		super();
 		this.unionid = unionid;
 		this.openid = openid;
@@ -52,10 +71,7 @@ public class PostLoginJson implements Serializable
 		this.userType = userType;
 	}
 
-	public PostLoginJson(String unionid, String openid, String accessToken, String refreshToken, Integer expiresIn,
-			String nickname, String sex, String constellation, Date birthday, String province, String city, String country,
-			String headimgurl, String lang, String os, String userType)
-	{
+	public PostLoginJson(String unionid, String openid, String accessToken, String refreshToken, Integer expiresIn, String nickname, String sex, String constellation, Date birthday, String province, String city, String country, String headimgurl, String lang, String os, String userType) {
 		super();
 		this.unionid = unionid;
 		this.openid = openid;
@@ -75,11 +91,7 @@ public class PostLoginJson implements Serializable
 		this.userType = userType;
 	}
 
-	
-	public PostLoginJson(String unionid, String openid, String accessToken, String refreshToken, Integer expiresIn,
-			String nickname, String sex, String constellation, Date birthday, String province, String city, String country,
-			String headimgurl, String lang, String os, String userType, String loginName, String password, String mobile)
-	{
+	public PostLoginJson(String unionid, String openid, String accessToken, String refreshToken, Integer expiresIn, String nickname, String sex, String constellation, Date birthday, String province, String city, String country, String headimgurl, String lang, String os, String userType, String loginName, String password, String mobile) {
 		super();
 		this.unionid = unionid;
 		this.openid = openid;
@@ -110,206 +122,164 @@ public class PostLoginJson implements Serializable
 		this.isLogin = isLogin;
 	}
 
-	public String getUnionid()
-	{
+	public String getUnionid() {
 		return unionid;
 	}
 
-	public void setUnionid(String unionid)
-	{
+	public void setUnionid(String unionid) {
 		this.unionid = unionid;
 	}
 
-	public String getOpenid()
-	{
+	public String getOpenid() {
 		return openid;
 	}
 
-	public void setOpenid(String openid)
-	{
+	public void setOpenid(String openid) {
 		this.openid = openid;
 	}
 
-	public String getAccessToken()
-	{
+	public String getAccessToken() {
 		return accessToken;
 	}
 
-	public void setAccessToken(String accessToken)
-	{
+	public void setAccessToken(String accessToken) {
 		this.accessToken = accessToken;
 	}
 
-	public String getRefreshToken()
-	{
+	public String getRefreshToken() {
 		return refreshToken;
 	}
 
-	public void setRefreshToken(String refreshToken)
-	{
+	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
 	}
 
-	public int getExpiresIn()
-	{
+	public int getExpiresIn() {
 		return expiresIn;
 	}
 
-	public void setExpiresIn(int expiresIn)
-	{
+	public void setExpiresIn(int expiresIn) {
 		this.expiresIn = expiresIn;
 	}
 
-	public String getNickname()
-	{
+	public String getNickname() {
 		return nickname;
 	}
 
-	public void setNickname(String nickname)
-	{
+	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
 
-	public String getSex()
-	{
+	public String getSex() {
 		return sex;
 	}
 
-	public void setSex(String sex)
-	{
+	public void setSex(String sex) {
 		this.sex = sex;
 	}
 
-	public String getConstellation()
-	{
+	public String getConstellation() {
 		return constellation;
 	}
 
-	public void setConstellation(String constellation)
-	{
+	public void setConstellation(String constellation) {
 		this.constellation = constellation;
 	}
 
-	public Date getBirthday()
-	{
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday)
-	{
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
 
-	public String getProvince()
-	{
+	public String getProvince() {
 		return province;
 	}
 
-	public void setProvince(String province)
-	{
+	public void setProvince(String province) {
 		this.province = province;
 	}
 
-	public String getCity()
-	{
+	public String getCity() {
 		return city;
 	}
 
-	public void setCity(String city)
-	{
+	public void setCity(String city) {
 		this.city = city;
 	}
 
-	public String getCountry()
-	{
+	public String getCountry() {
 		return country;
 	}
 
-	public void setCountry(String country)
-	{
+	public void setCountry(String country) {
 		this.country = country;
 	}
 
-	public String getHeadimgurl()
-	{
+	public String getHeadimgurl() {
 		return headimgurl;
 	}
 
-	public void setHeadimgurl(String headimgurl)
-	{
+	public void setHeadimgurl(String headimgurl) {
 		this.headimgurl = headimgurl;
 	}
 
-	public String getLang()
-	{
+	public String getLang() {
 		return lang;
 	}
 
-	public void setLang(String lang)
-	{
+	public void setLang(String lang) {
 		this.lang = lang;
 	}
 
-	public String getOs()
-	{
+	public String getOs() {
 		return os;
 	}
 
-	public void setOs(String os)
-	{
+	public void setOs(String os) {
 		this.os = os;
 	}
 
-	public String getUserType()
-	{
+	public String getUserType() {
 		return userType;
 	}
 
-	public void setUserType(String userType)
-	{
+	public void setUserType(String userType) {
 		this.userType = userType;
 	}
 
-	public String getLoginName()
-	{
+	public String getLoginName() {
 		return loginName;
 	}
 
-	public void setLoginName(String loginName)
-	{
+	public void setLoginName(String loginName) {
 		this.loginName = loginName;
 	}
 
-	public String getPassword()
-	{
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password)
-	{
+	public void setPassword(String password) {
 		this.password = password;
 	}
 
-	public String getMobile()
-	{
+	public String getMobile() {
 		return mobile;
 	}
 
-	public void setMobile(String mobile)
-	{
+	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 
-	public String getVersion()
-	{
+	public String getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version)
-	{
+	public void setVersion(String version) {
 		this.version = version;
 	}
-
-	
 
 }
