@@ -98,6 +98,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
+
 	/**
 	 * 删除消息
 	 * 
@@ -120,7 +121,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		try {
 			int mid = Integer.parseInt(midStr);
-			//删除消息
+			// 删除消息
 			dynamicMsgService.deleteMsg(mid);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
@@ -375,7 +376,7 @@ public class DynamicMsgController extends BaseController {
 			}
 		}
 		try {
-			//触发器实现评论统计
+			// 触发器实现评论统计
 			dynamicMsgCommentService.saveComment(dynamicMsgComment);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
@@ -1043,7 +1044,7 @@ public class DynamicMsgController extends BaseController {
 
 	/**
 	 * 
-	 * 上拉获取下一页消息
+	 * 按照一级分类上拉获取用户发布下一页消息
 	 * 
 	 * 
 	 * @param map
@@ -1056,6 +1057,7 @@ public class DynamicMsgController extends BaseController {
 
 		String uid = map.get("uid");
 		String midStr = map.get("mid");
+		String msgTypeStr = map.get("msgType");
 		// 当前登录用户uid
 		String curUid = request.getHeader("Uid");
 
@@ -1068,8 +1070,9 @@ public class DynamicMsgController extends BaseController {
 		DataBackInfo<DynamicMsgForService> backInfo = new DataBackInfo<DynamicMsgForService>();
 		try {
 			int mid = Integer.parseInt(midStr);
-			// 上拉获取下一页消息
-			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid, mid);
+			int msgType = Integer.parseInt(msgTypeStr);
+			// 按照一级分类上拉获取用户发布下一页消息
+			List<DynamicMsgForService> msgs = dynamicMsgService.userUpLatestMsg(uid, mid, msgType);
 			// for(DynamicMsgForService dynamicMsgForService:msgs){
 			// //获取最新10个点赞
 			// dynamicMsgForService.setPriseList(dynamicMsgPriseService.priseListLimit10(dynamicMsgForService.getMid()));
@@ -1080,7 +1083,7 @@ public class DynamicMsgController extends BaseController {
 			if (!curUid.equals(uid)) {
 
 				for (DynamicMsgForService msg : msgs) {
-					if (msg.getMsgType() == 2 || msg.getMsgType() == 6 || msg.getMsgType() == 9) {
+					if (msg.getMsgType() == 2 || msg.getMsgType() == 6 || msg.getMsgType() == 9 || msg.getMsgType() == 100 || msg.getMsgType() == 101) {
 						// 获取用户报名信息
 						DynamicMsgApplyForService applyInfo = dynamicMsgService.getApplyInfo(curUid, msg.getMid());
 						if (null != applyInfo) {
@@ -1738,7 +1741,7 @@ public class DynamicMsgController extends BaseController {
 			if (tribeId > 0) {
 				// 获取群信息
 				ImTribe tribe = imTribeService.tribeInfo(tribeId);
-				if (null!=tribe) {
+				if (null != tribe) {
 					backInfo.setAutoInvite(tribe.getAutoInvite());
 				}
 			}
@@ -1792,9 +1795,10 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 机器人点赞
+	 * 
 	 * @param map
 	 * @param request
 	 * @param response
@@ -1807,7 +1811,7 @@ public class DynamicMsgController extends BaseController {
 		String numStr = map.get("num");
 
 		BaseBackInfo backInfo = new BaseBackInfo();
-		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(numStr)) {
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(numStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
@@ -1815,18 +1819,17 @@ public class DynamicMsgController extends BaseController {
 		}
 		try {
 			int mid = Integer.parseInt(midStr);
-			int num=Integer.parseInt(numStr);
+			int num = Integer.parseInt(numStr);
 			List<String> uids = RobotUtil.radomNumUid(num);
 
-			for(int i=0;i<num;i++){
+			for (int i = 0; i < num; i++) {
 				DynamicMsgPrise dynamicMsgPrise = new DynamicMsgPrise();
 				dynamicMsgPrise.setMid(mid);
 				dynamicMsgPrise.setUid(uids.get(i));
 				dynamicMsgPriseService.savePrise(dynamicMsgPrise);
 				dynamicMsgService.addPriseNum(mid);
 			}
-			
-			
+
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {
@@ -1836,7 +1839,7 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
+
 	/**
 	 * 机器人评论
 	 * 
@@ -1847,31 +1850,31 @@ public class DynamicMsgController extends BaseController {
 	 */
 	@RequestMapping(value = "/v1/msg/robotComment", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo robotComment(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String midStr = map.get("mid");
 		String numStr = map.get("num");
 
 		BaseBackInfo backInfo = new BaseBackInfo();
-		if (StrUtil.isBlank(midStr)||StrUtil.isBlank(numStr)) {
+		if (StrUtil.isBlank(midStr) || StrUtil.isBlank(numStr)) {
 			BaseBackInfo info = new BaseBackInfo();
 			info.setStateCode(Global.int300209);
 			info.setRetMsg(Global.str300209);
 			return info;
 		}
 		try {
-			
+
 			int mid = Integer.parseInt(midStr);
-			int num=Integer.parseInt(numStr);
+			int num = Integer.parseInt(numStr);
 			List<String> uids = RobotUtil.radomNumUid(num);
 			List<String> comments = RobotUtil.radomNumComments(num);
-			
-			for(int i=0;i<num;i++){
+
+			for (int i = 0; i < num; i++) {
 				DynamicMsgComment dynamicMsgComment = new DynamicMsgComment();
 				dynamicMsgComment.setMid(mid);
 				dynamicMsgComment.setUid(uids.get(i));
 				dynamicMsgComment.setCommentType(0);
 				dynamicMsgComment.setContent(comments.get(i));
-				
+
 				dynamicMsgCommentService.saveComment(dynamicMsgComment);
 			}
 
@@ -1884,6 +1887,5 @@ public class DynamicMsgController extends BaseController {
 		}
 		return backInfo;
 	}
-	
 
 }

@@ -73,13 +73,13 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	List<DynamicMsgForService> userLatestMsg(@Param("uid") String uid);
 
 	/**
-	 * 上拉获取下一页消息
+	 * 按照一级分类上拉获取用户发布下一页消息
 	 * 
 	 * @param uid
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> userUpLatestMsg(@Param("uid") String uid, @Param("mid") int mid);
+	List<DynamicMsgForService> userUpLatestMsg(@Param("uid") String uid, @Param("mid") int mid, @Param("msgType") int msgType);
 
 	/**
 	 * 下拉刷新获取最新
@@ -302,6 +302,7 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @return
 	 */
 	List<DynamicMsgApplyForService> applyForList(@Param("mid") int mid);
+
 	/**
 	 * 按照一级分类获取用户最新发布的消息 前20条
 	 * 
@@ -309,28 +310,35 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param msgType
 	 * @return
 	 */
-	List<DynamicMsgForService> userLatestMsgType(@Param("uid")String uid, @Param("msgType")int msgType);
+	List<DynamicMsgForService> userLatestMsgType(@Param("uid") String uid, @Param("msgType") int msgType);
+
 	/**
-	 *  按照一级分类上拉获取用户发布的下一页消息
+	 * 按照一级分类上拉获取用户发布的下一页消息
+	 * 
 	 * @param uid
 	 * @param mid
 	 * @param msgType
 	 * @return
 	 */
-	List<DynamicMsgForService> userUpLatestMsgType(@Param("uid")String uid, @Param("mid")int mid, @Param("msgType")int msgType);
+	List<DynamicMsgForService> userUpLatestMsgType(@Param("uid") String uid, @Param("mid") int mid, @Param("msgType") int msgType);
+
 	/**
 	 * 获取用户报名审核状态获取
+	 * 
 	 * @param mid
 	 * @param uid
 	 * @return
 	 */
-	DynamicMsgApplyForService applyCheckState(@Param("mid")int mid, @Param("uid")String uid);
+	DynamicMsgApplyForService applyCheckState(@Param("mid") int mid, @Param("uid") String uid);
+
 	/**
 	 * 获取用户最新发布的活动类消息 前20条
+	 * 
 	 * @param uid
 	 * @return
 	 */
-	List<DynamicMsgForService> userLatestEventMsg(@Param("uid")String uid);
+	List<DynamicMsgForService> userLatestEventMsg(@Param("uid") String uid);
+
 	/**
 	 * 上拉获取下一页活动类消息
 	 * 
@@ -338,20 +346,25 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> userUpLatestEventMsg(@Param("uid")String uid, @Param("mid")int mid);
+	List<DynamicMsgForService> userUpLatestEventMsg(@Param("uid") String uid, @Param("mid") int mid);
+
 	/**
 	 * 获取用户最新报名的消息
+	 * 
 	 * @param uid
 	 * @return
 	 */
-	List<DynamicMsgForService> userApplyMsg(@Param("uid")String uid);
+	List<DynamicMsgForService> userApplyMsg(@Param("uid") String uid);
+
 	/**
 	 * 按一级分类获取用户最新报名的消息
+	 * 
 	 * @param uid
 	 * @param msgType
 	 * @return
 	 */
-	List<DynamicMsgForService> userApplyMsgFilter(@Param("uid")String uid, @Param("msgType")int msgType);
+	List<DynamicMsgForService> userApplyMsgFilter(@Param("uid") String uid, @Param("msgType") int msgType);
+
 	/**
 	 * 按一级分类上拉获取用户最新报名的消息
 	 * 
@@ -360,7 +373,8 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> userApplyUpMsgFilter(@Param("uid")String uid, @Param("msgType")int msgType, @Param("mid")int mid);
+	List<DynamicMsgForService> userApplyUpMsgFilter(@Param("uid") String uid, @Param("msgType") int msgType, @Param("mid") int mid);
+
 	/**
 	 * 上拉获取用户报名的消息
 	 * 
@@ -368,13 +382,16 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param mid
 	 * @return
 	 */
-	List<DynamicMsgForService> userApplyUpMsg(@Param("uid")String uid, @Param("mid")int mid);
+	List<DynamicMsgForService> userApplyUpMsg(@Param("uid") String uid, @Param("mid") int mid);
+
 	/**
 	 * 获取消息详情
+	 * 
 	 * @param mid
 	 * @return
 	 */
-	DynamicMsgForService msgInfo(@Param("mid")int mid);
+	DynamicMsgForService msgInfo(@Param("mid") int mid);
+
 	/**
 	 * 获取用户报名信息
 	 * 
@@ -382,13 +399,14 @@ public interface DynamicMsgDao extends CrudDao<DynamicMsg> {
 	 * @param mid
 	 * @return
 	 */
-	DynamicMsgApplyForService getApplyInfo(@Param("uid")String uid, @Param("mid")int mid);
+	DynamicMsgApplyForService getApplyInfo(@Param("uid") String uid, @Param("mid") int mid);
 
 	/**
 	 * 删除消息
+	 * 
 	 * @param mid
 	 * @return
 	 */
-	int deleteMsg(@Param("mid")int mid);
+	int deleteMsg(@Param("mid") int mid);
 
 }

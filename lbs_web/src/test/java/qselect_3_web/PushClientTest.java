@@ -9,8 +9,9 @@ public class PushClientTest {
 	public static final int IOS = 0;
 
 	public static void main(String[] args) {
-		//b902b2a7ded24ec48d2e608299d208c2
-		testPush(IOS, "b902b2a7ded24ec48d2e608299d208c2");
+		// b902b2a7ded24ec48d2e608299d208c2
+		// testPush(IOS, "b902b2a7ded24ec48d2e608299d208c2");
+		testPush(IOS, "de0ed55f383940e5b2760f0e09a06036");
 	}
 
 	public static void testPush(int deviceType, String deviceId) {
@@ -27,6 +28,7 @@ public class PushClientTest {
 		extParameters.addProperty("type", PushContent.FootPrint);
 		content.setExtParameters(extParameters);
 
-		PushClient.pushContentNotice(content);
+		// PushClient.pushContentNotice(content);
+		PushClient.pushContentNoticeProduct(content);
 	}
 }

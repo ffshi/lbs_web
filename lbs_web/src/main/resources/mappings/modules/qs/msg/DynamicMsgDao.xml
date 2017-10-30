@@ -765,6 +765,7 @@
 			dynamic_msg_statistic AS s,
 		system_user AS u
 		WHERE
+			m.msg_type=#{msgType} AND
 			m.uid = #{uid} AND 
 			m.mid = s.mid AND 
 			m.mid &lt; #{mid} AND m.uid = u.uid

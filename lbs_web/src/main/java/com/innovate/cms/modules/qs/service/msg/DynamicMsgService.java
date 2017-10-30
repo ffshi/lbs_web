@@ -117,14 +117,14 @@ public class DynamicMsgService extends CrudService<DynamicMsgDao, DynamicMsg> {
 	}
 
 	/**
-	 * 上拉获取下一页消息
+	 * 按照一级分类上拉获取用户发布下一页消息
 	 * 
 	 * @param uid
 	 * @param mid
 	 * @return
 	 */
-	public List<DynamicMsgForService> userUpLatestMsg(String uid, int mid) {
-		return super.dao.userUpLatestMsg(uid, mid);
+	public List<DynamicMsgForService> userUpLatestMsg(String uid, int mid ,int msgType) {
+		return super.dao.userUpLatestMsg(uid, mid,msgType);
 	}
 
 	/**
