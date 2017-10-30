@@ -42,6 +42,7 @@ import com.innovate.cms.modules.qs.service.msg.DynamicMsgPriseService;
 import com.innovate.cms.modules.qs.service.msg.DynamicMsgService;
 import com.innovate.cms.modules.qs.service.tribe.ImTribeService;
 import com.innovate.cms.modules.qs.service.user.SystemUserService;
+import com.innovate.cms.modules.robot.RobotUtil;
 
 /**
  * 
@@ -374,6 +375,7 @@ public class DynamicMsgController extends BaseController {
 			}
 		}
 		try {
+			//触发器实现评论统计
 			dynamicMsgCommentService.saveComment(dynamicMsgComment);
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
@@ -1791,6 +1793,13 @@ public class DynamicMsgController extends BaseController {
 		return backInfo;
 	}
 	
+	/**
+	 * 机器人点赞
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/v1/msg/robotPrise", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo robotPrise(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 
@@ -1807,7 +1816,17 @@ public class DynamicMsgController extends BaseController {
 		try {
 			int mid = Integer.parseInt(midStr);
 			int num=Integer.parseInt(numStr);
+			List<String> uids = RobotUtil.radomNumUid(num);
 
+			for(int i=0;i<num;i++){
+				DynamicMsgPrise dynamicMsgPrise = new DynamicMsgPrise();
+				dynamicMsgPrise.setMid(mid);
+				dynamicMsgPrise.setUid(uids.get(i));
+				dynamicMsgPriseService.savePrise(dynamicMsgPrise);
+				dynamicMsgService.addPriseNum(mid);
+			}
+			
+			
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
 		} catch (Exception e) {
@@ -1818,6 +1837,14 @@ public class DynamicMsgController extends BaseController {
 		return backInfo;
 	}
 	
+	/**
+	 * 机器人评论
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/v1/msg/robotComment", method = RequestMethod.POST)
 	public @ResponseBody BaseBackInfo robotComment(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
 		
@@ -1832,8 +1859,21 @@ public class DynamicMsgController extends BaseController {
 			return info;
 		}
 		try {
+			
 			int mid = Integer.parseInt(midStr);
 			int num=Integer.parseInt(numStr);
+			List<String> uids = RobotUtil.radomNumUid(num);
+			List<String> comments = RobotUtil.radomNumComments(num);
+			
+			for(int i=0;i<num;i++){
+				DynamicMsgComment dynamicMsgComment = new DynamicMsgComment();
+				dynamicMsgComment.setMid(mid);
+				dynamicMsgComment.setUid(uids.get(i));
+				dynamicMsgComment.setCommentType(0);
+				dynamicMsgComment.setContent(comments.get(i));
+				
+				dynamicMsgCommentService.saveComment(dynamicMsgComment);
+			}
 
 			backInfo.setStateCode(Global.intYES);
 			backInfo.setRetMsg(Global.SUCCESS);
