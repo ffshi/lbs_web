@@ -15,6 +15,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,7 +66,6 @@ public class QxWeixinUserController extends BaseController {
 
 	@Autowired
 	private SystemUserService systemUserService;
-
 
 	/**
 	 * 小程序用户登录
@@ -378,8 +378,11 @@ public class QxWeixinUserController extends BaseController {
 	 * @return 返回类型 String
 	 *
 	 */
+	@CrossOrigin
 	@RequestMapping(value = "/v1/getWXConfig", method = RequestMethod.GET)
-	public @ResponseBody String getWXConfig(HttpServletRequest request, HttpServletResponse response) {
+	// public @ResponseBody String getWXConfig(HttpServletRequest request,
+	// HttpServletResponse response) {
+	public @ResponseBody BaseBackInfo getWXConfig(HttpServletRequest request, HttpServletResponse response) {
 		String callback = request.getParameter("callback");
 		String url = request.getParameter("url");
 		DataBackInfo<WXConfigToJson> backInfo = new DataBackInfo<WXConfigToJson>();
@@ -424,10 +427,10 @@ public class QxWeixinUserController extends BaseController {
 			backInfo.setRetMsg(Global.SUCCESS);
 			backInfo.setData(data);
 		}
-		return JsonMapper.getInstance().toJsonP(callback, backInfo);
+		//jsonp格式返回
+		// return JsonMapper.getInstance().toJsonP(callback, backInfo);
+		return backInfo;
 	}
-
-
 
 	@ExceptionHandler(value = { HttpMessageNotReadableException.class })
 	public @ResponseBody BaseBackInfo exp(HttpMessageNotReadableException ex) {
