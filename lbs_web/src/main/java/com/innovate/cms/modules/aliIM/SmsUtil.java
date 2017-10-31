@@ -30,7 +30,7 @@ public class SmsUtil {
 	// 开发者自己的AK(在阿里云访问控制台寻找)
 	static final String accessKeyId = Global.accessKeyId;
 	static final String accessKeySecret = Global.accessKeySecret;
-	static final String signName = "此时此地";
+	static final String signName = "五公里";
 	static final String SMSTemplateCode = "SMS_103600003";
 	static IAcsClient acsClient = null;
 	static {
