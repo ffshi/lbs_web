@@ -78,6 +78,30 @@
 		ORDER BY
 		tid DESC
 	</select>
+	<select id="operationTribe" resultType="com.innovate.cms.modules.qs.entity.tribe.ImTribe">
+		SELECT
+		tid,
+		tribe_id,
+		tribe_img,
+		tribe_type,
+		tribe_category,
+		owner_uid,
+		owner_name,
+		owner_headimg,
+		NAME,
+		introduction,
+		location,
+		coord_type,
+		location_name,
+		create_time
+		FROM
+		im_tribe
+		WHERE
+		operation_type = 1
+		AND del_flag = 0
+		ORDER BY
+		tid DESC
+	</select>
 
 	<select id="tribeInfo" resultType="com.innovate.cms.modules.qs.entity.tribe.ImTribe">
 		SELECT

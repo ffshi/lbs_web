@@ -59,5 +59,11 @@ public interface ImTribeDao extends CrudDao<ImTribe> {
 	 * @param tribeId
 	 */
 	int delTribleId(@Param("tribeId")long tribeId);
+
+	/**
+	 * 获取运营团队维护的群组
+	 * @return
+	 */
+	List<ImTribe> operationTribe();
 	
 }

@@ -155,6 +155,44 @@ public class ImTribeController extends BaseController {
 		}
 		return backInfo;
 	}
+	/**
+	 * 获取运营团队维护的群组
+	 * 
+	 * 
+	 * @param map
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/v1/tribe/operationTribe", method = RequestMethod.POST)
+	public @ResponseBody BaseBackInfo operationTribe(@RequestBody Map<String, String> map, HttpServletRequest request, HttpServletResponse response) {
+		
+		String tribeIds = map.get("tribeIds");
+		if (StrUtil.isBlank(tribeIds)) {
+			BaseBackInfo info = new BaseBackInfo();
+			info.setStateCode(Global.int300209);
+			info.setRetMsg(Global.str300209);
+			return info;
+		}
+		String[] ids = tribeIds.split(",");
+		long[] mids = new long[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			mids[i] = Long.parseLong(ids[i]);
+		}
+		DataBackInfo<ImTribe> backInfo = new DataBackInfo<ImTribe>();
+		try {
+			// 获取运营团队维护的群组
+			List<ImTribe> msgs = imTribeService.operationTribe();
+			backInfo.setStateCode(Global.intYES);
+			backInfo.setRetMsg(Global.SUCCESS);
+			backInfo.setData(msgs);
+		} catch (Exception e) {
+			logger.debug("[" + Thread.currentThread().getStackTrace()[1].getClassName() + " - " + Thread.currentThread().getStackTrace()[1].getMethodName() + "()接口报错：{}]", e.getMessage());
+			backInfo.setRetMsg(Global.ERROR);
+			backInfo.setStateCode(Global.intNO);
+		}
+		return backInfo;
+	}
 
 	/**
 	 * 获取用户所属群组列表

@@ -86,4 +86,12 @@ public class ImTribeService extends CrudService<ImTribeDao, ImTribe> {
 		return super.dao.delTribleId(tribeId);
 	}
 
+	/**
+	 * 获取运营团队维护的群组
+	 * @return
+	 */
+	public List<ImTribe> operationTribe() {
+		return super.dao.operationTribe();
+	}
+
 }
