@@ -41,7 +41,7 @@
 
 		<!-- jdbc driver setting -->
 		<mysql.driver.version>5.1.30</mysql.driver.version>
-		<httpclient.version>4.5</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 		<!-- environment setting -->
 		<jdk.version>1.7</jdk.version>
 		<tomcat.version>2.2</tomcat.version>
